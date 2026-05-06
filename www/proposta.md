@@ -31,3 +31,13 @@ Junho - Agosto: Desenvolvimento do backend do sistema
 Agosto - Setembro: Desenvolvimento da interface do sistema
 
 Setembro - Novembro: Análise dos dados do experimento e escrita da monografia
+
+## Referências
+
+http://hgm.nubati.net/usi.html
+
+https://github.com/TadaoYamaoka/cshogi
+
+https://github.com/yaneurao/yaneuraou
+
+https://dl.acm.org/doi/10.1145/3744736.3749191
