@@ -12,4 +12,4 @@ services:
 
     working_dir: /app
 
-    command: python src/test.py
+    command: python src/test.py --model /app/src/yaneuraou

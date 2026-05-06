@@ -1,39 +1,60 @@
-FROM python:3.11-slim
-
-ENV PYTHONUNBUFFERED=1
-
-WORKDIR /app
-
 # =============================
-# 🔧 Dependências sistema
+# 🧠 STAGE 1 — build
 # =============================
+FROM debian:bookworm-slim AS builder
+
 RUN apt-get update && apt-get install -y \
     git \
     build-essential \
     clang \
     lld \
+    python3 \
     && rm -rf /var/lib/apt/lists/*
 
-# =============================
-# 🧠 Build da engine
-# =============================
-RUN git clone https://github.com/yaneurao/YaneuraOu.git && \
-    cd YaneuraOu/source && \
-    sed -i 's/YANEURAOU_ENGINE_NNUE/YANEURAOU_ENGINE_NNUE_HALFKP_VM_256X2_32_32/' Makefile && \
-    make -j4 build ARCH=x86-64-modern
+WORKDIR /build
+
+RUN git clone https://github.com/yaneurao/YaneuraOu.git
+
+WORKDIR /build/YaneuraOu/source
 
 # =============================
-# 📦 Python deps
+# 🔥 build HALFKPE9 AVX2
 # =============================
+RUN make clean && \
+    make -j4 normal \
+        YANEURAOU_EDITION=YANEURAOU_ENGINE_NNUE_HALFKPE9 \
+        TARGET_CPU=AVX2 \
+        COMPILER=clang++ \
+        PYTHON=python3
+
+# copia binário
+RUN cp YaneuraOu-by-gcc /build/yaneuraou
+
+# =============================
+# 🚀 STAGE 2 — runtime
+# =============================
+FROM debian:bookworm-slim
+
+WORKDIR /app
+
+# python runtime
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-dev \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN python3 -m pip install --break-system-packages --upgrade pip && \
+    python3 -m pip install --break-system-packages -r requirements.txt
 
-# =============================
-# 📁 Código
-# =============================
+RUN mkdir model
+COPY model/ model/
+COPY --from=builder /build/yaneuraou /app/model/yaneuraou
+RUN chmod +x /app/model/yaneuraou
+
 COPY src/ src/
 
-# =============================
-# 🚀 Execução
-# =============================
-CMD ["python", "src/test.py", "--model", "/app/src/yaneuraou"]
+
+CMD ["python3", "src/test.py"]
