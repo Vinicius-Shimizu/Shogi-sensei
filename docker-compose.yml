@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  tcc:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: tcc-dev
+
+    volumes:
+      - ./src:/app/src   # 🔥 HOT RELOAD
+
+    working_dir: /app
+
+    command: python src/test.py
