@@ -1,15 +1,14 @@
-version: "3.9"
-
 services:
-  tcc:
+  app:
+    image: shogi-sensei
     build:
       context: .
       dockerfile: docker/Dockerfile
-    container_name: tcc-dev
+
+    container_name: shogi-sensei
+
+    stdin_open: true
+    tty: true
 
     volumes:
-      - ./src:/app/src   # 🔥 HOT RELOAD
-
-    working_dir: /app
-
-    command: python src/test.py --model /app/src/yaneuraou
+      - ./src:/app/src
