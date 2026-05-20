@@ -1,14 +1,43 @@
 services:
   app:
     image: shogi-sensei
+
     build:
       context: .
       dockerfile: docker/Dockerfile
 
     container_name: shogi-sensei
 
-    stdin_open: true
-    tty: true
+    environment:
+      DATABASE_URL: postgresql+psycopg://shogi_sensei:shogi@database:5432/shogi_sensei
+
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: postgres:16
+
+    container_name: postgres
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: shogi_sensei
+      POSTGRES_PASSWORD: shogi
+      POSTGRES_DB: shogi_sensei
+
+    ports:
+      - "5433:5432"
 
     volumes:
-      - ./src:/app/src
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shogi_sensei -d shogi_sensei"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
