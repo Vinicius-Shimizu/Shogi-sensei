@@ -8,8 +8,8 @@ services:
 
     container_name: shogi-sensei
 
-    environment:
-      DATABASE_URL: postgresql+psycopg://shogi_sensei:shogi@database:5432/shogi_sensei
+    env_file:
+      - .env
 
     depends_on:
       database:
@@ -22,19 +22,22 @@ services:
 
     restart: unless-stopped
 
-    environment:
-      POSTGRES_USER: shogi_sensei
-      POSTGRES_PASSWORD: shogi
-      POSTGRES_DB: shogi_sensei
+    env_file:
+      - .env
 
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      
     ports:
-      - "5433:5432"
+      - "${POSTGRES_PORT}:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U shogi_sensei -d shogi_sensei"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
