@@ -12,7 +12,7 @@ from pprint import pprint
 class ExerciseGenerator():
     def __init__(self, model: str, verbose=False, games_period = 7):
         self.verbose = verbose
-        self.engine = self.start_yaneuraou_engine(model)
+        # self.engine = self.start_yaneuraou_engine(model)
         self.exercises = None
         # self.games = []
         # for game in self.get_games(games_period):
@@ -84,7 +84,7 @@ class ExerciseGenerator():
                         game.raise_for_status()
                         yield game.text
                     except requests.RequestException as e:
-                        print("Failed to download {href}: {e}")
+                        print(f"Failed to download {href}: {e}")
                         
 
 
@@ -122,6 +122,8 @@ class ExerciseGenerator():
 
 
 if __name__ == "__main__":
+    while True:
+        continue
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--model",
@@ -131,8 +133,19 @@ if __name__ == "__main__":
     parser.add_argument("--v", action="store_true")
     args = parser.parse_args()
     generator = ExerciseGenerator(args.model)
+    print("Generator created")
     csa_parser = CSA.Parser()
     for game in generator.get_games():
         game_info = csa_parser.parse_str(game)
-        pprint(game_info[0].moves)     
+        pprint(type(game_info[0].comment))     
+        pprint(type(game_info[0].comments))     
+        pprint(type(game_info[0].endgame))     
+        pprint(type(game_info[0].moves))     
+        pprint(type(game_info[0].names))     
+        pprint(type(game_info[0].ratings))     
+        pprint(type(game_info[0].scores))     
+        pprint(type(game_info[0].sfen))     
+        pprint(type(game_info[0].times))     
+        pprint(type(game_info[0].var_info))     
+        pprint(type(game_info[0].win))     
         break
