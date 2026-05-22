@@ -1,8 +1,6 @@
 #!/bin/bash
 
-echo "Waiting database..."
-
-sleep 5
+set -e
 
 echo "Running migrations..."
 
@@ -10,4 +8,4 @@ alembic upgrade head
 
 echo "Starting application..."
 
-python3 src/exercise_generator.py
+exec python3 -m src.exercise_generator

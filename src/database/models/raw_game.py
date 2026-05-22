@@ -8,7 +8,7 @@ from src.database.connection import Base
 class RawGame(Base):
     __tablename__ = "raw_games"
 
-    game_id: Mapped[str] = mapped_column(String, primary_key=True)
+    game_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     game_comment: Mapped[str | None] = mapped_column(String, nullable=True)
     endgame: Mapped[str] = mapped_column(String, nullable=False)
     sfen: Mapped[str] = mapped_column(String, nullable=False)
