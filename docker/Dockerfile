@@ -38,9 +38,9 @@ RUN apt-get update && apt-get install -y \
     bash \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /build/yaneuraou /app/yaneuraou
+COPY --from=builder /build/yaneuraou /yaneuraou/yaneuraou
 
-RUN chmod +x /app/yaneuraou
+RUN chmod +x /yaneuraou/yaneuraou
 
 COPY requirements.txt .
 

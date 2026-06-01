@@ -1,31 +1,20 @@
 import subprocess
 import argparse
-# import cshogi
 from cshogi import CSA
-import os
 import requests
 import datetime
 from bs4 import BeautifulSoup
 from pprint import pprint
-import psycopg
-from sqlalchemy import create_engine, insert
-from sqlalchemy.orm import Session
-from src.database.connection import engine
-from src.database.models.raw_game import RawGame
+from src.database.repositories.raw_games import RawGameRepository
 
 class ExerciseGenerator():
     def __init__(self, model: str, verbose=False, games_period = 7):
         self.verbose = verbose
-        self.db = psycopg.connect(
-            host="database",
-            port=5432,
-            dbname=os.getenv("POSTGRES_DB"),
-            user=os.getenv("POSTGRES_USER"),
-            password=os.getenv("POSTGRES_PASSWORD")
-        )
         self.csa_parser = CSA.Parser()
-        # self.engine = self.start_yaneuraou_engine(model)
-        # self.exercises = None
+
+        self.engine = self.start_yaneuraou_engine(model)
+        
+        self.raw_games_repo = RawGameRepository()
 
 
     def start_yaneuraou_engine(self, model: str):
@@ -100,7 +89,7 @@ class ExerciseGenerator():
                         yield game.text
                     except requests.RequestException as e:
                         print(f"Failed to download {href}: {e}")
-                        
+                    
 
     def insert_games(self):
         print("Parsing games...")
@@ -124,12 +113,7 @@ class ExerciseGenerator():
             })
         print(f"Inserting {len(games)} games...")
 
-        with Session(engine) as session:
-            session.execute(
-                insert(RawGame),
-                games
-            )
-            session.commit()
+        self.raw_games_repo.bulk_insert(games)
         print("games inserted!")
 
     def get_bestmove(engine, moves, depth=10, verbose=False):
@@ -153,15 +137,9 @@ class ExerciseGenerator():
 
             if line.startswith("bestmove"):
                 return line.split()[1]
-
-    # def generate_random_board():
-    #     board = cshogi.Board()
-    #     for move in board.legal_moves:
-    #         temp = board.copy()
-    #         temp.push(move)
-
-    #         if temp.is_mate():
-    #             print("mate!!")
+    
+    def generate_checkmate_in_one():
+        raise Exception("Not yet implemented")
 
 
 if __name__ == "__main__":
@@ -169,28 +147,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         type=str,
-        default="/app/yaneuraou"
+        default="/yaneuraou/yaneuraou"
     )
     parser.add_argument("--v", action="store_true")
     args = parser.parse_args()
+
     generator = ExerciseGenerator(args.model)
     print("Generator created")
     generator.insert_games()
-    # csa_parser = CSA.Parser()
-    # cur = generator.db.cursor()
-    # for game in generator.get_games():
-    #     # game_info = csa_parser.parse_str(game)
-    #     break
-    #     # pprint(type(game_info[0].comment))     
-    #     # pprint(type(game_info[0].comments))     
-    #     # pprint(type(game_info[0].endgame))     
-    #     # pprint(type(game_info[0].moves))     
-    #     # pprint(type(game_info[0].names))     
-    #     # pprint(type(game_info[0].ratings))     
-    #     # pprint(type(game_info[0].scores))     
-    #     # pprint(type(game_info[0].sfen))     
-    #     # pprint(type(game_info[0].times))     
-    #     # pprint(type(game_info[0].var_info))     
-    #     # pprint(type(game_info[0].win))     
-    #     # break
 
