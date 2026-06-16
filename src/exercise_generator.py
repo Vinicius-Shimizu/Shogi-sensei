@@ -1,11 +1,13 @@
 import subprocess
 import argparse
+import cshogi
 from cshogi import CSA
 import requests
 import datetime
 from bs4 import BeautifulSoup
 from pprint import pprint
 from src.database.repositories.raw_games import RawGameRepository
+from concurrent.futures import ThreadPoolExecutor
 
 class ExerciseGenerator():
     def __init__(self, model: str, verbose=False, games_period = 7):
@@ -15,7 +17,7 @@ class ExerciseGenerator():
         self.engine = self.start_yaneuraou_engine(model)
         
         self.raw_games_repo = RawGameRepository()
-
+        self.session = requests.Session()
 
     def start_yaneuraou_engine(self, model: str):
         print("Using model:", model)
@@ -62,13 +64,21 @@ class ExerciseGenerator():
             if keyword in line:
                 return line
 
+    def download_csa(self, url: str):
+        try:
+            response = self.session.get(url, timeout=10)
+            response.raise_for_status
+            return response.text
+        except Exception as e:
+            print("Failed download csa error: ", e)
+            return None
 
     def get_games(self, last_days = 0):
-        print(f"Looking for games from the last {last_days} days...")
         today = datetime.date.today()
 
         for d in range(last_days, -1, -1):
             date = str(today - datetime.timedelta(days=d)).replace("-", "/")
+            print(f"Looking for games from {date}...")
             url = f"http://wdoor.c.u-tokyo.ac.jp/shogi/x/{date}/"
 
             try:
@@ -80,23 +90,27 @@ class ExerciseGenerator():
 
             html = response.text
             soup = BeautifulSoup(html, "html.parser")
+            urls = []
             for a in soup.find_all("a"):
                 href = a.get("href")
                 if href and href.endswith(".csa"):
-                    try:
-                        game = requests.get(url + href, timeout=10)
-                        game.raise_for_status()
-                        yield game.text
-                    except requests.RequestException as e:
-                        print(f"Failed to download {href}: {e}")
+                    urls.append(url + href)
+            print(len(urls))
+            with ThreadPoolExecutor(max_workers=20) as executor:
+                for game in executor.map(self.download_csa, urls):
+                    if game: yield game
+                # try:
+                #     game = self.session.get(url + href, timeout=10)
+                #     game.raise_for_status()
+                #     yield game.text
+                # except requests.RequestException as e:
+                #     print(f"Failed to download {href}: {e}")
                     
 
     def insert_games(self):
         print("Parsing games...")
         games = []
         for game in self.get_games():
-            if not game:
-                print("Error")
             parsed_game = self.csa_parser.parse_str(game)[0]
             games.append({
                 "game_comment": parsed_game.comment,
@@ -111,35 +125,44 @@ class ExerciseGenerator():
                 "times": parsed_game.times,
                 "var_info": parsed_game.var_info,
             })
+        if len(games) == 0:
+            print("No games found")
+            return
         print(f"Inserting {len(games)} games...")
-
         self.raw_games_repo.bulk_insert(games)
         print("games inserted!")
 
-    def get_bestmove(engine, moves, depth=10, verbose=False):
-        # monta posição USI
-        moves_str = " ".join(moves)
-        engine.stdin.write(f"position startpos moves {moves_str}\n")
-        engine.stdin.flush()
 
-        engine.stdin.write(f"go depth {depth}\n")
-        engine.stdin.flush()
+    def checkmate_in_one(self):
+        game = self.raw_games_repo.get_by_id(1)
 
-        while True:
-            line = engine.stdout.readline()
-            if not line:
-                raise RuntimeError("Engine morreu durante busca")
+        board = cshogi.Board()
 
-            line = line.strip()
+        exercises = []
+        seen_positions = set()
 
-            if verbose:
-                print("[ENGINE]", line)
+        for ply, move in enumerate(game.moves):
+            mate_move = board.mate_move_in_1ply()
 
-            if line.startswith("bestmove"):
-                return line.split()[1]
-    
-    def generate_checkmate_in_one():
-        raise Exception("Not yet implemented")
+            if mate_move:
+                sfen = board.sfen()
+
+                if sfen not in seen_positions:
+                    seen_positions.add(sfen)
+
+                    exercise = {
+                        "sfen": sfen,
+                        "solution": cshogi.move_to_usi(mate_move),
+                        "ply": ply,
+                        "game_id": game.game_id,
+                    }
+
+                    exercises.append(exercise)
+
+            board.push(move)
+
+        return exercises
+
 
 
 if __name__ == "__main__":
@@ -153,6 +176,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     generator = ExerciseGenerator(args.model)
-    print("Generator created")
     generator.insert_games()
-
+    # exercises = generator.checkmate_in_one()
+    # print(exercises)
+    # print("Generator created")
+    # generator.insert_games()
