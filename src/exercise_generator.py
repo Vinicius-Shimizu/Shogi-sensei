@@ -14,7 +14,7 @@ class ExerciseGenerator():
         self.verbose = verbose
         self.csa_parser = CSA.Parser()
 
-        self.engine = self.start_yaneuraou_engine(model)
+        # self.engine = self.start_yaneuraou_engine(model)
         
         self.raw_games_repo = RawGameRepository()
         self.session = requests.Session()
@@ -134,8 +134,7 @@ class ExerciseGenerator():
 
 
     def checkmate_in_one(self):
-        game = self.raw_games_repo.get_by_id(1)
-
+        game = self.raw_games_repo.get_by_id(7)
         board = cshogi.Board()
 
         exercises = []
@@ -143,16 +142,17 @@ class ExerciseGenerator():
 
         for ply, move in enumerate(game.moves):
             mate_move = board.mate_move_in_1ply()
-
             if mate_move:
+                test_board = board.copy()
+                test_board.push(mate_move)
+                if not test_board.is_check(): continue
                 sfen = board.sfen()
-
                 if sfen not in seen_positions:
                     seen_positions.add(sfen)
 
                     exercise = {
                         "sfen": sfen,
-                        "solution": cshogi.move_to_usi(mate_move),
+                        "solution": mate_move,
                         "ply": ply,
                         "game_id": game.game_id,
                     }
@@ -164,6 +164,31 @@ class ExerciseGenerator():
         return exercises
 
 
+def print_board(sfen: str):
+    board_part = sfen.split()[0]
+
+    print("   9  8  7  6  5  4  3  2  1")
+
+    for rank, row in enumerate(board_part.split("/"), start=1):
+        cells = []
+        i = 0
+
+        while i < len(row):
+            c = row[i]
+
+            if c.isdigit():
+                cells.extend([" . "] * int(c))
+                i += 1
+
+            elif c == "+":
+                cells.append(f"+{row[i+1]:<2}")
+                i += 2
+
+            else:
+                cells.append(f" {c} ")
+                i += 1
+
+        print(f"{chr(rank + 96)} " + "".join(cells))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -176,8 +201,29 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     generator = ExerciseGenerator(args.model)
-    generator.insert_games()
-    # exercises = generator.checkmate_in_one()
-    # print(exercises)
-    # print("Generator created")
     # generator.insert_games()
+    exercises = generator.checkmate_in_one()
+    # print(cshogi.move_to_usi(exercises[0]["solution"]))
+    for exercise in exercises:
+        print("\n=========================================\n")
+        sfen = exercise["sfen"]
+        board = cshogi.Board(sfen)
+        pieces_in_hand = board.pieces_in_hand
+        turn = board.turn
+        pieces_in_hand_model = """\n  sente(black), gote(white)\n  [P, L, N, S, G, B, R]"""
+        print(f"Pieces in hand: \n  Model: {pieces_in_hand_model} \n{exercise['sfen'].split(' ')[2]} {pieces_in_hand}"
+        )
+
+        
+        print(f"Turn: {'WHITE' if turn else 'BLACK'}")
+        print(f"Legal moves: {len([cshogi.move_to_usi(move) for move in board.legal_moves])}")
+        print_board(sfen)
+        print("\n\n")
+        solution = cshogi.move_to_usi(exercise["solution"])
+        print(f"Solution: {solution}")
+        board.push(exercise["solution"])
+        print_board(board.sfen())
+        print(f"New legal moves: {len([cshogi.move_to_usi(move) for move in board.legal_moves])}")
+        print("\n=========================================\n")
+
+    
