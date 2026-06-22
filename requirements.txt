@@ -6,3 +6,4 @@ psycopg[binary]
 alembic
 dotenv
 pandas
+fastapi[standard]
