@@ -1,12 +1,12 @@
 services:
-  app:
-    image: shogi-sensei
+  backend:
+    image: shogi-sensei-backend
 
     build:
-      context: .
-      dockerfile: docker/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
 
-    container_name: shogi-sensei
+    container_name: shogi-sensei-backend
 
     env_file:
       - .env
@@ -17,8 +17,8 @@ services:
     shm_size: "2gb"
 
     volumes:
-      - .:/app
-      - ./model:/app/model
+      - ./backend/src:/app/src
+      - ./backend/model:/app/model
 
     environment:
       PYTHONUNBUFFERED: 1

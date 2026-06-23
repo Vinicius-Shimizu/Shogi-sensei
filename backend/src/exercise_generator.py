@@ -99,12 +99,6 @@ class ExerciseGenerator():
             with ThreadPoolExecutor(max_workers=20) as executor:
                 for game in executor.map(self.download_csa, urls):
                     if game: yield game
-                # try:
-                #     game = self.session.get(url + href, timeout=10)
-                #     game.raise_for_status()
-                #     yield game.text
-                # except requests.RequestException as e:
-                #     print(f"Failed to download {href}: {e}")
                     
 
     def insert_games(self):
