@@ -143,10 +143,11 @@ class ExerciseGenerator():
                 sfen = board.sfen()
                 if sfen not in seen_positions:
                     seen_positions.add(sfen)
-
+                    
                     exercise = {
                         "sfen": sfen,
-                        "solution": mate_move,
+                        "solution": cshogi.move_to_usi(mate_move),
+                        "options": [cshogi.move_to_usi(move) for move in board.legal_moves],
                         "ply": ply,
                         "game_id": game.game_id,
                     }
