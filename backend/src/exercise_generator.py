@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from pprint import pprint
 from src.database.repositories.raw_games import RawGameRepository
 from concurrent.futures import ThreadPoolExecutor
+import random
 
 class ExerciseGenerator():
     def __init__(self, model: str, verbose=False, games_period = 7):
@@ -128,33 +129,79 @@ class ExerciseGenerator():
 
 
     def checkmate_in_one(self):
-        game = self.raw_games_repo.get_by_id(7)
-        board = cshogi.Board()
+        def parse_hands(hand_string):
+            if hand_string == "-":
+                return {
+                    "sente": {},
+                    "gote": {},
+                }
+
+            result = {
+                "sente": {},
+                "gote": {},
+            }
+
+            i = 0
+
+            while i < len(hand_string):
+                count = ""
+
+                while i < len(hand_string) and hand_string[i].isdigit():
+                    count += hand_string[i]
+                    i += 1
+
+                piece = hand_string[i]
+                qty = int(count) if count else 1
+
+                target = "sente" if piece.isupper() else "gote"
+                piece = piece.upper()
+
+                result[target][piece] = result[target].get(piece, 0) + qty
+
+                i += 1
+
+            return result
+
+
+        def generate_options(legal_moves, solution, n=4):
+            moves = [m for m in legal_moves if m != solution]
+            options = random.sample(moves, min(n-1, len(moves)))
+            options.append(solution)
+            random.shuffle(options)
+            return options
 
         exercises = []
-        seen_positions = set()
+        while len(exercises) == 0:
+            game = self.raw_games_repo.get_random()
+            board = cshogi.Board()
 
-        for ply, move in enumerate(game.moves):
-            mate_move = board.mate_move_in_1ply()
-            if mate_move:
-                test_board = board.copy()
-                test_board.push(mate_move)
-                if not test_board.is_check(): continue
-                sfen = board.sfen()
-                if sfen not in seen_positions:
-                    seen_positions.add(sfen)
-                    
-                    exercise = {
-                        "sfen": sfen,
-                        "solution": cshogi.move_to_usi(mate_move),
-                        "options": [cshogi.move_to_usi(move) for move in board.legal_moves],
-                        "ply": ply,
-                        "game_id": game.game_id,
-                    }
+            seen_positions = set()
 
-                    exercises.append(exercise)
+            for ply, move in enumerate(game.moves):
+                mate_move = board.mate_move_in_1ply()
+                if mate_move:
+                    test_board = board.copy()
+                    test_board.push(mate_move)
+                    if not test_board.is_check(): continue
+                    sfen = board.sfen()
+                    if sfen.split(" ")[1] == "w": continue
+                    if sfen not in seen_positions:
+                        seen_positions.add(sfen)
+                        solution = cshogi.move_to_usi(mate_move)
+                        legal_moves = [cshogi.move_to_usi(move) for move in board.legal_moves]
+                        options = generate_options(legal_moves, solution)
+                        exercise = {
+                            "sfen": sfen,
+                            "hands": parse_hands(sfen.split(" ")[2]),
+                            "solution": solution,
+                            "options": options,
+                            "ply": ply,
+                            "game_id": game.game_id,
+                        }
 
-            board.push(move)
+                        exercises.append(exercise)
+
+                board.push(move)
 
         return exercises
 

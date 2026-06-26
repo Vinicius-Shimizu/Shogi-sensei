@@ -1,4 +1,4 @@
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, func
 from sqlalchemy.orm import Session
 from src.database.connection import engine
 
@@ -47,3 +47,11 @@ class BaseRepository:
                 rows
             )
             session.commit()
+
+    def get_random(self):
+        with Session(engine) as session:
+            return session.scalar(
+                select(self.model)
+                .order_by(func.random())
+                .limit(1)
+            )
