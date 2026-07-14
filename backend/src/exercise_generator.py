@@ -15,7 +15,7 @@ class ExerciseGenerator():
         self.verbose = verbose
         self.csa_parser = CSA.Parser()
 
-        # self.engine = self.start_yaneuraou_engine(model)
+        self.engine = self.start_yaneuraou_engine(model)
         
         self.raw_games_repo = RawGameRepository()
         self.session = requests.Session()
@@ -128,6 +128,41 @@ class ExerciseGenerator():
         print("games inserted!")
 
 
+    def get_best_moves(self, sfen: str, multipv=4, depth=8):
+        engine = self.engine
+        engine.stdin.write(f"setoption name MultiPV value {multipv}\n")
+        engine.stdin.write("isready\n")
+        engine.stdin.flush()
+        self.read_until(engine, "readyok")
+        print("Engine ready!")
+
+        engine.stdin.write("usinewgame\n")
+        engine.stdin.write(f"position sfen {sfen}\n")
+        engine.stdin.write(f"go depth {depth}\n")
+        engine.stdin.flush()
+
+        moves = {}
+
+        while True:
+            line = engine.stdout.readline().strip()
+
+            if self.verbose:
+                print("[ENGINE]", line)
+
+            if line.startswith("info") and " multipv " in line and " pv " in line:
+                tokens = line.split()
+
+                pv = int(tokens[tokens.index("multipv") + 1])
+                move = tokens[tokens.index("pv") + 1]
+
+                moves[pv] = move
+
+            elif line.startswith("bestmove"):
+                break
+
+        return [moves[i] for i in sorted(moves)]
+
+
     def checkmate_in_one(self):
         def parse_hands(hand_string):
             if hand_string == "-":
@@ -169,6 +204,7 @@ class ExerciseGenerator():
             options.append(solution)
             random.shuffle(options)
             return options
+        
 
         exercises = []
         while len(exercises) == 0:
@@ -189,12 +225,17 @@ class ExerciseGenerator():
                         seen_positions.add(sfen)
                         solution = cshogi.move_to_usi(mate_move)
                         legal_moves = [cshogi.move_to_usi(move) for move in board.legal_moves]
-                        options = generate_options(legal_moves, solution)
+                        # options = self.get_best_moves(sfen)
+
+                        # if len(options) < 3: continue
+                        # options = random.sample(options, min(3, len(options)))
+                        # options.append(solution)
+                        # random.shuffle(options)
                         exercise = {
                             "sfen": sfen,
                             "hands": parse_hands(sfen.split(" ")[2]),
                             "solution": solution,
-                            "options": options,
+                            "options": generate_options(legal_moves, solution),
                             "ply": ply,
                             "game_id": game.game_id,
                         }

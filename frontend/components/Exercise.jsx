@@ -6,10 +6,6 @@ import Options from "./Options";
 
 export default function Exercise(){
   const [exercise, setExercise] = useState(null)
-  const [whiteHand, setWhiteHand] = useState(null)
-  const [blackHand, setBlackHand] = useState(null)
-  const [possible_moves, setPossibleMoves] = useState([])
-  const [solution, setSolution] = useState(null)
   useEffect(() => {
     async function fetchExercise() {
       const response = await fetch(
@@ -19,17 +15,8 @@ export default function Exercise(){
       let data = await response.json()
       console.log(data)
       data = data.response[0]
-      let solution = data["solution"]
-      let hands = data["hands"]
-      let moves = data["options"]
       
-      console.log(hands)
-      console.log(moves)
       setExercise(data)
-      setWhiteHand(hands.gote)
-      setBlackHand(hands.sente)
-      setPossibleMoves(moves)
-      setSolution(solution)
     }
 
     fetchExercise()
@@ -40,13 +27,13 @@ export default function Exercise(){
   return (
     <div className="flex justify-center">
         <div className="flex-col justify-center border-2 p-5">
-            <Hand pieces={whiteHand}></Hand>
+            <Hand pieces={exercise["hands"].gote}></Hand>
             <Board
                 sfen={exercise["sfen"]}
             />
-            <Hand pieces={blackHand}></Hand>
+            <Hand pieces={exercise["hands"].sente}></Hand>
         </div>
-        <Options possible_moves={possible_moves} solution={solution}/>
+        <Options possible_moves={exercise["options"]} solution={exercise["solution"]}/>
     </div>
   )
 }
