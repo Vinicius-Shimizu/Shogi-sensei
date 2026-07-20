@@ -13,6 +13,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 @app.get("/analyze")
 def analyze_play(move: str):
     return move

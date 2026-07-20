@@ -27,6 +27,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      engine:
+        condition: service_healthy
 
   engine:
     image: shogi-sensei-engine
@@ -43,6 +45,13 @@ services:
 
     ports:
       - "8080:8080"
+
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://0.0.0.0:8080/health')"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
 
   database:
     image: postgres:16
