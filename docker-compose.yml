@@ -11,10 +11,7 @@ services:
     env_file:
       - .env
 
-    stdin_open: true
-    tty: true
 
-    shm_size: "2gb"
 
     volumes:
       - ./backend/src:/app/src
@@ -30,6 +27,22 @@ services:
     depends_on:
       database:
         condition: service_healthy
+
+  engine:
+    image: shogi-sensei-engine
+    container_name: shogi-sensei-engine
+    
+    stdin_open: true
+    tty: true
+
+    shm_size: "2gb"
+
+    build: 
+      context: ./engine
+      dockerfile: Dockerfile
+
+    ports:
+      - "8080:8080"
 
   database:
     image: postgres:16

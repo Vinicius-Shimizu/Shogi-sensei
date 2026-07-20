@@ -7,3 +7,4 @@ alembic
 dotenv
 pandas
 fastapi[standard]
+uvicorn

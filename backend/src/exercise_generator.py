@@ -15,55 +15,55 @@ class ExerciseGenerator():
         self.verbose = verbose
         self.csa_parser = CSA.Parser()
 
-        self.engine = self.start_yaneuraou_engine(model)
+        # self.engine = self.start_yaneuraou_engine(model)
         
         self.raw_games_repo = RawGameRepository()
         self.session = requests.Session()
 
-    def start_yaneuraou_engine(self, model: str):
-        print("Using model:", model)
+    # def start_yaneuraou_engine(self, model: str):
+    #     print("Using model:", model)
 
-        engine = subprocess.Popen(
-            [model],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            bufsize=1,
-            cwd="/app/model"
-        )
+    #     engine = subprocess.Popen(
+    #         [model],
+    #         stdin=subprocess.PIPE,
+    #         stdout=subprocess.PIPE,
+    #         stderr=subprocess.STDOUT,
+    #         text=True,
+    #         bufsize=1,
+    #         cwd="/app/model"
+    #     )
 
-        engine.stdin.write("usi\n")
-        engine.stdin.flush()
-        self.read_until(engine, "usiok")
-        print("Engine ok")
-        engine.stdin.write("setoption name EvalDir value /app/model/eval\n")
-        engine.stdin.flush()
-        engine.stdin.write("setoption name USI_Hash value 32\n")
-        engine.stdin.flush()
+    #     engine.stdin.write("usi\n")
+    #     engine.stdin.flush()
+    #     self.read_until(engine, "usiok")
+    #     print("Engine ok")
+    #     engine.stdin.write("setoption name EvalDir value /app/model/eval\n")
+    #     engine.stdin.flush()
+    #     engine.stdin.write("setoption name USI_Hash value 32\n")
+    #     engine.stdin.flush()
 
-        engine.stdin.write("setoption name Threads value 8\n")
-        engine.stdin.flush()
-        engine.stdin.write("setoption name USI_OwnBook value false\n")
-        engine.stdin.flush()
-        engine.stdin.write("isready\n")
-        engine.stdin.flush()
-        self.read_until(engine, "readyok")
-        print("Engine ready!")
-        return engine
+    #     engine.stdin.write("setoption name Threads value 8\n")
+    #     engine.stdin.flush()
+    #     engine.stdin.write("setoption name USI_OwnBook value false\n")
+    #     engine.stdin.flush()
+    #     engine.stdin.write("isready\n")
+    #     engine.stdin.flush()
+    #     self.read_until(engine, "readyok")
+    #     print("Engine ready!")
+    #     return engine
 
 
-    def read_until(self, engine, keyword):
-        while True:
-            line = engine.stdout.readline()
-            if not line:
-                raise RuntimeError("Engine stopped")
-            line = line.strip()
+    # def read_until(self, engine, keyword):
+    #     while True:
+    #         line = engine.stdout.readline()
+    #         if not line:
+    #             raise RuntimeError("Engine stopped")
+    #         line = line.strip()
 
-            if(self.verbose): print("[ENGINE]", line)
+    #         if(self.verbose): print("[ENGINE]", line)
 
-            if keyword in line:
-                return line
+    #         if keyword in line:
+    #             return line
 
     def download_csa(self, url: str):
         try:
@@ -128,39 +128,39 @@ class ExerciseGenerator():
         print("games inserted!")
 
 
-    def get_best_moves(self, sfen: str, multipv=4, depth=8):
-        engine = self.engine
-        engine.stdin.write(f"setoption name MultiPV value {multipv}\n")
-        engine.stdin.write("isready\n")
-        engine.stdin.flush()
-        self.read_until(engine, "readyok")
-        print("Engine ready!")
+    # def get_best_moves(self, sfen: str, multipv=4, depth=8):
+    #     engine = self.engine
+    #     engine.stdin.write(f"setoption name MultiPV value {multipv}\n")
+    #     engine.stdin.write("isready\n")
+    #     engine.stdin.flush()
+    #     self.read_until(engine, "readyok")
+    #     print("Engine ready!")
 
-        engine.stdin.write("usinewgame\n")
-        engine.stdin.write(f"position sfen {sfen}\n")
-        engine.stdin.write(f"go depth {depth}\n")
-        engine.stdin.flush()
+    #     engine.stdin.write("usinewgame\n")
+    #     engine.stdin.write(f"position sfen {sfen}\n")
+    #     engine.stdin.write(f"go depth {depth}\n")
+    #     engine.stdin.flush()
 
-        moves = {}
+    #     moves = {}
 
-        while True:
-            line = engine.stdout.readline().strip()
+    #     while True:
+    #         line = engine.stdout.readline().strip()
 
-            if self.verbose:
-                print("[ENGINE]", line)
+    #         if self.verbose:
+    #             print("[ENGINE]", line)
 
-            if line.startswith("info") and " multipv " in line and " pv " in line:
-                tokens = line.split()
+    #         if line.startswith("info") and " multipv " in line and " pv " in line:
+    #             tokens = line.split()
 
-                pv = int(tokens[tokens.index("multipv") + 1])
-                move = tokens[tokens.index("pv") + 1]
+    #             pv = int(tokens[tokens.index("multipv") + 1])
+    #             move = tokens[tokens.index("pv") + 1]
 
-                moves[pv] = move
+    #             moves[pv] = move
 
-            elif line.startswith("bestmove"):
-                break
+    #         elif line.startswith("bestmove"):
+    #             break
 
-        return [moves[i] for i in sorted(moves)]
+    #     return [moves[i] for i in sorted(moves)]
 
 
     def checkmate_in_one(self):
