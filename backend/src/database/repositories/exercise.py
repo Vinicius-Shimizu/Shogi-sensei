@@ -4,4 +4,5 @@ from src.database.repositories.base import BaseRepository
 class ExerciseRepository(BaseRepository):
     model = Exercise
 
+    
 

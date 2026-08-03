@@ -12,11 +12,10 @@ export default function Exercise(){
         "http://localhost:8000/exercises/checkmate_in_one"
       )
 
-      let data = await response.json()
-      console.log(data)
-      data = data.response[0]
+      const data = await response.json()
+      console.log(data.response)
       
-      setExercise(data)
+      setExercise(data.response)
     }
 
     fetchExercise()
@@ -27,13 +26,13 @@ export default function Exercise(){
   return (
     <div className="flex justify-center">
         <div className="flex-col justify-center border-2 p-5">
-            <Hand pieces={exercise["hands"].gote}></Hand>
+            <Hand pieces={exercise.hands.gote}></Hand>
             <Board
-                sfen={exercise["sfen"]}
+                sfen={exercise.sfen}
             />
-            <Hand pieces={exercise["hands"].sente}></Hand>
+            <Hand pieces={exercise.hands.sente}></Hand>
         </div>
-        <Options possible_moves={exercise["options"]} solution={exercise["solution"]}/>
+        <Options possible_moves={exercise.options} solution={exercise.solution}/>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Integer
+from sqlalchemy import String, Integer, Boolean
 from sqlalchemy.dialects.postgresql import JSONB
 
 from src.database.connection import Base
@@ -20,6 +20,7 @@ class RawGame(Base):
     scores: Mapped[list[int]] = mapped_column(JSONB, nullable=False)
     times: Mapped[list[int]] = mapped_column(JSONB, nullable=False)
     var_info: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    processed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     
 

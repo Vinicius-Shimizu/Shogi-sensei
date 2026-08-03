@@ -11,6 +11,24 @@ from src.database.repositories.exercise import ExerciseRepository
 from concurrent.futures import ThreadPoolExecutor
 import random
 
+PIECES_TYPES = [
+    "P",
+    "L",
+    "N",
+    "S",
+    "B",
+    "R",
+    "G",
+    "K",
+    "+P",
+    "+L",
+    "+N",
+    "+S",
+    "+B",
+    "+R",
+]
+
+
 class ExerciseGenerator():
     def __init__(self, model: str, verbose=False, games_period = 7):
         self.verbose = verbose
@@ -21,7 +39,7 @@ class ExerciseGenerator():
         self.raw_games_repo = RawGameRepository()
         self.exercises_repo = ExerciseRepository()
         self.session = requests.Session()
-
+    
     # def start_yaneuraou_engine(self, model: str):
     #     print("Using model:", model)
 
@@ -121,6 +139,7 @@ class ExerciseGenerator():
                 "scores": parsed_game.scores,
                 "times": parsed_game.times,
                 "var_info": parsed_game.var_info,
+                "processed": False
             })
         if len(games) == 0:
             print("No games found")
@@ -208,44 +227,64 @@ class ExerciseGenerator():
             return options
         
 
-        exercises = []
-        while len(exercises) == 0:
-            game = self.raw_games_repo.get_random()
-            board = cshogi.Board()
+        def get_piece_used(board: cshogi.Board, move: int):
+            usi = cshogi.move_to_usi(move)
+            if "*" in usi:
+                return usi[0]
+            
+            origin = cshogi.move_from(move)
+            piece = board.piece(origin)
+            return PIECES_TYPES[cshogi.piece_to_piece_type(piece) - 1]
 
+        games = self.raw_games_repo.get_unprocessed_games()
+
+        if not games:
+            return
+        exercises = []
+        processed_ids = []
+
+        for game in games:
+            board = cshogi.Board()
             seen_positions = set()
 
-            for ply, move in enumerate(game.moves):
+            for _, move in enumerate(game.moves):
                 mate_move = board.mate_move_in_1ply()
                 if mate_move:
                     test_board = board.copy()
                     test_board.push(mate_move)
-                    if not test_board.is_check(): continue
+                    if not test_board.is_check(): 
+                        board.push(move)
+                        continue
+
                     sfen = board.sfen()
-                    if sfen.split(" ")[1] == "w": continue
+                    if sfen.split(" ")[1] == "w": 
+                        board.push(move)
+                        continue
+
                     if sfen not in seen_positions:
                         seen_positions.add(sfen)
                         solution = cshogi.move_to_usi(mate_move)
                         legal_moves = [cshogi.move_to_usi(move) for move in board.legal_moves]
-                        # options = self.get_best_moves(sfen)
+                        options = generate_options(legal_moves, solution)
+                        if len(options) < 4: continue
 
-                        # if len(options) < 3: continue
-                        # options = random.sample(options, min(3, len(options)))
-                        # options.append(solution)
-                        # random.shuffle(options)
                         exercise = {
                             "sfen": sfen,
                             "hands": parse_hands(sfen.split(" ")[2]),
                             "solution": solution,
-                            "options": generate_options(legal_moves, solution),
-                            "pieces_used": solution[0],
+                            "options": options,
+                            "pieces_used": get_piece_used(board, mate_move),
                             "type": "checkmate-in-one"
                         }
 
                         exercises.append(exercise)
 
                 board.push(move)
-        self.exercises_repo.bulk_insert(exercises)
+            processed_ids.append(game.game_id)
+
+        if exercises:
+            self.exercises_repo.bulk_insert(exercises)
+        self.raw_games_repo.update_processed(processed_ids)
 
 
 
