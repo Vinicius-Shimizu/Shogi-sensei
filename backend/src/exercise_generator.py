@@ -7,6 +7,7 @@ import datetime
 from bs4 import BeautifulSoup
 from pprint import pprint
 from src.database.repositories.raw_games import RawGameRepository
+from src.database.repositories.exercise import ExerciseRepository
 from concurrent.futures import ThreadPoolExecutor
 import random
 
@@ -18,6 +19,7 @@ class ExerciseGenerator():
         # self.engine = self.start_yaneuraou_engine(model)
         
         self.raw_games_repo = RawGameRepository()
+        self.exercises_repo = ExerciseRepository()
         self.session = requests.Session()
 
     # def start_yaneuraou_engine(self, model: str):
@@ -236,15 +238,15 @@ class ExerciseGenerator():
                             "hands": parse_hands(sfen.split(" ")[2]),
                             "solution": solution,
                             "options": generate_options(legal_moves, solution),
-                            "ply": ply,
-                            "game_id": game.game_id,
+                            "pieces_used": solution[0],
+                            "type": "checkmate-in-one"
                         }
 
                         exercises.append(exercise)
 
                 board.push(move)
+        self.exercises_repo.bulk_insert(exercises)
 
-        return exercises
 
 
 def print_board(sfen: str):

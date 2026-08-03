@@ -18,8 +18,8 @@ ex_gen = ExerciseGenerator("/yaneuraou/yaneuraou")
 
 @app.get("/exercises/checkmate_in_one")
 def get_checkmate_in_one():
-    response = ex_gen.checkmate_in_one()
-    return {"response": response}
+    ex_gen.checkmate_in_one()
+    return {"response": "checkmate exercise generated succesfully!"}
 
 @app.post("/exercises/fetch_games")
 def get_games():

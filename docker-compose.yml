@@ -14,8 +14,7 @@ services:
 
 
     volumes:
-      - ./backend/src:/app/src
-      - ./backend/model:/app/model
+      - ./backend:/app
 
     environment:
       PYTHONUNBUFFERED: 1

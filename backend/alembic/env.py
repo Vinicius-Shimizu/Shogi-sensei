@@ -31,7 +31,7 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 from src.database.connection import Base
 from src.database.models.raw_game import RawGame
-
+from src.database.models.exercise import Exercise
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
