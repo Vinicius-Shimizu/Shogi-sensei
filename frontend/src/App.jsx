@@ -1,9 +1,8 @@
 import './App.css'
 import { Board } from '../components/Board'
-import Exercise from '../components/Exercise'
-
+import ExerciseList from '../components/ExerciseList'
 function App() {
- return <Exercise />
+ return <ExerciseList />
 }
 
 export default App

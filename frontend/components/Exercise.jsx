@@ -4,35 +4,23 @@ import { useEffect, useState } from 'react'
 import Options from "./Options";
 
 
-export default function Exercise(){
-  const [exercise, setExercise] = useState(null)
-  useEffect(() => {
-    async function fetchExercise() {
-      const response = await fetch(
-        "http://localhost:8000/exercises/checkmate_in_one"
-      )
-
-      const data = await response.json()
-      console.log(data.response)
-      
-      setExercise(data.response)
-    }
-
-    fetchExercise()
-  }, [])
-  if (!exercise) {
-    return <div>Carregando...</div>
-  }
+export default function Exercise({exercise, onAnswer}){
   return (
     <div className="flex justify-center">
         <div className="flex-col justify-center border-2 p-5">
             <Hand pieces={exercise.hands.gote}></Hand>
+            
             <Board
                 sfen={exercise.sfen}
             />
+            
             <Hand pieces={exercise.hands.sente}></Hand>
         </div>
-        <Options possible_moves={exercise.options} solution={exercise.solution}/>
+        <Options 
+            possible_moves={exercise.options} 
+            solution={exercise.solution}
+            onAnswer={onAnswer}
+        />
     </div>
   )
 }

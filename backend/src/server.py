@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from src.exercise_generator import ExerciseGenerator
-
+ 
 app = FastAPI()
 
 
@@ -16,6 +16,10 @@ app.add_middleware(
 
 ex_gen = ExerciseGenerator("/yaneuraou/yaneuraou")
 
+@app.post("/exercises/checkmate_in_one")
+def generate_checkmate_in_one():
+    ex_gen.checkmate_in_one()
+    return {"response": "checkmate exercise generated succesfully!"}
 
 @app.get("/exercises/checkmate_in_one/{id}")
 def get_checkmate_in_one(id: int):
@@ -27,10 +31,11 @@ def get_random_checkmate_in_one():
     exercise = ex_gen.exercises_repo.get_random()
     return {"response": exercise}
 
-@app.post("/exercises/checkmate_in_one")
-def generate_checkmate_in_one():
-    ex_gen.checkmate_in_one()
-    return {"response": "checkmate exercise generated succesfully!"}
+@app.get("/exercises/exercise_list")
+def get_exercises_list():
+    ex_list = ex_gen.exercises_repo.get_exercises_list()
+    return {"response": ex_list}
+
 
 @app.post("/exercises/fetch_games")
 def generate_games():
