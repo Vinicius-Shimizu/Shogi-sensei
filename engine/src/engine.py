@@ -1,8 +1,11 @@
 import subprocess
+import random
+import threading
 
 class Engine():
     def __init__(self, model: str):
         self.verbose = False
+        self.lock = threading.Lock()
         self.engine = self.start_yaneuraou_engine(model)
 
     def start_yaneuraou_engine(self, model: str):
@@ -53,3 +56,47 @@ class Engine():
             self.engine.stdin.write("quit\n")
             self.engine.stdin.flush()
             self.engine.wait(timeout=5)
+    
+    def _get_alternatives(self, sfen: str, solution: str, n: int, depth: int):
+        self.engine.stdin.write("usinewgame\n")
+        self.engine.stdin.write("setoption name MultiPV value 10\n")
+        self.engine.stdin.write(f"position sfen {sfen}\n")
+        self.engine.stdin.write(f"go depth {depth}\n")
+        self.engine.stdin.flush()
+
+        moves = {}
+
+        while True:
+            line = self.engine.stdout.readline().strip()
+
+            if line.startswith("info") and "multipv" in line and " pv " in line:
+                parts = line.split()
+
+                multipv_index = parts.index("multipv") + 1
+                pv_index = parts.index("pv") + 1
+
+                multipv = int(parts[multipv_index])
+                move = parts[pv_index]
+
+                moves[multipv] = move
+
+            elif line.startswith("bestmove"):
+                break
+
+        candidates = list(moves.values())
+
+        candidates = [
+            move for move in candidates
+            if move != solution
+        ]
+
+        options = candidates[:n - 1]
+        options.append(solution)
+
+        random.shuffle(options)
+
+        return options
+
+    def get_alternatives(self, sfen: str, solution: str, n: int, depth: int):
+        with self.lock:
+            return self._get_alternatives(sfen, solution, n, depth)

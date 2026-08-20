@@ -17,6 +17,6 @@ app = FastAPI(lifespan=lifespan)
 def health():
     return {"status": "ok"}
 
-@app.get("/analyze")
-def analyze_play(move: str):
-    return move
+@app.get("/checkmate_in_one_answers")
+def get_checkmate_in_one_answers(sfen: str, solution, n: int = 4, depth: int = 1):
+    return engine.get_alternatives(sfen, solution, n, depth)

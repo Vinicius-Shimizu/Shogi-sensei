@@ -34,57 +34,10 @@ class ExerciseGenerator():
         self.verbose = verbose
         self.csa_parser = CSA.Parser()
 
-        # self.engine = self.start_yaneuraou_engine(model)
-        
         self.raw_games_repo = RawGameRepository()
         self.exercises_repo = ExerciseRepository()
         self.session = requests.Session()
     
-    # def start_yaneuraou_engine(self, model: str):
-    #     print("Using model:", model)
-
-    #     engine = subprocess.Popen(
-    #         [model],
-    #         stdin=subprocess.PIPE,
-    #         stdout=subprocess.PIPE,
-    #         stderr=subprocess.STDOUT,
-    #         text=True,
-    #         bufsize=1,
-    #         cwd="/app/model"
-    #     )
-
-    #     engine.stdin.write("usi\n")
-    #     engine.stdin.flush()
-    #     self.read_until(engine, "usiok")
-    #     print("Engine ok")
-    #     engine.stdin.write("setoption name EvalDir value /app/model/eval\n")
-    #     engine.stdin.flush()
-    #     engine.stdin.write("setoption name USI_Hash value 32\n")
-    #     engine.stdin.flush()
-
-    #     engine.stdin.write("setoption name Threads value 8\n")
-    #     engine.stdin.flush()
-    #     engine.stdin.write("setoption name USI_OwnBook value false\n")
-    #     engine.stdin.flush()
-    #     engine.stdin.write("isready\n")
-    #     engine.stdin.flush()
-    #     self.read_until(engine, "readyok")
-    #     print("Engine ready!")
-    #     return engine
-
-
-    # def read_until(self, engine, keyword):
-    #     while True:
-    #         line = engine.stdout.readline()
-    #         if not line:
-    #             raise RuntimeError("Engine stopped")
-    #         line = line.strip()
-
-    #         if(self.verbose): print("[ENGINE]", line)
-
-    #         if keyword in line:
-    #             return line
-
     def download_csa(self, url: str):
         try:
             response = self.session.get(url, timeout=10)
@@ -149,40 +102,6 @@ class ExerciseGenerator():
         print("games inserted!")
 
 
-    # def get_best_moves(self, sfen: str, multipv=4, depth=8):
-    #     engine = self.engine
-    #     engine.stdin.write(f"setoption name MultiPV value {multipv}\n")
-    #     engine.stdin.write("isready\n")
-    #     engine.stdin.flush()
-    #     self.read_until(engine, "readyok")
-    #     print("Engine ready!")
-
-    #     engine.stdin.write("usinewgame\n")
-    #     engine.stdin.write(f"position sfen {sfen}\n")
-    #     engine.stdin.write(f"go depth {depth}\n")
-    #     engine.stdin.flush()
-
-    #     moves = {}
-
-    #     while True:
-    #         line = engine.stdout.readline().strip()
-
-    #         if self.verbose:
-    #             print("[ENGINE]", line)
-
-    #         if line.startswith("info") and " multipv " in line and " pv " in line:
-    #             tokens = line.split()
-
-    #             pv = int(tokens[tokens.index("multipv") + 1])
-    #             move = tokens[tokens.index("pv") + 1]
-
-    #             moves[pv] = move
-
-    #         elif line.startswith("bestmove"):
-    #             break
-
-    #     return [moves[i] for i in sorted(moves)]
-
 
     def checkmate_in_one(self):
         def parse_hands(hand_string):
@@ -218,14 +137,6 @@ class ExerciseGenerator():
 
             return result
 
-
-        def generate_options(legal_moves, solution, n=4):
-            moves = [m for m in legal_moves if m != solution]
-            options = random.sample(moves, min(n-1, len(moves)))
-            options.append(solution)
-            random.shuffle(options)
-            return options
-        
 
         def get_piece_used(board: cshogi.Board, move: int):
             usi = cshogi.move_to_usi(move)
@@ -264,8 +175,25 @@ class ExerciseGenerator():
                     if sfen not in seen_positions:
                         seen_positions.add(sfen)
                         solution = cshogi.move_to_usi(mate_move)
-                        legal_moves = [cshogi.move_to_usi(move) for move in board.legal_moves]
-                        options = generate_options(legal_moves, solution)
+                        try:
+                            response = self.session.get(
+                                "http://engine:8080/checkmate_in_one_answers",
+                                params={
+                                    "sfen": sfen,
+                                    "solution": solution,
+                                    "n": 4,
+                                    "depth": 1
+                                },
+                                timeout=30
+                            )
+
+                            response.raise_for_status()
+                            options = response.json()
+
+                        except requests.RequestException as e:
+                            print(f"Failed to generate alternatives: {e}")
+                            continue
+                        
                         if len(options) < 4: continue
 
                         exercise = {
@@ -282,6 +210,7 @@ class ExerciseGenerator():
                 board.push(move)
             processed_ids.append(game.game_id)
 
+        print(len(exercises))
         if exercises:
             self.exercises_repo.bulk_insert(exercises)
         self.raw_games_repo.update_processed(processed_ids)
