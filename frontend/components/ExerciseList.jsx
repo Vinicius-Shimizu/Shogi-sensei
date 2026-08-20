@@ -5,7 +5,7 @@ export default function ExerciseList() {
   const [exercises, setExercises] = useState([]);
   const [currentExercise, setCurrentExercise] = useState(0);
   const [loading, setLoading] = useState(true);
-
+  const [correctAnswers, setCorrectAnswers] = useState([]);
   useEffect(() => {
     async function fetchExercises() {
       try {
@@ -26,9 +26,17 @@ export default function ExerciseList() {
     fetchExercises();
   }, []);
 
-  function handleAnswer() {
+  function handleAnswer(correct) {
+    if (correct) {
+      setCorrectAnswers((answers) => [
+        ...answers,
+        currentExercise
+      ]);
+    }
+
     setCurrentExercise((current) => current + 1);
-  }
+  };
+
 
   if (loading) {
     return <div>Carregando...</div>;
@@ -39,6 +47,7 @@ export default function ExerciseList() {
   }
 
   if (currentExercise >= exercises.length) {
+    console.log(correctAnswers);
     return <div>Parabéns! Você terminou os exercícios.</div>;
   }
 

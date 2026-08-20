@@ -9,15 +9,21 @@ export default function Options({
   const [answered, setAnswered] = useState(false);
 
   function validateAnswer(answer) {
+    const correct = answer === solution;
+
     setAnswered(true);
 
-    if (answer === solution) {
+    if (correct) {
       setFeedback("ACERTOU!!!");
     } else {
       setFeedback("ERROU...");
     }
+
+    setIsCorrect(correct);
   }
 
+  const [isCorrect, setIsCorrect] = useState(null);
+  
   return (
     <div className="flex justify-center w-70">
       <div className="flex flex-col gap-2 justify-center mt-4 w-30">
@@ -50,7 +56,7 @@ export default function Options({
 
         {answered && (
           <button
-            onClick={onAnswer}
+            onClick={() => onAnswer(isCorrect)}
             className="
               mt-2
               px-3 py-1
