@@ -7,6 +7,7 @@ export default function Options({
 }) {
   const [feedback, setFeedback] = useState(null);
   const [answered, setAnswered] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(null);
 
   function validateAnswer(answer) {
     const correct = answer === solution;
@@ -22,7 +23,6 @@ export default function Options({
     setIsCorrect(correct);
   }
 
-  const [isCorrect, setIsCorrect] = useState(null);
   
   return (
     <div className="flex justify-center w-70">
@@ -48,11 +48,11 @@ export default function Options({
           </button>
         ))}
 
-        {feedback && (
+        {/* {feedback && (
           <div className="mt-4 text-lg font-bold">
             {feedback}
           </div>
-        )}
+        )} */}
 
         {answered && (
           <button

@@ -1,0 +1,9 @@
+current_module: checkmate-in-one
+module_progress: 80.0
+modules_probs:
+  checkmate-in-one: 1.0
+  drop: 0.0
+  mate: 0.0
+  movement: 0.0
+  promotion: 0.0
+  recon: 0.0

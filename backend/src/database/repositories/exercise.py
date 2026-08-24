@@ -5,20 +5,19 @@ from sqlalchemy.orm import Session
 from src.database.connection import engine
 import random
 
-USER_UNLOCKED_TYPES = {"checkmate-in-one": 1.0}
 
 class ExerciseRepository(BaseRepository):
     model = Exercise
 
-    def get_exercises_list(self):
+    def get_exercises_list(self, user_modules: dict):
         selected_types = random.choices(
-            population=list(USER_UNLOCKED_TYPES.keys()),
-            weights=list(USER_UNLOCKED_TYPES.values()),
+            population=list(user_modules.keys()),
+            weights=list(user_modules.values()),
             k=10,
         )
         query = (
             select(Exercise)
-            .where(Exercise.type.in_(USER_UNLOCKED_TYPES.keys()))
+            .where(Exercise.type.in_(user_modules.keys()))
             .order_by(func.random())
         )
         with Session(engine) as session:
