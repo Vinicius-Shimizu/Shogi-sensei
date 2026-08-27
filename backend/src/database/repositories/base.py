@@ -6,52 +6,42 @@ from src.database.connection import engine
 class BaseRepository:
     model = None
 
-    def __init__(self):
+    def __init__(self, session: Session):
         if self.model is None:
             raise ValueError("Model não definida")
+        self.session = session
 
     def get_all(self):
-        with Session(engine) as session:
-            return session.scalars(
-                select(self.model)
-            ).all()
+        return self.session.scalars(
+            select(self.model)
+        ).all()
 
     def get_by_id(self, id_):
-        with Session(engine) as session:
-            return session.get(self.model, id_)
+        return self.session.get(self.model, id_)
 
     def create(self, **kwargs):
-        with Session(engine) as session:
-            obj = self.model(**kwargs)
+        obj = self.model(**kwargs)
 
-            session.add(obj)
-            session.commit()
-            session.refresh(obj)
+        self.session.add(obj)
+        self.session.flush()
 
-            return obj
+        return obj
 
     def update(self, obj):
-        with Session(engine) as session:
-            session.merge(obj)
-            session.commit()
+        return self.session.merge(obj)
 
     def delete(self, obj):
-        with Session(engine) as session:
-            session.delete(session.merge(obj))
-            session.commit()
+        self.session.delete(obj)
     
     def bulk_insert(self, rows: list[dict]):
-        with Session(engine) as session:
-            session.execute(
-                insert(self.model),
-                rows
-            )
-            session.commit()
+        self.session.execute(
+            insert(self.model),
+            rows
+        )
 
     def get_random(self):
-        with Session(engine) as session:
-            return session.scalar(
-                select(self.model)
-                .order_by(func.random())
-                .limit(1)
-            )
+        return self.session.scalar(
+            select(self.model)
+            .order_by(func.random())
+            .limit(1)
+        )

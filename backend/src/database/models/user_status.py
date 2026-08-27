@@ -13,7 +13,7 @@ class UserStatus(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     current_module: Mapped[str] = mapped_column(String(50), nullable=False, default="recon")
     module_progress: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
-    modules_probs: Mapped[dict] = mapped_column(JSONB, nullable=False, default={"recon": 1.0,
+    modules_probs: Mapped[dict] = mapped_column(JSONB, nullable=False, default=lambda: {"recon": 1.0,
                                                                                 "movement": 0.0,
                                                                                 "drop": 0.0,
                                                                                 "mate": 0.0,

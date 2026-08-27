@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from contextlib import asynccontextmanager
 from .engine import Engine
 
@@ -19,4 +19,10 @@ def health():
 
 @app.get("/checkmate_in_one_answers")
 def get_checkmate_in_one_answers(sfen: str, solution, n: int = 4, depth: int = 1):
-    return engine.get_alternatives(sfen, solution, n, depth)
+    try:
+        return engine.get_alternatives(sfen, solution, n, depth)
+    except (BrokenPipeError, RuntimeError):
+        raise HTTPException(
+            status_code=503,
+            detail="Engine unavailable"
+        )

@@ -4,7 +4,8 @@ import threading
 
 class Engine():
     def __init__(self, model: str):
-        self.verbose = False
+        self.verbose = True
+        self.model = model
         self.lock = threading.Lock()
         self.engine = self.start_yaneuraou_engine(model)
 
@@ -56,18 +57,36 @@ class Engine():
             self.engine.stdin.write("quit\n")
             self.engine.stdin.flush()
             self.engine.wait(timeout=5)
-    
+
+    def restart_engine(self):
+        print("[ENGINE] Restarting engine...", flush=True)
+
+        try:
+            if self.engine:
+                self.engine.kill()
+                self.engine.wait(timeout=5)
+        except Exception as e:
+            print(f"[ENGINE] Error stopping old engine: {e}", flush=True)
+
+        self.engine = self.start_yaneuraou_engine(self.model)
+
+        print("[ENGINE] Engine restarted!", flush=True)
+
     def _get_alternatives(self, sfen: str, solution: str, n: int, depth: int):
         self.engine.stdin.write("usinewgame\n")
-        self.engine.stdin.write("setoption name MultiPV value 10\n")
+        self.engine.stdin.write("setoption name MultiPV value 5\n")
         self.engine.stdin.write(f"position sfen {sfen}\n")
         self.engine.stdin.write(f"go depth {depth}\n")
         self.engine.stdin.flush()
 
         moves = {}
-
         while True:
-            line = self.engine.stdout.readline().strip()
+            line = self.engine.stdout.readline()
+
+            if not line:
+                raise RuntimeError("YaneuraOu stopped")
+
+            line = line.strip()
 
             if line.startswith("info") and "multipv" in line and " pv " in line:
                 parts = line.split()
@@ -99,4 +118,11 @@ class Engine():
 
     def get_alternatives(self, sfen: str, solution: str, n: int, depth: int):
         with self.lock:
-            return self._get_alternatives(sfen, solution, n, depth)
+            try:
+                return self._get_alternatives(sfen, solution, n, depth)
+            except (BrokenPipeError, RuntimeError) as e:
+                print(f"[ENGINE] Engine died: {e}", flush=True)
+
+                self.restart_engine()
+
+                raise

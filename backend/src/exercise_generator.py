@@ -6,10 +6,7 @@ import requests
 import datetime
 from bs4 import BeautifulSoup
 from pprint import pprint
-from src.database.repositories.raw_games import RawGameRepository
-from src.database.repositories.exercise import ExerciseRepository
 from concurrent.futures import ThreadPoolExecutor
-import random
 
 PIECES_TYPES = [
     "P",
@@ -34,8 +31,8 @@ class ExerciseGenerator():
         self.verbose = verbose
         self.csa_parser = CSA.Parser()
 
-        self.raw_games_repo = RawGameRepository()
-        self.exercises_repo = ExerciseRepository()
+        # self.raw_games_repo = RawGameRepository()
+        # self.exercises_repo = ExerciseRepository()
         self.session = requests.Session()
     
     def download_csa(self, url: str):
@@ -75,12 +72,10 @@ class ExerciseGenerator():
                     if game: yield game
                     
 
-    def insert_games(self):
-        print("Parsing games...")
-        games = []
-        for game in self.get_games():
-            parsed_game = self.csa_parser.parse_str(game)[0]
-            games.append({
+    def parse_game(self, game):
+        parsed_game = self.csa_parser.parse_str(game)[0]
+
+        return {
                 "game_comment": parsed_game.comment,
                 "endgame": parsed_game.endgame,
                 "sfen": parsed_game.sfen,
@@ -93,17 +88,10 @@ class ExerciseGenerator():
                 "times": parsed_game.times,
                 "var_info": parsed_game.var_info,
                 "processed": False
-            })
-        if len(games) == 0:
-            print("No games found")
-            return
-        print(f"Inserting {len(games)} games...")
-        self.raw_games_repo.bulk_insert(games)
-        print("games inserted!")
+            }
 
 
-
-    def checkmate_in_one(self):
+    def checkmate_in_one(self, games):
         def parse_hands(hand_string):
             if hand_string == "-":
                 return {
@@ -147,13 +135,9 @@ class ExerciseGenerator():
             piece = board.piece(origin)
             return PIECES_TYPES[cshogi.piece_to_piece_type(piece) - 1]
 
-        games = self.raw_games_repo.get_unprocessed_games()
-
-        if not games:
-            return
         exercises = []
-        processed_ids = []
-
+        if not games:
+            return exercises
         for game in games:
             board = cshogi.Board()
             seen_positions = set()
@@ -176,6 +160,7 @@ class ExerciseGenerator():
                         seen_positions.add(sfen)
                         solution = cshogi.move_to_usi(mate_move)
                         try:
+                            print("sending sfen: ", sfen, " with solution: ", solution)
                             response = self.session.get(
                                 "http://engine:8080/checkmate_in_one_answers",
                                 params={
@@ -184,12 +169,12 @@ class ExerciseGenerator():
                                     "n": 4,
                                     "depth": 1
                                 },
-                                timeout=30
+                                timeout=120
                             )
-
+                            
                             response.raise_for_status()
                             options = response.json()
-
+                            print(options)
                         except requests.RequestException as e:
                             print(f"Failed to generate alternatives: {e}")
                             continue
@@ -201,20 +186,15 @@ class ExerciseGenerator():
                             "hands": parse_hands(sfen.split(" ")[2]),
                             "solution": solution,
                             "options": options,
-                            "pieces_used": get_piece_used(board, mate_move),
+                            "pieces_used": [get_piece_used(board, mate_move)],
                             "type": "checkmate-in-one"
                         }
 
                         exercises.append(exercise)
 
                 board.push(move)
-            processed_ids.append(game.game_id)
 
-        print(len(exercises))
-        if exercises:
-            self.exercises_repo.bulk_insert(exercises)
-        self.raw_games_repo.update_processed(processed_ids)
-
+        return exercises
 
 
 def print_board(sfen: str):
