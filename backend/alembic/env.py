@@ -33,6 +33,7 @@ from src.database.connection import Base
 from src.database.models.raw_game import RawGame
 from src.database.models.exercise import Exercise
 from src.database.models.user import User
+from src.database.models.user_status import UserStatus
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
