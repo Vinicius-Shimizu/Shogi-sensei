@@ -4,7 +4,7 @@ from src.database.repositories.raw_games import RawGameRepository
 from src.database.repositories.exercise import ExerciseRepository
 from src.database.repositories.user_status import UserStatusRepository
 from src.exercise_generator import ExerciseGenerator
-
+from src.schemas.exercises import ExerciseAnswer, ExerciseResult, ExerciseListResult
 
 class ExerciseService:
 
@@ -67,3 +67,34 @@ class ExerciseService:
             return None
         print(user_status)
         return self.exercise_repo.get_exercises_list(user_status.modules_probs)
+
+    def submit_answers(self, user_id: int, answers: list[ExerciseAnswer]):
+        results = []
+
+        for answer in answers:
+            exercise = self.exercise_repo.get_by_id(answer.exercise_id)
+
+            if exercise is None:
+                continue
+
+            is_correct = answer.answer == exercise.solution
+
+            results.append(
+                ExerciseResult(
+                    exercise_id=exercise.exercise_id,
+                    answer=answer.answer,
+                    solution=exercise.solution,
+                    is_correct=is_correct,
+                )
+            )
+
+        if not results:
+            return None
+
+        score = sum(result.is_correct for result in results) / len(results)
+
+        return ExerciseListResult(
+            user_id=user_id,
+            score=score,
+            results=results,
+        )

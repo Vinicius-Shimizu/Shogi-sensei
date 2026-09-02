@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from src.database.session import get_session
 from src.services.exercise_service import ExerciseService
-from src.schemas.exercises import ExerciseResponse
+from src.schemas.exercises import ExerciseResponse, ExerciseListResult, ExerciseListSubmission
 
 router = APIRouter(
     prefix="/exercises",
@@ -30,6 +30,21 @@ def fetch_games(session: Session = Depends(get_session)):
         "message": "Games fetched successfully",
         "count": count
     }
+
+
+@router.post("/submit", response_model=ExerciseListResult)
+def submit_answers(submission: ExerciseListSubmission, session: Session = Depends(get_session)):
+    service = ExerciseService(session)
+
+    result = service.submit_answers(submission.user_id, submission.answers)
+
+    if result is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No valid answers submitted"
+        )
+
+    return result
 
 
 @router.get("/random", response_model=ExerciseResponse)

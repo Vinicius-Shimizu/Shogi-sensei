@@ -11,3 +11,22 @@ class ExerciseResponse(BaseModel):
     type: str
 
     model_config = ConfigDict(from_attributes=True)
+
+class ExerciseAnswer(BaseModel):
+    exercise_id: int
+    answer: str
+
+class ExerciseListSubmission(BaseModel):
+    user_id: int
+    answers: list[ExerciseAnswer]
+
+class ExerciseResult(BaseModel):
+    exercise_id: int
+    answer: str
+    solution: str
+    is_correct: bool
+
+class ExerciseListResult(BaseModel):
+    user_id: int
+    score: float
+    results: list[ExerciseResult]

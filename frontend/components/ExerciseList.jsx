@@ -4,20 +4,27 @@ import Exercise from "./Exercise";
 export default function ExerciseList() {
   const [exercises, setExercises] = useState([]);
   const [currentExercise, setCurrentExercise] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [correctAnswers, setCorrectAnswers] = useState([]);
-  const [progressUpdated, setProgressUpdated] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const userId = 1;
 
   useEffect(() => {
     async function fetchExercises() {
       try {
         const response = await fetch(
-          "http://localhost:8000/exercises/exercise_list"
+          `http://localhost:8000/exercises/list?user_id=${userId}`
         );
+
+        if (!response.ok) {
+          throw new Error("Erro ao buscar exercícios");
+        }
 
         const data = await response.json();
 
-        setExercises(data.response);
+        setExercises(data);
       } catch (error) {
         console.error("Erro ao buscar exercícios:", error);
       } finally {
@@ -28,59 +35,57 @@ export default function ExerciseList() {
     fetchExercises();
   }, []);
 
-  async function updateUserProgress(score) {
+  async function submitAnswers(finalAnswers) {
+    setSubmitting(true);
+
     try {
       const response = await fetch(
-        "http://localhost:8000/exercises/update_user_progress",
+        "http://localhost:8000/exercises/submit",
         {
-          method: "PUT",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            lesson_score: score,
+            user_id: userId,
+            answers: finalAnswers,
           }),
         }
       );
 
       if (!response.ok) {
-        throw new Error("Erro ao atualizar progresso");
+        throw new Error("Erro ao enviar respostas");
       }
 
-      console.log("Progresso atualizado com sucesso");
+      const data = await response.json();
+
+      setResult(data);
     } catch (error) {
-      console.error("Erro ao atualizar progresso:", error);
+      console.error("Erro ao enviar respostas:", error);
+    } finally {
+      setSubmitting(false);
     }
   }
 
-  useEffect(() => {
-    if (
-      exercises.length > 0 &&
-      currentExercise >= exercises.length &&
-      !progressUpdated
-    ) {
-      const lessonScore =
-        (correctAnswers.length / exercises.length) * 100;
+  function handleAnswer(answer) {
+    const exercise = exercises[currentExercise];
 
-      updateUserProgress(lessonScore);
-      setProgressUpdated(true);
+    const newAnswer = {
+      exercise_id: exercise.exercise_id,
+      answer: answer,
+    };
+
+    const newAnswers = [...answers, newAnswer];
+
+    setAnswers(newAnswers);
+
+    const nextExercise = currentExercise + 1;
+
+    setCurrentExercise(nextExercise);
+
+    if (nextExercise >= exercises.length) {
+      submitAnswers(newAnswers);
     }
-  }, [
-    currentExercise,
-    exercises.length,
-    correctAnswers,
-    progressUpdated,
-  ]);
-
-  function handleAnswer(correct) {
-    if (correct) {
-      setCorrectAnswers((answers) => [
-        ...answers,
-        currentExercise,
-      ]);
-    }
-
-    setCurrentExercise((current) => current + 1);
   }
 
   if (loading) {
@@ -91,11 +96,29 @@ export default function ExerciseList() {
     return <div>Nenhum exercício encontrado.</div>;
   }
 
-  if (currentExercise >= exercises.length) {
-    const lessonScore =
-      (correctAnswers.length / exercises.length) * 100;
+  if (submitting) {
+    return <div>Corrigindo exercícios...</div>;
+  }
 
-    return <div>Você acertou {lessonScore}%</div>;
+  if (result) {
+    return (
+      <div>
+        <h2>Resultado</h2>
+
+        <p>
+          Você acertou {result.score * 100}%
+        </p>
+
+        {result.results.map((exerciseResult) => (
+          <div key={exerciseResult.exercise_id}>
+            <p>
+              Exercício {exerciseResult.exercise_id}:{" "}
+              {exerciseResult.is_correct ? "O" : "X"}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return (

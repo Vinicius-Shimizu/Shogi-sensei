@@ -2,28 +2,20 @@ import { useState } from "react";
 
 export default function Options({
   possible_moves,
-  solution,
   onAnswer,
 }) {
-  const [feedback, setFeedback] = useState(null);
   const [answered, setAnswered] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
 
-  function validateAnswer(answer) {
-    const correct = answer === solution;
-
+  function selectAnswer(answer) {
+    setSelectedAnswer(answer);
     setAnswered(true);
-
-    if (correct) {
-      setFeedback("ACERTOU!!!");
-    } else {
-      setFeedback("ERROU...");
-    }
-
-    setIsCorrect(correct);
   }
 
-  
+  function handleNext() {
+    onAnswer(selectedAnswer);
+  }
+
   return (
     <div className="flex justify-center w-70">
       <div className="flex flex-col gap-2 justify-center mt-4 w-30">
@@ -33,7 +25,7 @@ export default function Options({
           <button
             key={move}
             disabled={answered}
-            onClick={() => validateAnswer(move)}
+            onClick={() => selectAnswer(move)}
             className="
               px-3 py-1
               bg-amber-100
@@ -48,15 +40,9 @@ export default function Options({
           </button>
         ))}
 
-        {/* {feedback && (
-          <div className="mt-4 text-lg font-bold">
-            {feedback}
-          </div>
-        )} */}
-
         {answered && (
           <button
-            onClick={() => onAnswer(isCorrect)}
+            onClick={handleNext}
             className="
               mt-2
               px-3 py-1
