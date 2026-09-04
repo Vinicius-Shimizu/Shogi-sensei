@@ -22,6 +22,7 @@ class ExerciseListSubmission(BaseModel):
 
 class ExerciseResult(BaseModel):
     exercise_id: int
+    exercise_type: str
     answer: str
     solution: str
     is_correct: bool

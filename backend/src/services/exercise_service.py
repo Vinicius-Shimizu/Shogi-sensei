@@ -82,6 +82,7 @@ class ExerciseService:
             results.append(
                 ExerciseResult(
                     exercise_id=exercise.exercise_id,
+                    exercise_type=exercise.type,
                     answer=answer.answer,
                     solution=exercise.solution,
                     is_correct=is_correct,
@@ -91,8 +92,28 @@ class ExerciseService:
         if not results:
             return None
 
-        score = sum(result.is_correct for result in results) / len(results)
+        user_status = self.user_status_repo.get_by_id(user_id)
+        if not user_status: return None
 
+        score_per_module = {}
+        totals = {}
+
+        for result in results:
+            exercise_type = result.exercise_type
+
+            totals[exercise_type] = totals.get(exercise_type, 0) + 1
+
+            if result.is_correct: score_per_module[exercise_type] = score_per_module.get(exercise_type, 0) + 1
+            else: score_per_module.setdefault(exercise_type, 0)
+
+        for exercise_type in score_per_module: score_per_module[exercise_type] /= totals[exercise_type]
+
+        user_status.recent_performances = (
+            user_status.recent_performances + [score_per_module]
+        )[-10:]
+        self.session.commit()
+
+        score = 100*sum(result.is_correct for result in results) / len(results)
         return ExerciseListResult(
             user_id=user_id,
             score=score,
