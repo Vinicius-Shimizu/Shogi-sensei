@@ -126,6 +126,8 @@ export default function ExerciseList() {
       key={currentExercise}
       exercise={exercises[currentExercise]}
       onAnswer={handleAnswer}
-    />
+      exerciseNumber={currentExercise}
+      totalExercises={exercises.length}
+      />
   );
 }
