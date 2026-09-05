@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-export default function Options({
+export default function ReconOptions({
+  position,
   possible_moves,
   onAnswer,
 }) {
@@ -19,7 +20,7 @@ export default function Options({
   return (
     <div className="flex justify-center w-70">
       <div className="flex flex-col gap-2 justify-center mt-4 w-30">
-        Answers:
+        Qual é a peça na posição {position}?
 
         {possible_moves.map((move) => (
           <button

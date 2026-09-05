@@ -23,7 +23,7 @@ export default function ExerciseList() {
         }
 
         const data = await response.json();
-
+        console.log(data);
         setExercises(data);
       } catch (error) {
         console.error("Erro ao buscar exercícios:", error);
