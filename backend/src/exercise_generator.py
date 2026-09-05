@@ -215,16 +215,35 @@ class ExerciseGenerator():
 
 
     def recon(self, games):
-        def get_piece_at_square(board: cshogi.Board, square):
-            piece = board.piece(square)
-            
-            return PIECES_TYPES[cshogi.piece_to_piece_type(piece) - 1]
+        def get_occupied_squares_from_sfen(sfen):
+            board_part = sfen.split(" ")[0]
 
-        def square_to_usi(square):
-            file = 9 - (square % 9)
-            rank = chr(ord("a") + (square // 9))
+            occupied = []
 
-            return f"{file}{rank}"
+            for rank_index, row in enumerate(board_part.split("/")):
+                file = 9
+
+                i = 0
+
+                while i < len(row):
+                    char = row[i]
+
+                    if char.isdigit():
+                        file -= int(char)
+                        i += 1
+                        continue
+
+                    if char == "+":
+                        piece = "+" + row[i + 1]
+                        i += 2
+                    else:
+                        piece = char
+                        i += 1
+
+                    occupied.append((f"{file}{chr(ord('a') + rank_index)}", piece.upper()))
+                    file -= 1
+
+            return occupied
 
         exercises = []
         if not games:
@@ -232,53 +251,45 @@ class ExerciseGenerator():
         
         for game in games:
             board = cshogi.Board()
-            seen_positions = set()
 
-            for _, move in enumerate(game.moves):
-                sfen = board.sfen()
-                
-                if sfen not in seen_positions:
-                    seen_positions.add(sfen)
-
-                    occupied_squares = [square for square in range(81) if board.piece(square) != 0]
-                    if not occupied_squares:
-                        board.push(move)
-                        continue
-
-                    square = random.choice(occupied_squares)
-                    square_usi = square_to_usi(square)
-                    piece_at_square = get_piece_at_square(board, square)
-                    solution = PIECES_DICT[piece_at_square]
-                        
-                    possible_options = [
-                        piece
-                        for piece in PIECES_DICT.values()
-                        if piece != solution
-                    ]
-
-                    options = random.sample(
-                        possible_options,
-                        3
-                    )
-
-                    options.append(solution)
-                    random.shuffle(options)
-
-                    exercise = {
-                        "sfen": sfen,
-                        "hands": {
-                            "sente": {},
-                            "gote": {},
-                        },
-                        "solution": f"{square_usi}:{solution}",
-                        "options": options,
-                        "pieces_used": [piece_at_square],
-                        "type": "recon"
-                    }
-
-                    exercises.append(exercise)
-
+            for move in game.moves:
                 board.push(move)
+                sfen = board.sfen()
+
+                occupied = get_occupied_squares_from_sfen(sfen)
+                if not occupied:
+                    continue
+                square_usi, piece = random.choice(occupied)
+                solution = PIECES_DICT[piece]
+                    
+                possible_options = [
+                    piece
+                    for piece in PIECES_DICT.values()
+                    if piece != solution
+                ]
+
+                options = random.sample(
+                    possible_options,
+                    3
+                )
+
+                options.append(solution)
+                random.shuffle(options)
+
+                exercise = {
+                    "sfen": sfen,
+                    "hands": {
+                        "sente": {},
+                        "gote": {},
+                    },
+                    "solution": f"{solution}:{square_usi}",
+                    "options": options,
+                    "pieces_used": [piece],
+                    "type": "recon"
+                }
+           
+                exercises.append(exercise)
+
         return exercises
 
 

@@ -87,7 +87,6 @@ class ExerciseService:
 
         if not user_status:
             return None
-        print(user_status)
         return self.exercise_repo.get_exercises_list(user_status.modules_probs)
 
     def submit_answers(self, user_id: int, answers: list[ExerciseAnswer]):
@@ -98,15 +97,15 @@ class ExerciseService:
 
             if exercise is None:
                 continue
-
-            is_correct = answer.answer == exercise.solution
+            solution = exercise.solution.split(":")[0]
+            is_correct = (answer.answer == solution)
 
             results.append(
                 ExerciseResult(
                     exercise_id=exercise.exercise_id,
                     exercise_type=exercise.type,
                     answer=answer.answer,
-                    solution=exercise.solution,
+                    solution=solution,
                     is_correct=is_correct,
                 )
             )
