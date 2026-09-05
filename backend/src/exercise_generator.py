@@ -7,6 +7,7 @@ import datetime
 from bs4 import BeautifulSoup
 from pprint import pprint
 from concurrent.futures import ThreadPoolExecutor
+import random
 
 PIECES_TYPES = [
     "P",
@@ -25,6 +26,22 @@ PIECES_TYPES = [
     "+R",
 ]
 
+PIECES_DICT = {
+    "P": "Peão",
+    "L": "Lança",
+    "N": "Cavalo",
+    "S": "General de Prata",
+    "B": "Bispo",
+    "R": "Torre",
+    "G": "General de Ouro",
+    "K": "Rei",
+    "+P": "Peão Promovido",
+    "+L": "Lança Promovida",
+    "+N": "cavalo Promovido",
+    "+S": "General de Prata Promovido",
+    "+B": "Bispo promovido",
+    "+R": "Torre Promovida",
+}
 
 class ExerciseGenerator():
     def __init__(self, model: str, verbose=False, games_period = 7):
@@ -194,6 +211,74 @@ class ExerciseGenerator():
 
                 board.push(move)
 
+        return exercises
+
+
+    def recon(self, games):
+        def get_piece_at_square(board: cshogi.Board, square):
+            piece = board.piece(square)
+            
+            return PIECES_TYPES[cshogi.piece_to_piece_type(piece) - 1]
+
+        def square_to_usi(square):
+            file = 9 - (square % 9)
+            rank = chr(ord("a") + (square // 9))
+
+            return f"{file}{rank}"
+
+        exercises = []
+        if not games:
+            return exercises
+        
+        for game in games:
+            board = cshogi.Board()
+            seen_positions = set()
+
+            for _, move in enumerate(game.moves):
+                sfen = board.sfen()
+                
+                if sfen not in seen_positions:
+                    seen_positions.add(sfen)
+
+                    occupied_squares = [square for square in range(81) if board.piece(square) != 0]
+                    if not occupied_squares:
+                        board.push(move)
+                        continue
+
+                    square = random.choice(occupied_squares)
+                    square_usi = square_to_usi(square)
+                    piece_at_square = get_piece_at_square(board, square)
+                    solution = PIECES_DICT[piece_at_square]
+                        
+                    possible_options = [
+                        piece
+                        for piece in PIECES_DICT.values()
+                        if piece != solution
+                    ]
+
+                    options = random.sample(
+                        possible_options,
+                        3
+                    )
+
+                    options.append(solution)
+                    random.shuffle(options)
+
+                    exercise = {
+                        "sfen": sfen,
+                        "hands": {
+                            "sente": {},
+                            "gote": {},
+                        },
+                        "solution": f"{square_usi}:{solution}",
+                        "options": options,
+                        "pieces_used": [piece_at_square],
+                        "type": "recon"
+                    }
+
+                    exercises.append(exercise)
+
+                board.push(move)
         return exercises
 
 

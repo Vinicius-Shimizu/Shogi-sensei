@@ -20,6 +20,17 @@ def generate_checkmate_in_one(session: Session = Depends(get_session)):
         "count": len(exercises)
     }
 
+@router.post("/recon", status_code=status.HTTP_201_CREATED)
+def generate_recon(session: Session = Depends(get_session)):
+    service = ExerciseService(session)
+
+    exercises = service.generate_recon()
+
+    return {
+        "message": "Exercises generated successfully",
+        "count": len(exercises)
+    }
+
 @router.post("/fetch-games",status_code=status.HTTP_201_CREATED)
 def fetch_games(session: Session = Depends(get_session)):
     service = ExerciseService(session)

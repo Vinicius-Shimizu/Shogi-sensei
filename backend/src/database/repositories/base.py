@@ -39,9 +39,9 @@ class BaseRepository:
             rows
         )
 
-    def get_random(self):
-        return self.session.scalar(
+    def get_random(self, limit=1):
+        return self.session.scalars(
             select(self.model)
             .order_by(func.random())
-            .limit(1)
-        )
+            .limit(limit)
+        ).all()
