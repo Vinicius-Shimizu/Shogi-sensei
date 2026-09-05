@@ -106,13 +106,13 @@ export default function ExerciseList() {
         <h2>Resultado</h2>
 
         <p>
-          Você acertou {result.score * 100}%
+          Você acertou {result.score}%
         </p>
 
-        {result.results.map((exerciseResult) => (
+        {result.results.map((exerciseResult, index) => (
           <div key={exerciseResult.exercise_id}>
             <p>
-              Exercício {exerciseResult.exercise_id}:{" "}
+              Exercício {index + 1}:{" "}
               {exerciseResult.is_correct ? "O" : "X"}
             </p>
           </div>
