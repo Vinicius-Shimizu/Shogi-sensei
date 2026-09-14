@@ -80,9 +80,15 @@ function parseSfenBoard(sfen) {
   });
 }
 
-export default function Board({ sfen }) {
+function isMovementSquare(rowIndex, colIndex, moves) {
+  const square = `${cols[colIndex]}${rows[rowIndex]}`;
+  moves = moves.map(str=>str.slice(2,4))
+  return moves.includes(square);
+}
+
+export default function BoardWithMovement({ sfen, moves}) {
   const board = parseSfenBoard(sfen);
-  
+  moves = moves.slice(1, -1).split(", ").map(move => move.slice(1, -1));
   return (
     <div className="flex justify-center p-4">
       <div className="grid grid-cols-10 border-2 border-black">
@@ -115,7 +121,11 @@ export default function Board({ sfen }) {
             {row.map((piece, cIndex) => (
               <div
                 key={`${rIndex}-${cIndex}`}
-                className="w-16 h-16 border border-gray-500 flex items-center justify-center"
+                className={`w-16 h-16 border border-gray-500 flex items-center justify-center
+                        ${isMovementSquare(rIndex, cIndex, moves)
+                          ? "bg-green-300"
+                          : ""
+                        }`}
               >
                 <Piece piece={piece} />
               </div>

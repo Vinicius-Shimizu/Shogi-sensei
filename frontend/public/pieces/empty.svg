@@ -1,0 +1,19 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 39" width="512" height="561">
+	<defs>
+		<linearGradient id="g1" x2="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(18.541,25.482,-24.237,17.635,10.334,7.329)">
+			<stop offset="0" stop-color="#fcf3e8"/>
+			<stop offset="1" stop-color="#ba6100"/>
+		</linearGradient>
+	</defs>
+	<style>
+		tspan { white-space:pre } 
+		.s0 { fill: url(#g1);stroke: #000000;stroke-width: .4 } 
+	</style>
+	<g id="layer1">
+		<g id="g12950">
+			<path id="path9965" fill-rule="evenodd" class="s0" d="m6.58 32.69h22.19l-3.74-25.41-7.36-1.25-7.35 1.25z"/>
+		</g>
+		<text id="Text layer 6" transform="translate(-96,24)">
+		</text>
+	</g>
+</svg>
