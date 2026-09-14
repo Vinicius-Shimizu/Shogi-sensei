@@ -1,8 +1,8 @@
 import './App.css'
-import { Board } from '../components/Board'
 import ExerciseList from '../components/ExerciseList'
+import Home from '../components/Home'
 function App() {
- return <ExerciseList />
+ return <Home />
 }
 
 export default App

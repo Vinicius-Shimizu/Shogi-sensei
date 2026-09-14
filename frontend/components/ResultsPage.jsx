@@ -17,7 +17,7 @@ export default function ResultsPage({result, onRestart}){
             </p>
           </div>
         ))}
-        <button onClick={onRestart}>Tentar de novo</button>
+        <button onClick={onRestart}>Começar outra lista</button>
       </div>
     );
 }
