@@ -45,3 +45,5 @@ https://dl.acm.org/doi/10.1145/3744736.3749191
 https://en.wikipedia.org/wiki/Shogi_notation#SFEN
 
 https://commons.wikimedia.org/wiki/Category:13xforever_SVG_Shogi_Pieces
+
+https://wdoor.c.u-tokyo.ac.jp/shogi/
