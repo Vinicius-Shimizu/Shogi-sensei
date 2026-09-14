@@ -18,7 +18,7 @@ class ExerciseService:
             "/yaneuraou/yaneuraou"
         )
 
-        self.modules = ["recon", "checkmate-in-one", "drop"]
+        self.modules = ["recon", "movement", "checkmate-in-one", "drop"]
 
     def fetch_games(self):
         games = []
@@ -76,6 +76,14 @@ class ExerciseService:
         self.session.commit()
         return exercises
 
+    def generate_movement(self):
+        exercises = self.generator.movement()
+        if exercises:
+            self.exercise_repo.bulk_insert(exercises)
+        self.session.commit()
+        return exercises
+
+        
     def get_exercise_by_id(self, exercise_id: int):
         return self.exercise_repo.get_by_id(exercise_id)
 

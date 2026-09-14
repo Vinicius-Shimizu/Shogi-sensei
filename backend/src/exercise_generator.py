@@ -293,6 +293,38 @@ class ExerciseGenerator():
         return exercises
 
 
+    def movement(self):
+        exercises = []
+        def get_options(piece):
+            if piece in ("+B", "+R") or not piece.startswith("+"):
+                options = [PIECES_DICT[p] for p in [p for p in PIECES_TYPES if p != piece]]
+            else: 
+                options = [PIECES_DICT[p] for p in [p for p in PIECES_TYPES if p not in ("+P", "+L", "+N", "+S", "G")]]
+            options = random.sample(options, 3)
+            options.append(PIECES_DICT[piece])
+            random.shuffle(options)
+            return options
+            
+        for p in PIECES_TYPES:
+            sfen = f"9/9/9/9/4{p}4/9/9/9/9 b"
+            board = cshogi.Board(sfen)
+            moves = [m for m in [cshogi.move_to_usi(m) for m in board.pseudo_legal_moves] if "+" not in m]
+            options = get_options(p)
+            exercise = {
+                "sfen": sfen,
+                "hands": {
+                    "sente": {},
+                    "gote": {},
+                },
+                "solution": f"{PIECES_DICT[p]}:{moves}",
+                "options": options,
+                "pieces_used": [p],
+                "type": "movement"
+            }
+            exercises.append(exercise)
+        print(exercises)
+        return exercises
+
 def print_board(sfen: str):
     board_part = sfen.split()[0]
 
