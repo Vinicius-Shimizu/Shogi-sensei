@@ -107,6 +107,14 @@ class ExerciseGenerator():
                 "processed": False
             }
 
+    def get_positions_from_board(self, board: cshogi.Board):
+        positions = []
+        for i in range(9):
+            for j in range(9):
+                piece = board.piece_type(j*9 + i)
+                if piece == 0: continue
+                positions.append((f"{j + 1}{chr(ord('a') + i)}", PIECES_TYPES[piece - 1]))
+        return positions
 
     def checkmate_in_one(self, games):
         def parse_hands(hand_string):
@@ -215,36 +223,6 @@ class ExerciseGenerator():
 
 
     def recon(self, games):
-        def get_occupied_squares_from_sfen(sfen):
-            board_part = sfen.split(" ")[0]
-
-            occupied = []
-
-            for rank_index, row in enumerate(board_part.split("/")):
-                file = 9
-
-                i = 0
-
-                while i < len(row):
-                    char = row[i]
-
-                    if char.isdigit():
-                        file -= int(char)
-                        i += 1
-                        continue
-
-                    if char == "+":
-                        piece = "+" + row[i + 1]
-                        i += 2
-                    else:
-                        piece = char
-                        i += 1
-
-                    occupied.append((f"{file}{chr(ord('a') + rank_index)}", piece.upper()))
-                    file -= 1
-
-            return occupied
-
         exercises = []
         if not games:
             return exercises
@@ -255,11 +233,8 @@ class ExerciseGenerator():
             for move in game.moves:
                 board.push(move)
                 sfen = board.sfen()
-
-                occupied = get_occupied_squares_from_sfen(sfen)
-                if not occupied:
-                    continue
-                square_usi, piece = random.choice(occupied)
+                positions = self.get_positions_from_board(board)
+                square_usi, piece = random.choice(positions)
                 solution = PIECES_DICT[piece]
                     
                 possible_options = [
