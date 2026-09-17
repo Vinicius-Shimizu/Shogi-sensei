@@ -7,18 +7,15 @@ from src.exercise_generator import ExerciseGenerator
 from src.schemas.exercises import ExerciseAnswer, ExerciseResult, ExerciseListResult
 
 class ExerciseService:
-
     def __init__(self, session: Session):
         self.session = session
 
         self.raw_games_repo = RawGameRepository(session)
         self.exercise_repo = ExerciseRepository(session)
         self.user_status_repo = UserStatusRepository(session)
-        self.generator = ExerciseGenerator(
-            "/yaneuraou/yaneuraou"
-        )
+        self.generator = ExerciseGenerator()
 
-        self.modules = ["recon", "movement", "checkmate-in-one", "drop"]
+        self.modules = ["recon", "movement1", "movement2", "checkmate-in-one", "drop"]
 
     def fetch_games(self):
         games = []
@@ -76,13 +73,33 @@ class ExerciseService:
         self.session.commit()
         return exercises
 
-    def generate_movement(self):
+    def generate_movement1(self):
         exercises = self.generator.movement()
         if exercises:
             self.exercise_repo.bulk_insert(exercises)
         self.session.commit()
         return exercises
 
+    def generate_movement2(self):
+        batch_processed = False
+        games = self.raw_games_repo.get_unprocessed_games()
+        if not games:
+            batch_processed = True
+            games = self.raw_games_repo.get_random(limit=300)
+        exercises = self.generator.movement2(games)
+        if exercises:
+            self.exercise_repo.bulk_insert(exercises)
+
+        if not batch_processed:
+            processed_ids = [
+                game.game_id
+                for game in games
+            ]
+
+            self.raw_games_repo.update_processed(processed_ids)
+
+        self.session.commit()
+        return exercises
         
     def get_exercise_by_id(self, exercise_id: int):
         return self.exercise_repo.get_by_id(exercise_id)

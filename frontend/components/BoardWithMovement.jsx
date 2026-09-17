@@ -14,6 +14,7 @@ const piecesImagesMap = {
     "+B": "/pieces/promoted_bishop.svg",
     "K": "/pieces/white_king.svg",
     "k": "/pieces/black_king.svg",
+    "E": "/pieces/empty.svg"
 }
 
 const cols = ["9", "8", "7", "6", "5", "4", "3", "2", "1"];
@@ -37,10 +38,12 @@ function isSentePiece(piece) {
 }
 
 
-function Piece({ piece }) {
+function Piece({ piece, isTarget }) {
     if(!piece) return null;
+    let image = piecesImagesMap["E"];
+    if(!isTarget) {image = piecesImagesMap[getPieceKey(piece)];}
     return (<img
-        src={piecesImagesMap[getPieceKey(piece)]}
+        src={image}
         alt={piece}
         className={`w-20 h-20 ${isSentePiece(piece) ? "rotate-180" : ""}`}
     />)
@@ -89,6 +92,8 @@ function isMovementSquare(rowIndex, colIndex, moves) {
 export default function BoardWithMovement({ sfen, moves}) {
   const board = parseSfenBoard(sfen);
   moves = moves.slice(1, -1).split(", ").map(move => move.slice(1, -1));
+  const targetSquare = moves[0].slice(0, 2);
+
   return (
     <div className="flex justify-center p-4">
       <div className="grid grid-cols-10 border-2 border-black">
@@ -118,18 +123,23 @@ export default function BoardWithMovement({ sfen, moves}) {
             </div>
 
             {/* casas */}
-            {row.map((piece, cIndex) => (
-              <div
-                key={`${rIndex}-${cIndex}`}
-                className={`w-16 h-16 border border-gray-500 flex items-center justify-center
-                        ${isMovementSquare(rIndex, cIndex, moves)
-                          ? "bg-green-300"
-                          : ""
-                        }`}
-              >
-                <Piece piece={piece} />
-              </div>
-            ))}
+            {row.map((piece, cIndex) => {
+              const square = `${cols[cIndex]}${rows[rIndex]}`;
+              const isTarget = square === targetSquare;
+
+              return (
+                <div
+                  key={`${rIndex}-${cIndex}`}
+                  className={`w-16 h-16 border border-gray-500 flex items-center justify-center
+                    ${isMovementSquare(rIndex, cIndex, moves)
+                      ? "bg-green-300"
+                      : ""
+                    }`}
+                >
+                  <Piece piece={piece} isTarget={isTarget} />
+                </div>
+              );
+            })}
           </>
         ))}
       </div>

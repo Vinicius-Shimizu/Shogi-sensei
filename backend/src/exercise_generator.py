@@ -44,12 +44,9 @@ PIECES_DICT = {
 }
 
 class ExerciseGenerator():
-    def __init__(self, model: str, verbose=False, games_period = 7):
+    def __init__(self, verbose=False, games_period = 7):
         self.verbose = verbose
         self.csa_parser = CSA.Parser()
-
-        # self.raw_games_repo = RawGameRepository()
-        # self.exercises_repo = ExerciseRepository()
         self.session = requests.Session()
     
     def download_csa(self, url: str):
@@ -88,7 +85,6 @@ class ExerciseGenerator():
                 for game in executor.map(self.download_csa, urls):
                     if game: yield game
                     
-
     def parse_game(self, game):
         parsed_game = self.csa_parser.parse_str(game)[0]
 
@@ -107,13 +103,18 @@ class ExerciseGenerator():
                 "processed": False
             }
 
-    def get_positions_from_board(self, board: cshogi.Board):
+    def get_positions_from_board(self, board: cshogi.Board, use_both_sides=True):
         positions = []
         for i in range(9):
             for j in range(9):
-                piece = board.piece_type(j*9 + i)
-                if piece == 0: continue
-                positions.append((f"{j + 1}{chr(ord('a') + i)}", PIECES_TYPES[piece - 1]))
+                piece_type = board.piece_type(j*9 + i)
+                if piece_type == 0: continue
+                piece = cshogi.PIECES[board.piece(j*9 + i)]
+                if piece in [cshogi.NONE, cshogi.NOTUSE]: continue
+                if not use_both_sides and str(piece).startswith("W"):
+                    continue
+                
+                positions.append((f"{j + 1}{chr(ord('a') + i)}", PIECES_TYPES[piece_type - 1]))
         return positions
 
     def checkmate_in_one(self, games):
@@ -221,7 +222,6 @@ class ExerciseGenerator():
 
         return exercises
 
-
     def recon(self, games):
         exercises = []
         if not games:
@@ -267,10 +267,8 @@ class ExerciseGenerator():
 
         return exercises
 
-
-    def movement(self):
-        exercises = []
-        def get_options(piece):
+    def movement1(self):
+        def get_options(piece: str):
             if piece in ("+B", "+R") or not piece.startswith("+"):
                 options = [PIECES_DICT[p] for p in [p for p in PIECES_TYPES if p != piece]]
             else: 
@@ -279,7 +277,8 @@ class ExerciseGenerator():
             options.append(PIECES_DICT[piece])
             random.shuffle(options)
             return options
-            
+        
+        exercises = []
         for p in PIECES_TYPES:
             sfen = f"9/9/9/9/4{p}4/9/9/9/9 b"
             board = cshogi.Board(sfen)
@@ -294,11 +293,118 @@ class ExerciseGenerator():
                 "solution": f"{PIECES_DICT[p]}:{moves}",
                 "options": options,
                 "pieces_used": [p],
-                "type": "movement"
+                "type": "movement1"
             }
             exercises.append(exercise)
-        print(exercises)
         return exercises
+
+    def movement2(self, games):
+        def swap_piece(new_piece, square_usi, board):
+            sfen = board.sfen().split(" ")
+            positions = sfen[0].split("/")
+
+            column = int(square_usi[0]) - 1
+            row = ord(square_usi[1]) - 97
+
+            expanded = []
+
+            for char in positions[row]:
+                if char.isdigit():
+                    expanded.extend(["."] * int(char))
+                else:
+                    expanded.append(char)
+
+            expanded[column] = new_piece
+
+            compressed = []
+            empty = 0
+
+            for square in expanded:
+                if square == ".":
+                    empty += 1
+                else:
+                    if empty:
+                        compressed.append(str(empty))
+                        empty = 0
+                    compressed.append(square)
+
+            if empty:
+                compressed.append(str(empty))
+
+            positions[row] = "".join(compressed)
+            sfen[0] = "/".join(positions)
+
+            return " ".join(sfen)
+
+        def moves_from_piece(square_usi, board):
+            moves = [m for m in [cshogi.move_to_usi(m) for m in board.pseudo_legal_moves] if "+" not in m]
+            return [m for m in moves if m.startswith(square_usi)]
+        
+        def get_options(piece, square_usi, board):
+            solution_moves = [m for m in [cshogi.move_to_usi(m) for m in board.pseudo_legal_moves] if "+" not in m]
+            solution_moves = [m for m in solution_moves if m.startswith(square_usi)]
+            solution_moves = set(solution_moves)
+
+            pieces_moves = {}
+            for p in PIECES_TYPES:
+                if p == piece: 
+                    continue
+                test_sfen = swap_piece(p, square_usi, board)
+                try:
+                    test_board = cshogi.Board(test_sfen)
+                except:
+                    continue
+                moves = set(moves_from_piece(square_usi, test_board))
+                if moves == solution_moves: continue
+                pieces_moves[p] = moves
+
+            options = []
+            seen_moves = set()
+
+            for p, moves in pieces_moves.items():
+                moves_key = frozenset(moves)
+                if moves_key in seen_moves: continue
+
+                seen_moves.add(moves_key)
+                options.append(PIECES_DICT[p])
+
+            options = random.sample(options, min(3, len(options)))
+            options.append(PIECES_DICT[piece])
+            random.shuffle(options)
+            return options
+
+        exercises = []
+        for game in games:
+            board = cshogi.Board()
+            for move in game.moves:
+                board.push(move)
+                sfen = board.sfen()
+                if sfen.split(" ")[1] == "w": continue
+                positions = self.get_positions_from_board(board, use_both_sides=False)
+                square_usi, piece = random.choice(positions)
+                solution = PIECES_DICT[piece]
+                moves = [m for m in [cshogi.move_to_usi(m) for m in board.pseudo_legal_moves] if "+" not in m]
+                moves = [m for m in moves if m.startswith(square_usi)]
+                if len(moves) == 0: continue
+                options = get_options(piece, square_usi, board)
+                if len(options) < 4: continue
+
+                exercise = {
+                    "sfen": sfen,
+                    "hands": {
+                        "sente": {},
+                        "gote": {},
+                    },
+                    "solution": f"{solution}:{moves}",
+                    "options": options,
+                    "pieces_used": [piece],
+                    "type": "movement2"
+                }
+                exercises.append(exercise)
+
+        return exercises
+
+
 
 def print_board(sfen: str):
     board_part = sfen.split()[0]

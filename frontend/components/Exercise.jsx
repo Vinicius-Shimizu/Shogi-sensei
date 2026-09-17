@@ -32,7 +32,7 @@ export default function Exercise({
         </div>
       );
 
-    case "movement":
+    case "movement2":
       return (
         <div className="flex justify-center items-center">
           <div className="flex-col justify-center border-2 p-5">

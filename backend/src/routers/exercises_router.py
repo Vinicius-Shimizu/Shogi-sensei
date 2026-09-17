@@ -31,10 +31,20 @@ def generate_recon(session: Session = Depends(get_session)):
         "count": len(exercises)
     }
 
-@router.post("/movement", status_code=status.HTTP_201_CREATED)
-def generate_movement(session: Session = Depends(get_session)):
+@router.post("/movement1", status_code=status.HTTP_201_CREATED)
+def generate_movement1(session: Session = Depends(get_session)):
     service = ExerciseService(session)
-    exercises = service.generate_movement()
+    exercises = service.generate_movement1()
+
+    return {
+        "message": "Exercises generated successfully",
+        "count": len(exercises)
+    }
+
+@router.post("/movement2", status_code=status.HTTP_201_CREATED)
+def generate_movement2(session: Session = Depends(get_session)):
+    service = ExerciseService(session)
+    exercises = service.generate_movement2()
 
     return {
         "message": "Exercises generated successfully",
