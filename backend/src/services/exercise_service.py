@@ -4,8 +4,9 @@ from src.database.repositories.raw_games import RawGameRepository
 from src.database.repositories.exercise import ExerciseRepository
 from src.database.repositories.user_status import UserStatusRepository
 from src.exercise_generator import ExerciseGenerator
-from src.schemas.exercises import ExerciseAnswer, ExerciseResult, ExerciseListResult, ExerciseCorrection, ExerciseListCorrection
+from src.schemas.exercises import ExerciseAnswer, ExerciseResult, ExerciseListResult, ExerciseToCorrect, CorrectedExerciseList
 from google import genai
+import json
 
 class ExerciseService:
     def __init__(self, session: Session):
@@ -169,29 +170,47 @@ class ExerciseService:
 
     def submit_answers(self, user_id: int, answers: list[ExerciseAnswer]):
         results = []
-        corrections = []
+        exercises_to_correct = []
         for answer in answers:
             exercise = self.exercise_repo.get_by_id(answer.exercise_id)
 
             if exercise is None:
                 continue
-            solution = exercise.solution.split(":")[0]
-            is_correct = (answer.answer == solution)
-
+            solution = exercise.solution
+            is_correct = (answer.answer == solution.split(":")[0])
+            if not is_correct:
+                exercises_to_correct.append(
+                    ExerciseToCorrect(
+                        exercise_id=exercise.exercise_id,
+                        exercise_type=exercise.type,
+                        sfen=exercise.sfen,
+                        answer=answer.answer,
+                        solution=solution,
+                    )
+                )
             results.append(
                 ExerciseResult(
                     exercise_id=exercise.exercise_id,
                     exercise_type=exercise.type,
+                    sfen=exercise.sfen,
+                    hands=exercise.hands,
                     answer=answer.answer,
                     solution=solution,
                     is_correct=is_correct,
+                    explanation="-"
                 )
             )
 
         if not results:
             return None
-        corrections = [r for r in results if not r.is_correct]
-        self.evaluate_answers(user_id, corrections)
+        if exercises_to_correct:
+            corrections = self.evaluate_answers(exercises_to_correct)
+            corrections_by_id = {
+                correction.exercise_id: correction.explanation for correction in corrections.corrected_exercises
+            }
+            for result in results:
+                result.explanation = corrections_by_id.get(result.exercise_id, "-")
+
         user_status = self.user_status_repo.get_by_id(user_id)
         if not user_status: return None
 
@@ -212,8 +231,6 @@ class ExerciseService:
             user_status.recent_performances + [score_per_module]
         )[-10:]
 
-        
-
         self.update_modules_probs(user_id)
         self.session.commit()
 
@@ -226,19 +243,30 @@ class ExerciseService:
             results=results,
         )
 
-    def evaluate_answers(self, user_id: int, answers: list[ExerciseAnswer]):
+    def evaluate_answers(self, exercises: list[ExerciseToCorrect]):
         client = genai.Client()
+        payload = [exercise.model_dump() for exercise in exercises]
 
-        prompt = f"A sua tarefa é corrigir exercícios de Shogi. Você receberá o tabuleiro seguindo o formato SFEN, assim como a resposta do usuário e a resposta esperada. Você deve explicar porque o usuário errou a resposta, mostrando de forma clara os motivos pelo qual a resposta esperada é a correta. Seguem os exercicios a serem corrigidos: {answers}"
+        prompt = f"""
+                A sua tarefa é corrigir exercícios de Shogi. Você receberá o tabuleiro seguindo o formato SFEN, assim como a resposta do usuário e a resposta esperada. 
+                Você deve explicar porque o usuário errou a resposta, mostrando de forma clara os motivos pelos quais a resposta esperada é a correta e considerando que
+                o usuário é um iniciante.
+                Existem os seguintes módulos:
+                 - recon: Envolve o reconhecimento das peças. A pergunta é "Qual é a peça na posição X?", onde X se refere a posição que vem acompanhada da resposta esperada.
+                 - movement1 e movement2: Envolvem o reconhecimento dos movimentos das peças. A pergunta é "Qual peça possui os movimentos destacados?". Os movimentos vem acompanhados pela resposta esperada.
+                 - checkmate-in-one: Envolve identificar qual jogada levará ao chequemate. A pergunta é "Qual movimento leva ao chequemate?".
+                Seguem os exercicios a serem corrigidos: 
+                {json.dumps(payload, ensure_ascii=False)}
+                """
         interaction = client.interactions.create(
             model="gemini-3.8-flash",
             input=prompt,
             response_format={
                 "type":"text",
                 "mime_type": "application/json",
-                "schema": ExerciseListCorrection.model_json_schema()
+                "schema": CorrectedExerciseList.model_json_schema()
             }
         )
 
-        corrections = ExerciseListCorrection.model_validate_json(interaction.output_text)
-        print(corrections)
+        corrections = CorrectedExerciseList.model_validate_json(interaction.output_text)
+        return corrections

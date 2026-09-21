@@ -23,19 +23,28 @@ class ExerciseListSubmission(BaseModel):
 class ExerciseResult(BaseModel):
     exercise_id: int
     exercise_type: str
+    sfen: str
+    hands: dict
     answer: str
     solution: str
     is_correct: bool
+    explanation: str
 
 class ExerciseListResult(BaseModel):
     user_id: int
     score: float
     results: list[ExerciseResult]
 
-class ExerciseCorrection(BaseModel):
+class ExerciseToCorrect(BaseModel):
+    exercise_id: int
+    exercise_type: str
+    sfen: str
+    answer: str
+    solution: str
+
+class CorrectedExercise(BaseModel):
     exercise_id: int
     explanation: str
 
-class ExerciseListCorrection(BaseModel):
-    user_id: int
-    explanations: list[ExerciseCorrection]
+class CorrectedExerciseList(BaseModel):
+    corrected_exercises: list[CorrectedExercise]
