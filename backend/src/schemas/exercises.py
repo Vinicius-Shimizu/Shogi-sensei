@@ -31,3 +31,11 @@ class ExerciseListResult(BaseModel):
     user_id: int
     score: float
     results: list[ExerciseResult]
+
+class ExerciseCorrection(BaseModel):
+    exercise_id: int
+    explanation: str
+
+class ExerciseListCorrection(BaseModel):
+    user_id: int
+    explanations: list[ExerciseCorrection]

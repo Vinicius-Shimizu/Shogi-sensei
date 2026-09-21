@@ -4,7 +4,8 @@ from src.database.repositories.raw_games import RawGameRepository
 from src.database.repositories.exercise import ExerciseRepository
 from src.database.repositories.user_status import UserStatusRepository
 from src.exercise_generator import ExerciseGenerator
-from src.schemas.exercises import ExerciseAnswer, ExerciseResult, ExerciseListResult
+from src.schemas.exercises import ExerciseAnswer, ExerciseResult, ExerciseListResult, ExerciseCorrection, ExerciseListCorrection
+from google import genai
 
 class ExerciseService:
     def __init__(self, session: Session):
@@ -168,7 +169,7 @@ class ExerciseService:
 
     def submit_answers(self, user_id: int, answers: list[ExerciseAnswer]):
         results = []
-
+        corrections = []
         for answer in answers:
             exercise = self.exercise_repo.get_by_id(answer.exercise_id)
 
@@ -189,7 +190,8 @@ class ExerciseService:
 
         if not results:
             return None
-
+        corrections = [r for r in results if not r.is_correct]
+        self.evaluate_answers(user_id, corrections)
         user_status = self.user_status_repo.get_by_id(user_id)
         if not user_status: return None
 
@@ -223,3 +225,20 @@ class ExerciseService:
             score=score,
             results=results,
         )
+
+    def evaluate_answers(self, user_id: int, answers: list[ExerciseAnswer]):
+        client = genai.Client()
+
+        prompt = f"A sua tarefa é corrigir exercícios de Shogi. Você receberá o tabuleiro seguindo o formato SFEN, assim como a resposta do usuário e a resposta esperada. Você deve explicar porque o usuário errou a resposta, mostrando de forma clara os motivos pelo qual a resposta esperada é a correta. Seguem os exercicios a serem corrigidos: {answers}"
+        interaction = client.interactions.create(
+            model="gemini-3.8-flash",
+            input=prompt,
+            response_format={
+                "type":"text",
+                "mime_type": "application/json",
+                "schema": ExerciseListCorrection.model_json_schema()
+            }
+        )
+
+        corrections = ExerciseListCorrection.model_validate_json(interaction.output_text)
+        print(corrections)

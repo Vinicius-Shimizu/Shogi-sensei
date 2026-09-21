@@ -8,3 +8,4 @@ dotenv
 pandas
 fastapi[standard]
 uvicorn
+google-genai
