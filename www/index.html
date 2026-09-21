@@ -13,7 +13,7 @@
 			<a href="#proposta" class="nav-item" id="proposta-link">Proposta</a>
 			<a href="#" class="nav-item" id="monografia-link">Monografia</a>
 			<a href="#" class="nav-item" id="repositorio-link">Repositório</a>
-			<a href="#" class="nav-item" id="demo-link">Demo</a>
+			<a href="demo/" class="nav-item">Demo</a>
 		</div>
 	</nav>
 
@@ -37,7 +37,6 @@
 		const propostaLink = document.getElementById("proposta-link");
 		const monografiaLink = document.getElementById("monografia-link");
 		const repositorioLink = document.getElementById("repositorio-link");
-		const demoLink = document.getElementById("demo-link");
 		const markdownContent = document.getElementById("markdown-content");
 
 		async function loadMarkdown(filePath, errorMessage) {
@@ -69,7 +68,7 @@
 			event.preventDefault();
 			markdownContent.innerHTML = "<h2>Work in Progress</h2><p>This section is not available yet.</p>";
 		}
-
+		
 		function openRepositorio(event) {
 			event.preventDefault();
 			window.open("https://github.com/Vinicius-Shimizu/Shogi-sensei", "_blank", "noopener,noreferrer");
@@ -78,7 +77,6 @@
 		resumoLink.addEventListener("click", loadResumo);
 		propostaLink.addEventListener("click", loadProposta);
 		monografiaLink.addEventListener("click", loadWorkInProgress);
-		demoLink.addEventListener("click", loadWorkInProgress);
 		repositorioLink.addEventListener("click", openRepositorio);
 		loadMarkdown("intro.md", "Could not load Intro content right now.");
 	</script>
