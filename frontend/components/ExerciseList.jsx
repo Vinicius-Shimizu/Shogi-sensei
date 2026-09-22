@@ -12,12 +12,13 @@ export default function ExerciseList() {
   const [submitting, setSubmitting] = useState(false);
 
   const userId = 1;
+  const API_URL=import.meta.env.BACKEND_API_URL;
 
   useEffect(() => {
     async function fetchExercises() {
       try {
         const response = await fetch(
-          `http://localhost:8000/exercises/list?user_id=${userId}`
+          `${API_URL}/exercises/list?user_id=${userId}`
         );
 
         if (!response.ok) {
@@ -42,7 +43,7 @@ export default function ExerciseList() {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/exercises/submit",
+        "${API_URL}/exercises/submit",
         {
           method: "POST",
           headers: {

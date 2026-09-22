@@ -41,6 +41,8 @@ jobs:
 
       - name: Build React frontend
         working-directory: frontend
+        env:
+          BACKEND_API_URL: https://experienced-isle-weekends-copyright.trycloudflare.com
         run: npm run build
 
       - name: Prepare React demo
