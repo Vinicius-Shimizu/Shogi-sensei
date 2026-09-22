@@ -1,20 +1,21 @@
+const BASE_URL = import.meta.env.BASE_URL;
 const piecesImagesMap = {
-    "P": "/pieces/pawn.svg",
-    "+P": "/pieces/promoted_pawn.svg",
-    "L": "/pieces/lance.svg",
-    "+L": "/pieces/promoted_lance.svg",
-    "N": "/pieces/knight.svg",
-    "+N": "/pieces/promoted_knight.svg",
-    "G": "/pieces/gold_general.svg",
-    "S": "/pieces/silver_general.svg",
-    "+S": "/pieces/promoted_silver_general.svg",
-    "R": "/pieces/rook.svg",
-    "+R": "/pieces/promoted_rook.svg",
-    "B": "/pieces/bishop.svg",
-    "+B": "/pieces/promoted_bishop.svg",
-    "K": "/pieces/white_king.svg",
-    "k": "/pieces/black_king.svg",
-    "E": "/pieces/empty.svg"
+    "P": `${BASE_URL}pieces/pawn.svg`,
+    "+P": `${BASE_URL}pieces/promoted_pawn.svg`,
+    "L": `${BASE_URL}pieces/lance.svg`,
+    "+L": `${BASE_URL}pieces/promoted_lance.svg`,
+    "N": `${BASE_URL}pieces/knight.svg`,
+    "+N": `${BASE_URL}pieces/promoted_knight.svg`,
+    "G": `${BASE_URL}pieces/gold_general.svg`,
+    "S": `${BASE_URL}pieces/silver_general.svg`,
+    "+S": `${BASE_URL}pieces/promoted_silver_general.svg`,
+    "R": `${BASE_URL}pieces/rook.svg`,
+    "+R": `${BASE_URL}pieces/promoted_rook.svg`,
+    "B": `${BASE_URL}pieces/bishop.svg`,
+    "+B": `${BASE_URL}pieces/promoted_bishop.svg`,
+    "K": `${BASE_URL}pieces/white_king.svg`,
+    "k": `${BASE_URL}pieces/black_king.svg`,
+    "E": `${BASE_URL}pieces/empty.svg`
 }
 
 const cols = ["9", "8", "7", "6", "5", "4", "3", "2", "1"];

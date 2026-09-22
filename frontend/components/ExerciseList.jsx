@@ -13,7 +13,6 @@ export default function ExerciseList() {
 
   const userId = 1;
   const API_URL=import.meta.env.VITE_BACKEND_API_URL;
-  console.log(API_URL);
   useEffect(() => {
     async function fetchExercises() {
       try {
