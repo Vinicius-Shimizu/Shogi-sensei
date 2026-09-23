@@ -9,6 +9,9 @@ from alembic import context
 # access to the values within the .ini file in use.
 config = context.config
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 DB_USER = os.getenv("POSTGRES_USER")
 DB_PASS = os.getenv("POSTGRES_PASSWORD") 
 DB_NAME = os.getenv("POSTGRES_DB") 
