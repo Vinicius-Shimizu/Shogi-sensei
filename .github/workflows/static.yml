@@ -42,7 +42,7 @@ jobs:
       - name: Build React frontend
         working-directory: frontend
         env:
-          VITE_BACKEND_API_URL: https://experienced-isle-weekends-copyright.trycloudflare.com
+          VITE_BACKEND_API_URL: https://tailscale-termux.tail82332e.ts.net
         run: npm run build
 
       - name: Prepare React demo

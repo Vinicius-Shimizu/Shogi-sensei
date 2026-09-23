@@ -9,11 +9,12 @@ from alembic import context
 # access to the values within the .ini file in use.
 config = context.config
 import os
-
-database_url = os.getenv(
-    "DATABASE_URL",
-    "postgresql+psycopg://shogi_sensei:shogi@localhost:5433/shogi_sensei"
-)
+DB_USER = os.getenv("POSTGRES_USER")
+DB_PASS = os.getenv("POSTGRES_PASSWORD") 
+DB_NAME = os.getenv("POSTGRES_DB") 
+DB_IP = os.getenv("POSTGRES_IP")
+DB_PORT = os.getenv("POSTGRES_PORT")
+database_url = f"postgresql+psycopg://{DB_USER}:{DB_PASS}@{DB_IP}:{DB_PORT}/{DB_NAME}"
 
 config.set_main_option(
     "sqlalchemy.url",
