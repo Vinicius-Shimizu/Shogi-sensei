@@ -42,7 +42,7 @@ function Piece({ piece }) {
     return (<img
         src={piecesImagesMap[getPieceKey(piece)]}
         alt={piece}
-        className={`w-20 h-20 ${isSentePiece(piece) ? "rotate-180" : ""}`}
+        className={`w-[85%] h-[85%] ${isSentePiece(piece) ? "rotate-180" : ""}`}
     />)
 }
 
@@ -94,7 +94,7 @@ export default function Board({ sfen }) {
         {cols.map((c) => (
           <div
             key={c}
-            className="w-16 h-16 flex items-center justify-center font-bold"
+            className="aspect-square flex items-center justify-center font-bold text-sm sm:text-base"
           >
             {c}
           </div>
@@ -106,7 +106,7 @@ export default function Board({ sfen }) {
             {/* label da linha */}
             <div
               key={`row-${rIndex}`}
-              className="w-16 h-16 flex items-center justify-center font-bold"
+              className="aspect-square flex items-center justify-center font-bold text-sm sm:text-base"
             >
               {rows[rIndex]}
             </div>
@@ -115,7 +115,7 @@ export default function Board({ sfen }) {
             {row.map((piece, cIndex) => (
               <div
                 key={`${rIndex}-${cIndex}`}
-                className="w-16 h-16 border border-gray-500 flex items-center justify-center"
+                className="aspect-square border border-gray-500 flex items-center justify-center"
               >
                 <Piece piece={piece} />
               </div>
