@@ -9,3 +9,5 @@ pandas
 fastapi[standard]
 uvicorn
 google-genai
+pyjwt
+pwdlib[argon2]

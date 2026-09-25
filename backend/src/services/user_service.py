@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from src.database.repositories.user import UserRepository
 from src.database.repositories.user_status import UserStatusRepository
-
+from pwdlib import PasswordHash
 
 class UserService:
 
@@ -11,14 +11,17 @@ class UserService:
         self.user_repo = UserRepository(session)
         self.user_status_repo = UserStatusRepository(session)
 
-    def create_user(self, username: str):
+    def create_user(self, username: str, password: str):
         existing_user = self.user_repo.get_by_username(username)
-
+        
         if existing_user is not None:
             raise ValueError("Username already exists")
         try:
+            password_hash = PasswordHash.recommended()
+            hashed_password = password_hash.hash(password)
             user = self.user_repo.create(
-                username=username
+                username=username,
+                password=hashed_password
             )
 
             self.user_status_repo.create(

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.routers import users_router, exercises_router
+from src.routers import users_router, exercises_router, auth_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -18,3 +18,4 @@ app.add_middleware(
 
 app.include_router(users_router.router)
 app.include_router(exercises_router.router)
+app.include_router(auth_router.router)

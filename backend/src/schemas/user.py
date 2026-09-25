@@ -1,8 +1,13 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
+# class User(BaseModel):
+#     username: str
+#     password: str
+
 class UserCreate(BaseModel):
     username: str
+    password: str
 
 class UserResponse(BaseModel):
     id: int

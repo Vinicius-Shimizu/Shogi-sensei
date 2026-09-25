@@ -3,7 +3,9 @@ from sqlalchemy.orm import Session
 
 from src.database.session import get_session
 from src.schemas.user import UserCreate, UserResponse, UserStatusResponse
-from src.services.user_service import UserService, UserRepository, UserStatusRepository
+from src.services.user_service import UserService
+from src.database.repositories.user import UserRepository
+from src.database.repositories.user_status import UserStatusRepository
 
 router = APIRouter(
     prefix="/users"
@@ -21,7 +23,7 @@ def create_user(
     service = UserService(session)
 
     try:
-        return service.create_user(user_data.username)
+        return service.create_user(user_data.username, user_data.password)
 
     except ValueError as e:
         raise HTTPException(
