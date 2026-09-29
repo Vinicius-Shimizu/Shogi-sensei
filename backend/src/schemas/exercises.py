@@ -17,7 +17,6 @@ class ExerciseAnswer(BaseModel):
     answer: str
 
 class ExerciseListSubmission(BaseModel):
-    user_id: int
     answers: list[ExerciseAnswer]
 
 class ExerciseResult(BaseModel):

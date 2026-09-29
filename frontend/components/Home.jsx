@@ -7,9 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Home(){
     const navigate = useNavigate();
-    const [started, setStarted] = useState(false);
-    const [user, setUser] = useState(null);
-    const [checkingAuth, setCheckingAuth] = useState(true);
+    const [authenticated, setAuthenticated] = useState(false);
     const token = localStorage.getItem("access_token");
     const API_URL = import.meta.env.VITE_BACKEND_API_URL;
     useEffect(() => {
@@ -17,7 +15,6 @@ export default function Home(){
             const token = localStorage.getItem("access_token");
 
             if (!token) {
-                setCheckingAuth(false);
                 return;
             }
 
@@ -33,30 +30,30 @@ export default function Home(){
 
                 if (!response.ok) {
                     localStorage.removeItem("access_token");
-                    setUser(null);
+                    setAuthenticated(false);
                     return;
                 }
-
-                const data = await response.json();
-                setUser(data);
+                
+                setAuthenticated(true);
 
             } catch (error) {
                 console.error("Erro ao verificar autenticação:", error);
-            } finally {
-                setCheckingAuth(false);
             }
         }
 
         checkAuth();
-    }, []);
+    }, [API_URL]);
     
 
-    if(token){
+    if(authenticated){
         return <div className="flex flex-cols justify-center h-screen p-4">
             <div></div>
-            <div className="">
+            <div className="flex flex-col justify-center items-center">
                 <h1>Shogi-sensei</h1>
                 <BeginButton onClick={() => {console.log("Starting list"); navigate("exercise-list");}}></BeginButton>
+                <button className="flex-col border-2 bg-slate-600 rounded-xl w-[50%] h-[10%] mt-8" onClick={() => {localStorage.removeItem("access_token"); setAuthenticated(false);}}>
+                    Logout
+                </button>
             </div>
         </div>
     }
@@ -68,7 +65,7 @@ export default function Home(){
             <p>Faça o login ou cadastre-se para começar.</p>
     
             <LoginButton onClick={() => navigate("/login")} />
-            <SignUpButton />
+            <SignUpButton onClick={() => navigate("/signup")}/>
         </div>
     </div>
 }

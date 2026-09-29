@@ -3,11 +3,9 @@ import Exercise from "./Exercise";
 import { useNavigate } from "react-router-dom";
 
 export default function ExerciseList() {
-  const [userId, setUserId] = useState(-1);
   const [exercises, setExercises] = useState([]);
   const [currentExercise, setCurrentExercise] = useState(0);
   const [answers, setAnswers] = useState([]);
-  const [loadingUser, setLoadingUser] = useState(true);
   const [loadingList, setLoadingList] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -23,10 +21,10 @@ export default function ExerciseList() {
   }, [token, navigate]);
   
   useEffect(() => {
-    async function getUserId() {
+    async function fetchExercises() {
       try {
         const response = await fetch(
-          `${API_URL}/users/me`,
+          `${API_URL}/exercises/list`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -34,37 +32,19 @@ export default function ExerciseList() {
           }
         );
 
-        if (!response.ok) {
-          throw new Error("Erro ao buscar usuário");
+        
+        if (response.status === 401) {
+          localStorage.removeItem("access_token");
+          navigate("/login");
+          return;
         }
-
-        const data = await response.json();
-        setUserId(data.id);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoadingUser(false);
-      }
-    }
-
-    if (token) {
-      getUserId();
-    }
-  }, [API_URL, token]);
-  
-  useEffect(() => {
-    async function fetchExercises() {
-      try {
-        const response = await fetch(
-          `${API_URL}/exercises/list?user_id=${userId}`
-        );
-
+        
         if (!response.ok) {
           throw new Error("Erro ao buscar exercícios");
         }
 
         const data = await response.json();
-        console.log(data);
+
         setExercises(data);
       } catch (error) {
         console.error("Erro ao buscar exercícios:", error);
@@ -73,10 +53,10 @@ export default function ExerciseList() {
       }
     }
 
-    if (userId !== -1) {
+    if (token) {
       fetchExercises();
     }
-  }, [userId, API_URL]);
+  }, [API_URL, token, navigate]);
 
   async function submitAnswers(finalAnswers) {
     setSubmitting(true);
@@ -88,13 +68,19 @@ export default function ExerciseList() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            user_id: userId,
             answers: finalAnswers,
           }),
         }
       );
+
+      if (response.status === 401) {
+        localStorage.removeItem("access_token");
+        navigate("/login");
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Erro ao enviar respostas");
@@ -133,7 +119,7 @@ export default function ExerciseList() {
     }
   }
 
-  if (loadingUser || loadingList) {
+  if (loadingList) {
     return <div>Carregando...</div>;
   }
 

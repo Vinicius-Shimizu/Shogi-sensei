@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
+from typing import Annotated
 
 from src.database.session import get_session
 from src.services.exercise_service import ExerciseService
 from src.schemas.exercises import ExerciseResponse, ExerciseListResult, ExerciseListSubmission
+from src.schemas.user import UserResponse
+from src.auth.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/exercises",
@@ -65,10 +68,10 @@ def fetch_games(session: Session = Depends(get_session)):
 
 
 @router.post("/submit", response_model=ExerciseListResult)
-def submit_answers(submission: ExerciseListSubmission, session: Session = Depends(get_session)):
+def submit_answers(submission: ExerciseListSubmission, current_user: Annotated[UserResponse, Depends(get_current_user)], session: Session = Depends(get_session)):
     service = ExerciseService(session)
-
-    result = service.submit_answers(submission.user_id, submission.answers)
+    user_id = current_user.id
+    result = service.submit_answers(user_id, submission.answers)
 
     if result is None:
         raise HTTPException(
@@ -96,11 +99,13 @@ def get_random_exercise(session: Session = Depends(get_session)):
 
 @router.get("/list", response_model=list[ExerciseResponse])
 def get_exercise_list(
-    user_id: int,
+    current_user: Annotated[UserResponse, Depends(get_current_user)],
     session: Session = Depends(get_session),
+
 ):
     service = ExerciseService(session)
-
+    user_id = current_user.id
+    print("USER ID", user_id)
     exercises = service.get_exercise_list(user_id)
     print("Exercise fetched")
     if exercises is None:
@@ -125,26 +130,3 @@ def get_exercise_by_id(exercise_id: int, session: Session = Depends(get_session)
         )
 
     return exercise
-
-
-
-# @router.get("/exercises/checkmate_in_one/{id}")
-# def get_checkmate_in_one(id: int):
-#     exercise = ex_gen.exercises_repo.get_by_id(id)
-#     return {"response": exercise}
-
-# @router.get("/exercises/checkmate_in_one")
-# def get_random_checkmate_in_one():
-#     exercise = ex_gen.exercises_repo.get_random()
-#     return {"response": exercise}
-
-# @router.get("/exercises/exercise_list")
-# def get_exercises_list():
-#     ex_list = ex_gen.exercises_repo.get_exercises_list(user["modules_probs"])
-#     return {"response": ex_list}
-
-
-# @router.post("/exercises/fetch_games")
-# def generate_games():
-#     ex_gen.insert_games()
-#     return {"response": "games inserted!"}
