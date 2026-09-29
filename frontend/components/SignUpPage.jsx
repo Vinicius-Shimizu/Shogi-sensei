@@ -6,6 +6,7 @@ export default function SignUpPage(){
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const API_URL=import.meta.env.VITE_BACKEND_API_URL;
@@ -14,29 +15,41 @@ export default function SignUpPage(){
         event.preventDefault();
 
         setError("");
+
+        if(password !== confirmPassword){
+            setError("As senhas não coincidem.");
+            return;
+        }
+
         setLoading(true);
         try{
             const response = await fetch(
-                `${API_URL}/auth/login`, 
+                `${API_URL}/users`, 
                 {
                     method: "POST",
                     headers: {
-                        "Content-type": "application/x-www-form-urlencoded",
+                        "Content-type": "application/json",
                     },
-                    body: new URLSearchParams({
+                    body: JSON.stringify({
                         username: username,
                         password: password,
-                    }), 
+                    }),
                 }
             )
+
+            if (response.status === 409) { 
+                const data = await response.json(); 
+                setError(data.detail); 
+                return; 
+            }
+
             if(!response.ok){
-                setError("Usuário ou senha incorretos."); return;
+                throw new Error("Erro ao criar usuário");
             }
 
             const data = await response.json();
-            localStorage.setItem("access_token", data.access_token);
+            navigate("/login");
 
-            navigate("/");
         } catch(error){
             console.error("Unable to connect to server.", error);
             setError("Não foi possível conectar ao servidor.");
@@ -47,7 +60,7 @@ export default function SignUpPage(){
 
     return <div className="flex justify-center items-center h-screen">
         <form
-            onSubmit={() => {console.log("User created!");}}
+            onSubmit={handleSignup}
             className="flex flex-col gap-4 w-80"
         >
             <h1 className="text-2xl">Shogi-sensei</h1>
@@ -67,6 +80,14 @@ export default function SignUpPage(){
                 className="border-2 rounded p-2" 
                 required 
             />
+            <input 
+                type="password" 
+                placeholder="Confirmar Senha" 
+                value={confirmPassword} 
+                onChange={(event) => setConfirmPassword(event.target.value)} 
+                className="border-2 rounded p-2" 
+                required 
+            />
             {error && ( 
                 <p className="text-red-500"> 
                     {error} 
@@ -77,7 +98,7 @@ export default function SignUpPage(){
                 disabled={loading} 
                 className="border-2 rounded p-2 bg-slate-600 text-white" 
             > 
-                {loading ? "Entrando..." : "Entrar"} 
+                {loading ? "Criando..." : "Criar conta"} 
             </button>
             <button 
                 type="button" 

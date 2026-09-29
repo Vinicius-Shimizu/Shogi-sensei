@@ -15,7 +15,7 @@ class UserService:
         existing_user = self.user_repo.get_by_username(username)
         
         if existing_user is not None:
-            raise ValueError("Username already exists")
+            raise ValueError("Usuário já existe")
         try:
             password_hash = PasswordHash.recommended()
             hashed_password = password_hash.hash(password)
