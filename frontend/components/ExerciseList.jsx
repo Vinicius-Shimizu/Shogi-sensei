@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Exercise from "./Exercise";
-import ResultsPage from "./ResultsPage";
 import { useNavigate } from "react-router-dom";
 
 export default function ExerciseList() {
@@ -8,8 +7,8 @@ export default function ExerciseList() {
   const [exercises, setExercises] = useState([]);
   const [currentExercise, setCurrentExercise] = useState(0);
   const [answers, setAnswers] = useState([]);
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingList, setLoadingList] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   const API_URL=import.meta.env.VITE_BACKEND_API_URL;
@@ -44,7 +43,7 @@ export default function ExerciseList() {
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false);
+        setLoadingUser(false);
       }
     }
 
@@ -70,7 +69,7 @@ export default function ExerciseList() {
       } catch (error) {
         console.error("Erro ao buscar exercícios:", error);
       } finally {
-        setLoading(false);
+        setLoadingList(false);
       }
     }
 
@@ -78,14 +77,6 @@ export default function ExerciseList() {
       fetchExercises();
     }
   }, [userId, API_URL]);
-
-  // useEffect(() => {
-  //   if (result) {
-  //     navigate("/results", {
-  //       state: { result },
-  //     });
-  //   }
-  // }, [result, navigate]);
 
   async function submitAnswers(finalAnswers) {
     setSubmitting(true);
@@ -111,7 +102,6 @@ export default function ExerciseList() {
 
       const data = await response.json();
 
-      setResult(data);
       navigate("/results", {
         state: { result: data },
       });
@@ -143,12 +133,17 @@ export default function ExerciseList() {
     }
   }
 
-  if (loading) {
+  if (loadingUser || loadingList) {
     return <div>Carregando...</div>;
   }
 
   if (exercises.length === 0) {
-    return <div>Nenhum exercício encontrado.</div>;
+    return (
+      <div className="h-screen">
+        <div>Nenhum exercício encontrado.</div>
+        <button onClick={() => navigate("/")} className="flex-col border-2 bg-slate-600 rounded-xl w-[30%] h-[10%] mt-8">Home</button>
+      </div>
+    )
   }
 
   if (submitting) {

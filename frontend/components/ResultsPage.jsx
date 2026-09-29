@@ -5,7 +5,16 @@ export default function ResultsPage(){
   const navigate = useNavigate();
   const locate = useLocation();
   const result = locate.state?.result;
-  console.log(result);
+  if (!result) {
+  return (
+    <div className="flex flex-col items-center mt-6">
+      <p>Nenhum resultado disponível.</p>
+
+      <button onClick={() => navigate("exercise-list")} className="flex-col border-2 bg-slate-600 rounded-xl w-[30%] h-[10%] mt-8">Começar uma lista</button>
+
+    </div>
+  );
+}
 
   return (
     <div className="flex flex-col items-center justify-center mt-6">
