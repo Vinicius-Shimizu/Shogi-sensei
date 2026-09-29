@@ -8,7 +8,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 
 function App() {
  return (
-    <HashRouter basename="/Shogi-sensei/demo">
+    <HashRouter>
         <Routes>
             <Route path="/" element={<Home />}></Route>
             <Route path="/login" element={<LoginPage />}></Route>
