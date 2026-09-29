@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Exercise from "./Exercise";
 import ResultsPage from "./ResultsPage";
-
+import { useNavigate } from "react-router-dom";
 
 export default function ExerciseList() {
   const [userId, setUserId] = useState(-1);
@@ -14,44 +14,48 @@ export default function ExerciseList() {
 
   const API_URL=import.meta.env.VITE_BACKEND_API_URL;
   const token = localStorage.getItem("access_token");
-  
-  if (!token) {
-    console.log("Usuário não autenticado");
-    setLoading(false);
-    return;
-  }
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      console.log("Usuário não autenticado");
+      navigate("/login");
+    }
+  }, [token, navigate]);
   
   useEffect(() => {
     async function getUserId() {
-      try{
-
+      try {
         const response = await fetch(
           `${API_URL}/users/me`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
-            }
-          },
-        )
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Erro ao buscar usuário");
+        }
 
         const data = await response.json();
         setUserId(data.id);
-      } catch(error){
+      } catch (error) {
         console.log(error);
       } finally {
         setLoading(false);
       }
     }
-    getUserId();
-  }, []);
+
+    if (token) {
+      getUserId();
+    }
+  }, [API_URL, token]);
   
   useEffect(() => {
     async function fetchExercises() {
       try {
-        if (userId === -1) {
-          return;
-        }
-
         const response = await fetch(
           `${API_URL}/exercises/list?user_id=${userId}`
         );
@@ -70,8 +74,18 @@ export default function ExerciseList() {
       }
     }
 
-    fetchExercises();
-  }, [userId]);
+    if (userId !== -1) {
+      fetchExercises();
+    }
+  }, [userId, API_URL]);
+
+  // useEffect(() => {
+  //   if (result) {
+  //     navigate("/results", {
+  //       state: { result },
+  //     });
+  //   }
+  // }, [result, navigate]);
 
   async function submitAnswers(finalAnswers) {
     setSubmitting(true);
@@ -98,17 +112,14 @@ export default function ExerciseList() {
       const data = await response.json();
 
       setResult(data);
+      navigate("/results", {
+        state: { result: data },
+      });
     } catch (error) {
       console.error("Erro ao enviar respostas:", error);
     } finally {
       setSubmitting(false);
     }
-  }
-
-  function handleRestart(){
-    setCurrentExercise(0);
-    setAnswers([]);
-    setResult(null);
   }
 
   function handleAnswer(answer) {
@@ -144,9 +155,6 @@ export default function ExerciseList() {
     return <div>Corrigindo exercícios...</div>;
   }
 
-  if (result) {
-    return <ResultsPage result={result} onRestart={handleRestart}/>
-  }
 
   return (
     <Exercise

@@ -50,14 +50,13 @@ export default function Home(){
         checkAuth();
     }, []);
     
-    if(started) return <ExerciseList />;
 
     if(token){
         return <div className="flex flex-cols justify-center h-screen p-4">
             <div></div>
             <div className="">
                 <h1>Shogi-sensei</h1>
-                <BeginButton onClick={() => {console.log("Starting list"); setStarted(true);}}></BeginButton>
+                <BeginButton onClick={() => {console.log("Starting list"); navigate("exercise-list");}}></BeginButton>
             </div>
         </div>
     }
