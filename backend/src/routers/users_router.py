@@ -1,15 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from typing import Annotated
 
 from src.database.session import get_session
 from src.schemas.user import UserCreate, UserResponse, UserStatusResponse
 from src.services.user_service import UserService
 from src.database.repositories.user import UserRepository
 from src.database.repositories.user_status import UserStatusRepository
+from src.auth.dependencies import get_current_user
+
 
 router = APIRouter(
     prefix="/users"
 )
+
 
 @router.post(
     "",
@@ -30,6 +34,17 @@ def create_user(
             status_code=status.HTTP_409_CONFLICT,
             detail=str(e)
         )
+
+
+@router.get(
+    "/me",
+    response_model=UserResponse
+)
+async def read_users_me(
+    current_user: Annotated[UserResponse, Depends(get_current_user)]
+):
+    return current_user
+
 
 @router.get(
     "/{user_id}",

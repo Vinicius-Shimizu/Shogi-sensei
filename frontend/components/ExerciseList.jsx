@@ -4,6 +4,7 @@ import ResultsPage from "./ResultsPage";
 
 
 export default function ExerciseList() {
+  const [userId, setUserId] = useState(-1);
   const [exercises, setExercises] = useState([]);
   const [currentExercise, setCurrentExercise] = useState(0);
   const [answers, setAnswers] = useState([]);
@@ -11,11 +12,46 @@ export default function ExerciseList() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  const userId = 1;
   const API_URL=import.meta.env.VITE_BACKEND_API_URL;
+  const token = localStorage.getItem("access_token");
+  
+  if (!token) {
+    console.log("Usuário não autenticado");
+    setLoading(false);
+    return;
+  }
+  
+  useEffect(() => {
+    async function getUserId() {
+      try{
+
+        const response = await fetch(
+          `${API_URL}/users/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
+          },
+        )
+
+        const data = await response.json();
+        setUserId(data.id);
+      } catch(error){
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    getUserId();
+  }, []);
+  
   useEffect(() => {
     async function fetchExercises() {
       try {
+        if (userId === -1) {
+          return;
+        }
+
         const response = await fetch(
           `${API_URL}/exercises/list?user_id=${userId}`
         );
@@ -35,7 +71,7 @@ export default function ExerciseList() {
     }
 
     fetchExercises();
-  }, []);
+  }, [userId]);
 
   async function submitAnswers(finalAnswers) {
     setSubmitting(true);

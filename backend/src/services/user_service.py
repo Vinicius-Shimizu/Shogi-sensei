@@ -35,3 +35,7 @@ class UserService:
         except Exception:
             self.session.rollback()
             raise
+
+    def get_user_by_username(self, username: str):
+        user = self.user_repo.get_by_username(username)
+        return user

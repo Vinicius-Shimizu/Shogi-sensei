@@ -14,7 +14,7 @@ export default function Result({index, result}){
 
         <div>
             {!result.is_correct && (
-                <button onClick={() => setShowExplanation(true)}>
+                <button onClick={() => setShowExplanation(true)} className="flex-col border-2 bg-slate-600 rounded-xl">
                     Ver explicação
                 </button>
             )}

@@ -46,7 +46,7 @@ function Piece({ piece, isTarget }) {
     return (<img
         src={image}
         alt={piece}
-        className={`w-[85%] h-[85%] ${isSentePiece(piece) ? "rotate-180" : ""}`}
+        className={`w-[16px] h-[16px] ${isSentePiece(piece) ? "rotate-180" : ""}`}
     />)
 }
 
@@ -97,7 +97,7 @@ export default function BoardWithMovement({ sfen, moves}) {
 
   return (
     <div className="flex justify-center p-4">
-      <div className="grid grid-cols-10 border-2 border-black w-full max-w-[640px]">
+      <div className="grid grid-cols-10 grid-rows-10 aspect-square w-[80vw] max-w-[800px] border-2 border-black">
         
         {/* canto vazio */}
         <div></div>
@@ -106,7 +106,7 @@ export default function BoardWithMovement({ sfen, moves}) {
         {cols.map((c) => (
           <div
             key={c}
-            className="aspect-square flex items-center justify-center font-bold text-sm sm:text-base"
+            className="flex items-center justify-center font-bold text-sm sm:text-base"
           >
             {c}
           </div>
@@ -118,7 +118,7 @@ export default function BoardWithMovement({ sfen, moves}) {
             {/* label da linha */}
             <div
               key={`row-${rIndex}`}
-              className="aspect-square flex items-center justify-center font-bold text-sm sm:text-base"
+              className="flex items-center justify-center font-bold text-sm sm:text-base"
             >
               {rows[rIndex]}
             </div>
@@ -131,7 +131,7 @@ export default function BoardWithMovement({ sfen, moves}) {
               return (
                 <div
                   key={`${rIndex}-${cIndex}`}
-                  className={`aspect-square border border-gray-500 flex items-center justify-center
+                  className={`flex border border-gray-500 flex items-center justify-center
                     ${isMovementSquare(rIndex, cIndex, moves)
                       ? "bg-green-300"
                       : ""

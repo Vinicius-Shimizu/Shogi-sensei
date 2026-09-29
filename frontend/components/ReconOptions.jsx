@@ -4,6 +4,8 @@ export default function ReconOptions({
   position,
   possible_moves,
   onAnswer,
+  exerciseNumber,
+  totalExercises
 }) {
   const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -16,7 +18,9 @@ export default function ReconOptions({
   function handleNext() {
     onAnswer(selectedAnswer);
   }
-
+  
+  const isLastExercise = exerciseNumber + 1 === totalExercises;
+  
   return (
     <div className="flex justify-center w-70">
       <div className="flex flex-col gap-2 justify-center mt-4 w-30">
@@ -52,7 +56,7 @@ export default function ReconOptions({
               rounded
             "
           >
-            Próximo exercício
+            {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
           </button>
         )}
       </div>

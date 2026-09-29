@@ -3,7 +3,7 @@ import Result from "./Result";
 export default function ResultsPage({result, onRestart}){
     console.log(result);
     return (
-      <div>
+      <div className="flex flex-col items-center justify-center mt-6">
         <h2 className="mt-5">Resultados</h2>
 
         <div className="flex justify-center">
@@ -14,12 +14,12 @@ export default function ResultsPage({result, onRestart}){
             <div>Resposta Esperada</div>
             <div>Explicação</div>
             {result.results.map((exerciseResult, index) => (
-              <Result key={exerciseResult.exercise_id} index={index + 1} result={exerciseResult}></Result>
+              <Result key={exerciseResult.exercise_id} index={index + 1} result={exerciseResult} className="mt-4"></Result>
             ))}
           </div>
         </div>
         
-        <button onClick={onRestart}>Começar outra lista</button>
+        <button onClick={onRestart} className="flex-col border-2 bg-slate-600 rounded-xl w-[30%] h-[10%] mt-8">Começar outra lista</button>
       </div>
     );
 }
