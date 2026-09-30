@@ -4,13 +4,20 @@ import { useNavigate } from "react-router-dom";
 
 export default function ExerciseList() {
   const [exercises, setExercises] = useState([]);
-  const [currentExercise, setCurrentExercise] = useState(0);
-  const [answers, setAnswers] = useState([]);
+    const [currentExercise, setCurrentExercise] = useState(() => {
+    const saved = localStorage.getItem("current_exercise");
+    return saved ? Number(saved) : 0;
+  });
+  const [answers, setAnswers] = useState(() => {
+    const saved = localStorage.getItem("user_answers");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [loadingList, setLoadingList] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   const API_URL=import.meta.env.VITE_BACKEND_API_URL;
   const token = localStorage.getItem("access_token");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +29,13 @@ export default function ExerciseList() {
   
   useEffect(() => {
     async function fetchExercises() {
+      const savedList = localStorage.getItem("exercise_list");
+
+      if (savedList) {
+        setExercises(JSON.parse(savedList));
+        setLoadingList(false);
+        return;
+      }
       try {
         const response = await fetch(
           `${API_URL}/exercises/list`,
@@ -46,6 +60,7 @@ export default function ExerciseList() {
         const data = await response.json();
 
         setExercises(data);
+        localStorage.setItem("exercise_list", JSON.stringify(data));
       } catch (error) {
         console.error("Erro ao buscar exercícios:", error);
       } finally {
@@ -87,6 +102,9 @@ export default function ExerciseList() {
       }
 
       const data = await response.json();
+      localStorage.removeItem("exercise_list");
+      localStorage.removeItem("current_exercise");
+      localStorage.removeItem("user_answers");
 
       navigate("/results", {
         state: { result: data },
@@ -109,10 +127,17 @@ export default function ExerciseList() {
     const newAnswers = [...answers, newAnswer];
 
     setAnswers(newAnswers);
-
+    localStorage.setItem(
+      "user_answers",
+      JSON.stringify(newAnswers)
+    );
     const nextExercise = currentExercise + 1;
 
     setCurrentExercise(nextExercise);
+    localStorage.setItem(
+      "current_exercise",
+      nextExercise.toString()
+    );
 
     if (nextExercise >= exercises.length) {
       submitAnswers(newAnswers);
