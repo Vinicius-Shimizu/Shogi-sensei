@@ -87,7 +87,7 @@ export default function Board({ sfen }) {
   
   return (
     <div className="flex justify-center border border-2 border-stone-600 mt-4">
-      <div className="grid grid-cols-11 grid-rows-10 aspect-square w-[70vw] md:w-[30vw]">
+      <div className="grid grid-cols-11 grid-rows-10 aspect-square w-[80vw] md:w-[30vw]">
         
         {/* canto vazio */}
         <div></div>
