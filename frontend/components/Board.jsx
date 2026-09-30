@@ -86,8 +86,8 @@ export default function Board({ sfen }) {
   const board = parseSfenBoard(sfen);
   
   return (
-    <div className="flex justify-center border border-2 border-green-800 mt-4">
-      <div className="grid grid-cols-11 grid-rows-10 aspect-square w-[60vw] md:w-[30vw]">
+    <div className="flex justify-center border border-2 border-stone-600 mt-4">
+      <div className="grid grid-cols-11 grid-rows-10 aspect-square w-[70vw] md:w-[30vw]">
         
         {/* canto vazio */}
         <div></div>

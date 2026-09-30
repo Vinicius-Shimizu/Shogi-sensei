@@ -14,7 +14,7 @@ export default function Exercise({
   switch(exercise.type){
     case "recon":
       return (
-        <div className="flex flex-col justify-center items-center border-1 border-transparent">
+        <div className="flex flex-col justify-center items-center">
           <Board sfen={exercise.sfen}/>
     
           <ReconOptions
