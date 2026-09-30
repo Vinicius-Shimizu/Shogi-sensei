@@ -24,7 +24,7 @@ export default function ReconOptions({
   
   return (
     <div className="flex justify-center">
-      <div className="flex flex-col gap-2 justify-center mt-4 w-[40vw] md:w-[30vw]">
+      <div className="flex flex-col gap-2 justify-center mt-4 w-[60vw] md:w-[30vw]">
         {exerciseNumber + 1}/{totalExercises} Qual é a peça na posição {position}?
         <div className="grid grid-cols-2 gap-2">
           {possible_moves.map((move) => (
