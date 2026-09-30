@@ -13,6 +13,7 @@ export default function ReconOptions({
   function selectAnswer(answer) {
     setSelectedAnswer(answer);
     setAnswered(true);
+    console.log(answer);
   }
 
   function handleNext() {
@@ -22,43 +23,47 @@ export default function ReconOptions({
   const isLastExercise = exerciseNumber + 1 === totalExercises;
   
   return (
-    <div className="flex justify-center w-70">
-      <div className="flex flex-col gap-2 justify-center mt-4 w-30">
-        Qual é a peça na posição {position}?
-
-        {possible_moves.map((move) => (
-          <button
-            key={move}
-            disabled={answered}
-            onClick={() => selectAnswer(move)}
-            className="
-              px-3 py-1
-              bg-amber-100
-              border border-black
-              rounded
-              hover:bg-amber-200
-              font-mono
-              disabled:opacity-50
-            "
-          >
-            {move}
-          </button>
-        ))}
-
-        {answered && (
-          <button
-            onClick={handleNext}
-            className="
-              mt-2
-              px-3 py-1
-              bg-green-200
-              border border-black
-              rounded
-            "
-          >
-            {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
-          </button>
-        )}
+    <div className="flex justify-center">
+      <div className="flex flex-col gap-2 justify-center mt-4 w-[30vw]">
+        {exerciseNumber + 1}/{totalExercises} Qual é a peça na posição {position}?
+        <div className="grid grid-cols-2 gap-2">
+          {possible_moves.map((move) => (
+            <button
+              key={move}
+              disabled={answered}
+              onClick={() => selectAnswer(move)}
+              className={` 
+                px-3 py-2 
+                border border-black 
+                rounded 
+                font-mono 
+                transition 
+                ${ selectedAnswer === move ? "bg-blue-300" : "bg-amber-100" } 
+                disabled:cursor-default
+                w-full
+              `}
+            >
+              {move}
+            </button>
+          ))}
+        </div>
+        <div className="flex justify-center">
+          {answered && (
+            <button
+              onClick={handleNext}
+              className="
+                mt-2
+                px-3 py-1
+                bg-green-200
+                border border-black
+                rounded
+                w-[10vw]
+              "
+            >
+              {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

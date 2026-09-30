@@ -14,15 +14,12 @@ export default function Exercise({
   switch(exercise.type){
     case "recon":
       return (
-        <div className="flex justify-center items-center border-1 border-transparent">
+        <div className="flex flex-col justify-center items-center border-1 border-transparent">
           <div className="flex-col justify-center border-2 p-5">
             <Board sfen={exercise.sfen}/>
           </div>
     
-          <div className="flex flex-col">
-            <div className="font-semibold mb-4">
-              {exerciseNumber + 1}/{totalExercises}
-            </div>
+          {/* <div className="flex flex-col"> */}
             <ReconOptions
               position={exercise.solution.split(":")[1]}
               possible_moves={exercise.options}
@@ -30,7 +27,7 @@ export default function Exercise({
               exerciseNumber={exerciseNumber}
               totalExercises={totalExercises}
             />
-          </div>
+          {/* </div> */}
         </div>
       );
 
