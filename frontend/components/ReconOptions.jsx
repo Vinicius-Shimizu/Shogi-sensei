@@ -38,6 +38,7 @@ export default function ReconOptions({
                 rounded 
                 font-mono 
                 transition 
+                whitespace-nowrap
                 ${ selectedAnswer === move ? "bg-blue-300" : "bg-amber-100" } 
                 disabled:cursor-default
                 w-full
@@ -57,6 +58,7 @@ export default function ReconOptions({
                 bg-green-200
                 border border-black
                 rounded
+                whitespace-nowrap
                 w-[10vw]
               "
             >

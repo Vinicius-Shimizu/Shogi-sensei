@@ -86,8 +86,8 @@ export default function Board({ sfen }) {
   const board = parseSfenBoard(sfen);
   
   return (
-    <div className="flex justify-center p-4">
-      <div className="grid grid-cols-10 grid-rows-10 aspect-square w-[60vw] md:w-[30vw]">
+    <div className="flex justify-center border border-2 border-green-800 mt-4">
+      <div className="grid grid-cols-11 grid-rows-10 aspect-square w-[60vw] md:w-[30vw]">
         
         {/* canto vazio */}
         <div></div>
@@ -102,6 +102,7 @@ export default function Board({ sfen }) {
           </div>
         ))}
 
+        <div></div>
         {/* linhas + tabuleiro */}
         {board.map((row, rIndex) => (
           <>
@@ -122,6 +123,7 @@ export default function Board({ sfen }) {
                 <Piece piece={piece} />
               </div>
             ))}
+            <div></div>
           </>
         ))}
       </div>
