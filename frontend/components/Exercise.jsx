@@ -27,29 +27,38 @@ export default function Exercise({
         </div>
       );
 
+    case "movement1":
+      return (
+        <div className="flex flex-col justify-center items-center">
+          <BoardWithMovement sfen={exercise.sfen} moves={exercise.solution.split(":")[1]}/>
+    
+          <MovementOptions
+            possible_pieces={exercise.options}
+            onAnswer={onAnswer}
+            exerciseNumber={exerciseNumber}
+            totalExercises={totalExercises}
+          />
+        </div>
+      );
+
     case "movement2":
       return (
-        <div className="flex justify-center items-center">
-          <div className="flex-col justify-center border-2 p-5">
-            <BoardWithMovement sfen={exercise.sfen} moves={exercise.solution.split(":")[1]}/>
-          </div>
+        <div className="flex flex-col justify-center items-center">
+          <BoardWithMovement sfen={exercise.sfen} moves={exercise.solution.split(":")[1]}/>
     
-          <div className="flex flex-col">
-            <div className="font-semibold mb-4">
-              {exerciseNumber + 1}/{totalExercises}
-            </div>
-            <MovementOptions
-              possible_pieces={exercise.options}
-              onAnswer={onAnswer}
-            />
-          </div>
+          <MovementOptions
+            possible_pieces={exercise.options}
+            onAnswer={onAnswer}
+            exerciseNumber={exerciseNumber}
+            totalExercises={totalExercises}
+          />
         </div>
       );
 
     case "checkmate-in-one":
       return (
         <div className="flex justify-center items-center">
-          <div className="flex-col justify-center border-2 p-5">
+          <div className="flex-col justify-center">
             <Hand pieces={exercise.hands.gote} />
     
             <Board sfen={exercise.sfen}/>
@@ -57,15 +66,12 @@ export default function Exercise({
             <Hand pieces={exercise.hands.sente} />
           </div>
     
-          <div className="flex flex-col">
-            <div className="font-semibold mb-4">
-              {exerciseNumber + 1}/{totalExercises}
-            </div>
-            <CheckmateInOneOptions
-              possible_moves={exercise.options}
-              onAnswer={onAnswer}
-            />
-          </div>
+          <CheckmateInOneOptions
+            possible_moves={exercise.options}
+            onAnswer={onAnswer}
+            exerciseNumber={exerciseNumber}
+            totalExercises={totalExercises}
+          />
         </div>
       );
     

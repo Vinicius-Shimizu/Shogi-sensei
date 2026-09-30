@@ -96,8 +96,8 @@ export default function BoardWithMovement({ sfen, moves}) {
   const targetSquare = moves[0].slice(0, 2);
 
   return (
-    <div className="flex justify-center p-4">
-      <div className="grid grid-cols-10 grid-rows-10 aspect-square w-[80vw] max-w-[800px] border-2 border-black">
+    <div className="flex justify-center border border-2 border-stone-600 mt-4">
+      <div className="grid grid-cols-11 grid-rows-10  aspect-square w-[80vw] md:w-[30vw]">
         
         {/* canto vazio */}
         <div></div>

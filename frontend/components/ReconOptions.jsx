@@ -13,7 +13,6 @@ export default function ReconOptions({
   function selectAnswer(answer) {
     setSelectedAnswer(answer);
     setAnswered(true);
-    console.log(answer);
   }
 
   function handleNext() {
