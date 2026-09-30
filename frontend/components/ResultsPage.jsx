@@ -33,7 +33,7 @@ export default function ResultsPage(){
         </div>
       </div>
       
-      <button onClick={() => navigate("exercise-list")} className="flex-col border-2 bg-slate-600 rounded-xl w-[30%] h-[10%] mt-8">Começar outra lista</button>
+      <button onClick={() => navigate("/exercise-list")} className="flex-col border-2 bg-slate-600 rounded-xl w-[30%] h-[10%] mt-8">Começar outra lista</button>
       <button onClick={() => navigate("/")} className="flex-col border-2 bg-slate-600 rounded-xl w-[30%] h-[10%] mt-8">Home</button>
       
     </div>
