@@ -50,7 +50,13 @@ export default function Home(){
             <div className="flex flex-col justify-center items-center">
                 <h1>Shogi-sensei</h1>
                 <BeginButton onClick={() => {console.log("Starting list"); navigate("/exercise-list");}}></BeginButton>
-                <button className="flex-col border-2 bg-slate-600 rounded-xl w-[50%] h-[10%] mt-4" onClick={() => {localStorage.removeItem("access_token"); setAuthenticated(false);}}>
+                <button className="flex-col border-2 bg-slate-600 rounded-xl w-[50%] h-[10%] mt-4" onClick={() => {
+                    localStorage.removeItem("current_exercise");
+                    localStorage.removeItem("access_token");
+                    localStorage.removeItem("user_answers");
+                    localStorage.removeItem("exercise_list"); 
+                    setAuthenticated(false); 
+                }}>
                     Logout
                 </button>
             </div>
