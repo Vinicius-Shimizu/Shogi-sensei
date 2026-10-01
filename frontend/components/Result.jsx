@@ -3,15 +3,25 @@ import ExercisePreview from "./ExercisePreview";
 
 export default function Result({index, result}){
     const [showExplanation, setShowExplanation] = useState(false);
-    const exercise_types = {"recon": "Reconhecimento", "movement1": "Movimento 1", "movement2": "Movimento 2", "drop": "Drop", "promotion": "Promoção", "checkmate-in-one": "Chequemate"};
+    const exercise_types = {
+        "recon": "Reconhecimento", 
+        "movement1": "Movimento 1", 
+        "movement2": "Movimento 2", 
+        "drop": "Drop", 
+        "promotion": "Promoção", 
+        "checkmate-in-one": "Chequemate"
+    };
+
     const resultColor = result.is_correct ? "bg-green-500 text-black" : "bg-red-600 text-black";
+    const cellClass = `${resultColor} flex items-center justify-center text-center p-2`;
+
     return(
     <>
-        <div className={`${resultColor} flex items-center justify-center`}>{index}</div>
-        <div className={`${resultColor} flex items-center justify-center`}>{exercise_types[result.exercise_type]}</div>
-        <div className={`${resultColor} flex items-center justify-center`}>{result.answer}</div>
-        <div className={`${resultColor} flex items-center justify-center`}>{result.solution.split(":")[0]}</div>
-        <div className={`${resultColor} flex items-center justify-center`}>
+        <div className={cellClass}>{index}</div>
+        <div className={cellClass}>{exercise_types[result.exercise_type]}</div>
+        <div className={cellClass}>{result.answer}</div>
+        <div className={cellClass}>{result.solution.split(":")[0]}</div>
+        <div className={cellClass}>
             {!result.is_correct && (
                 <button onClick={() => setShowExplanation(true)} className="underline mr-4">
                     Ver explicação
