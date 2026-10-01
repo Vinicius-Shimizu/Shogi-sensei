@@ -23,7 +23,7 @@ export default function MovementOptions({
   return (
     <div className="flex justify-center">
       <div className="flex flex-col gap-2 items-center justify-center mt-4 w-[60vw] md:w-[30vw]">
-        <p className="w-[40vw] md:w-[20vw]">{exerciseNumber + 1}/{totalExercises} Qual é a peça na casa vermelha que pode se mover para as casas verdes?</p>
+        <p className="text-center">{exerciseNumber + 1}/{totalExercises} Qual é a peça na casa vermelha que pode se mover para as casas verdes?</p>
         <div className="grid grid-cols-2 gap-2">
           {possible_pieces.map((piece) => (
             <button
@@ -57,7 +57,7 @@ export default function MovementOptions({
                 rounded-lg
                 bg-wood
                 text-black
-                w-[20vw]
+                w-full
                 whitespace-nowrap
               "
             >
