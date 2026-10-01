@@ -44,7 +44,7 @@ export default function CheckmateInOneOptions({
             </button>
           ))}
         </div>
-
+        <div className="flex justify-center">
         {answered && (
           <button
             onClick={handleNext}
@@ -60,6 +60,7 @@ export default function CheckmateInOneOptions({
             {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
           </button>
         )}
+        </div>
       </div>
     </div>
   );

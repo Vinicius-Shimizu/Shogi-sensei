@@ -39,7 +39,7 @@ PIECES_DICT = {
     "+L": "Lança Promovida",
     "+N": "Cavalo Promovido",
     "+S": "General de Prata Promovido",
-    "+B": "Bispo promovido",
+    "+B": "Bispo Promovido",
     "+R": "Torre Promovida",
 }
 

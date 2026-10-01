@@ -4,6 +4,7 @@ import BoardWithMovement from "./BoardWithMovement";
 import CheckmateInOneOptions from "./CheckmateInOneOptions";
 import ReconOptions from "./ReconOptions";
 import MovementOptions from "./MovementOptions";
+import CheckmateBoard from "./CheckmateBoard";
 
 export default function Exercise({
   exercise,
@@ -57,13 +58,11 @@ export default function Exercise({
 
     case "checkmate-in-one":
       return (
-        <div className="flex justify-center items-center">
+        <div className="flex flex-col justify-center items-center">
           <div className="flex-col justify-center">
-            <Hand pieces={exercise.hands.gote} />
-    
-            <Board sfen={exercise.sfen}/>
-    
-            <Hand pieces={exercise.hands.sente} />
+            <Hand pieces={exercise.hands.gote} side={"gote"} />
+            <CheckmateBoard sfen={exercise.sfen}/>
+            <Hand pieces={exercise.hands.sente} side={"sente"}/>
           </div>
     
           <CheckmateInOneOptions

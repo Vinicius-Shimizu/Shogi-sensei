@@ -39,12 +39,10 @@ function isSentePiece(piece) {
 }
 
 
-function Piece({ piece, isTarget }) {
+function Piece({ piece }) {
     if(!piece) return null;
-    let image = piecesImagesMap["E"];
-    if(!isTarget) {image = piecesImagesMap[getPieceKey(piece)];}
     return (<img
-        src={image}
+        src={piecesImagesMap[getPieceKey(piece)]}
         alt={piece}
         className={`w-[85%] h-[85%] ${isSentePiece(piece) ? "rotate-180" : ""}`}
     />)
@@ -84,17 +82,9 @@ function parseSfenBoard(sfen) {
   });
 }
 
-function isMovementSquare(rowIndex, colIndex, moves) {
-  const square = `${cols[colIndex]}${rows[rowIndex]}`;
-  moves = moves.map(str=>str.slice(2,4))
-  return moves.includes(square);
-}
-
-export default function BoardWithMovement({ sfen, moves}) {
+export default function CheckmateBoard({ sfen }) {
   const board = parseSfenBoard(sfen);
-  moves = moves.slice(1, -1).split(", ").map(move => move.slice(1, -1));
-  const targetSquare = moves[0].slice(0, 2);
-
+  
   return (
     <div className="flex justify-center border border-2 border-stone-600 mt-4">
       <div className="grid grid-cols-11 grid-rows-10 aspect-square w-[80vw] md:w-[30vw]">
@@ -111,9 +101,8 @@ export default function BoardWithMovement({ sfen, moves}) {
             {c}
           </div>
         ))}
-        
-        <div></div>
 
+        <div></div>
         {/* linhas + tabuleiro */}
         {board.map((row, rIndex) => (
           <>
@@ -126,23 +115,14 @@ export default function BoardWithMovement({ sfen, moves}) {
             </div>
 
             {/* casas */}
-            {row.map((piece, cIndex) => {
-              const square = `${cols[cIndex]}${rows[rIndex]}`;
-              const isTarget = square === targetSquare;
-
-              return (
-                <div
-                  key={`${rIndex}-${cIndex}`}
-                  className={`flex border border-gray-500 flex items-center justify-center
-                    ${isMovementSquare(rIndex, cIndex, moves)
-                      ? "bg-green-300"
-                      : ""
-                    }`}
-                >
-                  <Piece piece={piece} isTarget={isTarget} />
-                </div>
-              );
-            })}
+            {row.map((piece, cIndex) => (
+              <div
+                key={`${rIndex}-${cIndex}`}
+                className="border border-gray-500 flex items-center justify-center"
+              >
+                <Piece piece={piece} />
+              </div>
+            ))}
             <div></div>
           </>
         ))}

@@ -45,22 +45,23 @@ export default function MovementOptions({
             </button>
           ))}
         </div>
-
-        {answered && (
-          <button
-            onClick={handleNext}
-            className="
-              mt-2
-              px-3 py-1
-              bg-green-200
-              border border-black
-              rounded
-              w-[20vw]
-            "
-          >
-            {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
-          </button>
-        )}
+        <div className="flex justify-center">
+          {answered && (
+            <button
+              onClick={handleNext}
+              className="
+                mt-2
+                px-3 py-1
+                bg-green-200
+                border border-black
+                rounded
+                w-[20vw]
+              "
+            >
+              {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
