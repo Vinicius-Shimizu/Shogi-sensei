@@ -11,6 +11,16 @@ export default function ExercisePreview({ result }) {
                 </div>
             );
 
+        case "movement1":
+            return (
+                <div className="flex justify-center">
+                    <BoardWithMovement
+                        sfen={result.sfen}
+                        moves={result.solution.split(":")[1]}
+                    />
+                </div>
+            );
+
         case "movement2":
             return (
                 <div className="flex justify-center">

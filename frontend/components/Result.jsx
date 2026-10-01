@@ -3,18 +3,17 @@ import ExercisePreview from "./ExercisePreview";
 
 export default function Result({index, result}){
     const [showExplanation, setShowExplanation] = useState(false);
-    const exercise_types = {"recon": "reconhecimento", "movement2": "Movimento 2"};
-    
+    const exercise_types = {"recon": "Reconhecimento", "movement1": "Movimento 1", "movement2": "Movimento 2", "drop": "Drop", "promotion": "Promoção", "checkmate-in-one": "Chequemate"};
+    const resultColor = result.is_correct ? "bg-green-500 text-black" : "bg-red-600 text-black";
     return(
     <>
-        <div>{index}</div>
-        <div>{exercise_types[result.exercise_type]}</div>
-        <div>{result.answer}</div>
-        <div>{result.solution.split(":")[0]}</div>
-
-        <div>
+        <div className={`${resultColor} flex items-center justify-center`}>{index}</div>
+        <div className={`${resultColor} flex items-center justify-center`}>{exercise_types[result.exercise_type]}</div>
+        <div className={`${resultColor} flex items-center justify-center`}>{result.answer}</div>
+        <div className={`${resultColor} flex items-center justify-center`}>{result.solution.split(":")[0]}</div>
+        <div className={`${resultColor} flex items-center justify-center`}>
             {!result.is_correct && (
-                <button onClick={() => setShowExplanation(true)} className="flex-col border-2 bg-slate-600 rounded-xl">
+                <button onClick={() => setShowExplanation(true)} className="underline mr-4">
                     Ver explicação
                 </button>
             )}
@@ -24,8 +23,8 @@ export default function Result({index, result}){
         </div>
 
         {showExplanation && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                <div className="bg-white p-6 rounded-lg max-w-2xl w-full">
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+                <div className="bg-gray-800 p-6 rounded-lg w-[80vw] md:w-[30vw] max-h-[80vh] md:max-h-[80vh] overflow-y-auto">
                     <h3 className="text-xl font-bold mb-4">
                         Explicação
                     </h3>

@@ -1,5 +1,4 @@
 import BeginButton from "./BeginButton";
-import ExerciseList from "./ExerciseList";
 import LoginButton from "./LoginButton";
 import SignUpButton from "./SignUpButton";
 import { useEffect, useState } from "react";
@@ -46,18 +45,18 @@ export default function Home(){
     
 
     if(authenticated){
-        return <div className="flex flex-cols justify-center h-screen p-4">
+        return <div className="flex flex-cols justify-center min-h-screen w-full bg-black">
             <div></div>
             <div className="flex flex-col justify-center items-center">
                 <h1>Shogi-sensei</h1>
-                <BeginButton onClick={() => {console.log("Starting list"); navigate("exercise-list");}}></BeginButton>
-                <button className="flex-col border-2 bg-slate-600 rounded-xl w-[50%] h-[10%] mt-8" onClick={() => {localStorage.removeItem("access_token"); setAuthenticated(false);}}>
+                <BeginButton onClick={() => {console.log("Starting list"); navigate("/exercise-list");}}></BeginButton>
+                <button className="flex-col border-2 bg-slate-600 rounded-xl w-[50%] h-[10%] mt-4" onClick={() => {localStorage.removeItem("access_token"); setAuthenticated(false);}}>
                     Logout
                 </button>
             </div>
         </div>
     }
-    return <div className="flex flex-cols justify-center h-screen p-4">
+    return <div className="flex flex-cols justify-center min-h-screen w-full bg-black">
         <div></div>
         <div className="flex flex-col justify-center items-center">
             <h1>Shogi-sensei</h1>

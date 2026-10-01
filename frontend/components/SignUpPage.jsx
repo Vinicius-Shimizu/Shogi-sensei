@@ -58,7 +58,7 @@ export default function SignUpPage(){
         }   
     }
 
-    return <div className="flex justify-center items-center h-screen">
+    return <div className="flex justify-center items-center min-h-screen w-full bg-black">
         <form
             onSubmit={handleSignup}
             className="flex flex-col gap-4 w-80"

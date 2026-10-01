@@ -251,10 +251,25 @@ class ExerciseService:
                 A sua tarefa é corrigir exercícios de Shogi. Você receberá o tabuleiro seguindo o formato SFEN, assim como a resposta do usuário e a resposta esperada. 
                 Você deve explicar porque o usuário errou a resposta, mostrando de forma clara os motivos pelos quais a resposta esperada é a correta e considerando que
                 o usuário é um iniciante.
+                
+                As peças se movem da seguinte forma:
+                 - Peão: anda uma casa para frente
+                 - Cavalo: anda em L apenas para frente
+                 - Lança: anda quantas casas quiser, mas apenas para frente
+                 - General de Prata: anda uma casa para frente ou uma casa para cada diagonal
+                 - General de Ouro: anda uma casa para todos os lados (cima, baixo, esquerda e direita) ou cada diagonal da frente
+                 - Bispo: anda quantas casas quiser para todas as diagonais
+                 - Torre: anda quantas casas quiser em para todos os lados (cima, baixo, esquerda e direita)
+                 - Rei: anda uma casa para todos os lados e diagonais
+                 - Bispo promovido: anda como um Bispo, mas também passa a poder andar uma casa para todos os lados (cima, baixo, esquerda e direita)
+                 - Torre promovida: anda como uma torre, mas também passa a poder andar uma casa para todas as diagonais
+                 - As outras peças promovidas passam a se movimentar como um General de Ouro
+
                 Existem os seguintes módulos:
                  - recon: Envolve o reconhecimento das peças. A pergunta é "Qual é a peça na posição X?", onde X se refere a posição que vem acompanhada da resposta esperada.
                  - movement1 e movement2: Envolvem o reconhecimento dos movimentos das peças. A pergunta é "Qual peça possui os movimentos destacados?". Os movimentos vem acompanhados pela resposta esperada.
                  - checkmate-in-one: Envolve identificar qual jogada levará ao chequemate. A pergunta é "Qual movimento leva ao chequemate?".
+                 
                 Seguem os exercicios a serem corrigidos: 
                 {json.dumps(payload, ensure_ascii=False)}
                 """

@@ -86,8 +86,16 @@ export default function Board({ sfen }) {
   const board = parseSfenBoard(sfen);
   
   return (
-    <div className="flex justify-center border border-2 border-stone-600 mt-4">
-      <div className="grid grid-cols-11 grid-rows-10 aspect-square w-[80vw] md:w-[30vw]">
+    <div className="flex justify-center border-4 border-stone-600 mt-4 rounded-xl overflow-hidden">
+      <div 
+        className="grid grid-cols-11 grid-rows-11 aspect-square w-[80vw] md:w-[30vw]" 
+        style={{
+          backgroundImage: `url(${BASE_URL}board.png)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "brightness(0.9)",
+        }}
+      >
         
         {/* canto vazio */}
         <div></div>
@@ -96,7 +104,7 @@ export default function Board({ sfen }) {
         {cols.map((c) => (
           <div
             key={c}
-            className="flex items-center justify-center font-bold text-sm sm:text-base"
+            className="flex items-center justify-center font-bold text-sm sm:text-base text-black"
           >
             {c}
           </div>
@@ -109,7 +117,7 @@ export default function Board({ sfen }) {
             {/* label da linha */}
             <div
               key={`row-${rIndex}`}
-              className="flex items-center justify-center font-bold text-sm sm:text-base"
+              className="flex items-center justify-center font-bold text-sm sm:text-base text-black"
             >
               {rows[rIndex]}
             </div>
@@ -118,7 +126,7 @@ export default function Board({ sfen }) {
             {row.map((piece, cIndex) => (
               <div
                 key={`${rIndex}-${cIndex}`}
-                className="border border-gray-500 flex items-center justify-center"
+                className="border border-black flex items-center justify-center"
               >
                 <Piece piece={piece} />
               </div>

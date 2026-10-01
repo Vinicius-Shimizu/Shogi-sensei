@@ -22,8 +22,8 @@ export default function MovementOptions({
 
   return (
     <div className="flex justify-center">
-      <div className="flex flex-col gap-2 justify-center mt-4 w-[60vw] md:w-[30vw]">
-        {exerciseNumber + 1}/{totalExercises} Qual peça pode se mover para as casas destacadas?
+      <div className="flex flex-col gap-2 items-center justify-center mt-4 w-[60vw] md:w-[30vw]">
+        <p className="w-[40vw] md:w-[20vw]">{exerciseNumber + 1}/{totalExercises} Qual é a peça na casa vermelha que pode se mover para as casas verdes?</p>
         <div className="grid grid-cols-2 gap-2">
           {possible_pieces.map((piece) => (
             <button
@@ -36,9 +36,10 @@ export default function MovementOptions({
                 rounded 
                 font-mono 
                 transition 
-                  ${ selectedAnswer === piece ? "bg-blue-300" : "bg-amber-100" } 
-                  disabled:cursor-default
-                  w-full
+                ${selectedAnswer === null ? "bg-wood" : `${ selectedAnswer === piece ? "bg-blue-300" : "bg-wood-500" }`}
+                disabled:cursor-default
+                w-full
+                text-black
               `}
             >
               {piece}
@@ -52,10 +53,12 @@ export default function MovementOptions({
               className="
                 mt-2
                 px-3 py-1
-                bg-green-200
                 border border-black
-                rounded
+                rounded-lg
+                bg-wood
+                text-black
                 w-[20vw]
+                whitespace-nowrap
               "
             >
               {isLastExercise ? "Finalizar lista" : "Próximo exercício"}

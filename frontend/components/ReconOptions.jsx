@@ -24,7 +24,7 @@ export default function ReconOptions({
   return (
     <div className="flex justify-center">
       <div className="flex flex-col gap-2 justify-center mt-4 w-[60vw] md:w-[30vw]">
-        {exerciseNumber + 1}/{totalExercises} Qual é a peça na posição {position}?
+        <p className="w-[40vw] md:w-[20vw]">{exerciseNumber + 1}/{totalExercises} Qual é a peça na posição {position}?</p>
         <div className="grid grid-cols-2 gap-2">
           {possible_moves.map((move) => (
             <button
@@ -37,9 +37,10 @@ export default function ReconOptions({
                 rounded 
                 font-mono 
                 transition 
-                ${ selectedAnswer === move ? "bg-blue-300" : "bg-amber-100" } 
+                ${selectedAnswer === null ? "bg-wood" : `${ selectedAnswer === move ? "bg-blue-300" : "bg-wood-500" }`}
                 disabled:cursor-default
                 w-full
+                text-black
               `}
             >
               {move}
@@ -53,10 +54,12 @@ export default function ReconOptions({
               className="
                 mt-2
                 px-3 py-1
-                bg-green-200
                 border border-black
-                rounded
+                rounded-lg
+                bg-wood
+                text-black
                 w-[20vw]
+                whitespace-nowrap
               "
             >
               {isLastExercise ? "Finalizar lista" : "Próximo exercício"}

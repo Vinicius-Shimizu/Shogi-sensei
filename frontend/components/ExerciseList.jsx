@@ -70,6 +70,7 @@ export default function ExerciseList() {
 
     if (token) {
       fetchExercises();
+      console.log(exercises);
     }
   }, [API_URL, token, navigate]);
 
@@ -145,12 +146,12 @@ export default function ExerciseList() {
   }
 
   if (loadingList) {
-    return <div>Carregando...</div>;
+    return <div className="w-full min-h-screen bg-black">Carregando...</div>;
   }
 
   if (exercises.length === 0) {
     return (
-      <div className="h-screen">
+      <div className="w-full min-h-screen bg-black">
         <div>Nenhum exercício encontrado.</div>
         <button onClick={() => navigate("/")} className="flex-col border-2 bg-slate-600 rounded-xl w-[30%] h-[10%] mt-8">Home</button>
       </div>
@@ -158,17 +159,19 @@ export default function ExerciseList() {
   }
 
   if (submitting) {
-    return <div>Corrigindo exercícios...</div>;
+    return <div className="w-full min-h-screen bg-black">Corrigindo exercícios...</div>;
   }
 
 
   return (
-    <Exercise
-      key={currentExercise}
-      exercise={exercises[currentExercise]}
-      onAnswer={handleAnswer}
-      exerciseNumber={currentExercise}
-      totalExercises={exercises.length}
-      />
+    <div className={`w-full min-h-screen bg-black justify-center items-center`}>
+      <Exercise
+        key={currentExercise}
+        exercise={exercises[currentExercise]}
+        onAnswer={handleAnswer}
+        exerciseNumber={currentExercise}
+        totalExercises={exercises.length}
+        />
+    </div>
   );
 }
