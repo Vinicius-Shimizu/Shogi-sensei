@@ -20,8 +20,8 @@ export default function ResultsPage(){
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-black">
       <h2 className="mt-5">Resultados</h2>
 
-      <div className="w-[95vw] md:w-[80vw] overflow-x-auto mt-4">
-        <div className="grid grid-cols-[50px_1fr_1fr_1fr_1.5fr] p-4 border-2 text-lg">
+      <div className="w-[95vw] md:w-[80vw] overflow-x-auto border-2 mt-4">
+        <div className="grid grid-cols-[50px_1fr_1fr_1fr_1.5fr] p-4 text-lg">
           <div className="flex items-center justify-center p-2">
             Questão
           </div>
