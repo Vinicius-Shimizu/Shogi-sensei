@@ -32,9 +32,10 @@ export default function ExerciseList() {
       const savedList = localStorage.getItem("exercise_list");
 
       if (savedList) {
-        setExercises(JSON.parse(savedList));
+        const savedExercises = JSON.parse(savedList);
+        setExercises(savedExercises);
         setLoadingList(false);
-        if(exercises.length == answers.length){
+        if(savedExercises.length == answers.length){
            submitAnswers(answers);
         }
         return;
