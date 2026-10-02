@@ -13,7 +13,9 @@ export default function ExerciseList() {
     return saved ? JSON.parse(saved) : [];
   });
   const [loadingList, setLoadingList] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState(() => {
+    return localStorage.getItem("submitting") === "true";
+  });
 
   const API_URL=import.meta.env.VITE_BACKEND_API_URL;
   const token = localStorage.getItem("access_token");
@@ -76,6 +78,7 @@ export default function ExerciseList() {
 
   async function submitAnswers(finalAnswers) {
     setSubmitting(true);
+    localStorage.setItem("submitting", "true");
 
     try {
       const response = await fetch(
@@ -94,6 +97,7 @@ export default function ExerciseList() {
 
       if (response.status === 401) {
         localStorage.removeItem("access_token");
+        localStorage.removeItem("submitting");
         navigate("/login");
         return;
       }
@@ -106,22 +110,20 @@ export default function ExerciseList() {
       localStorage.removeItem("exercise_list");
       localStorage.removeItem("current_exercise");
       localStorage.removeItem("user_answers");
+      localStorage.removeItem("submitting");
 
       navigate("/results", {
         state: { result: data },
       });
     } catch (error) {
       console.error("Erro ao enviar respostas:", error);
+      localStorage.removeItem("submitting");
     } finally {
       setSubmitting(false);
     }
   }
 
   function handleAnswer(answer) {
-    if(currentExercise >= exercises.length - 1){
-      submitAnswers(answers);
-      return;
-    }
     const exercise = exercises[currentExercise];
 
     const newAnswer = {
@@ -138,15 +140,16 @@ export default function ExerciseList() {
     );
     const nextExercise = currentExercise + 1;
     
+    if (nextExercise >= exercises.length) {
+      submitAnswers(newAnswers);
+      return;
+    }
+
     setCurrentExercise(nextExercise);
     localStorage.setItem(
       "current_exercise",
       nextExercise.toString()
     );
-
-    if (nextExercise >= exercises.length) {
-      submitAnswers(newAnswers);
-    }
   }
 
   if (loadingList) {
