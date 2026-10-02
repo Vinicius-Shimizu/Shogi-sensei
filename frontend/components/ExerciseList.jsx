@@ -14,7 +14,9 @@ export default function ExerciseList() {
   });
   const [loadingList, setLoadingList] = useState(true);
   const [submitting, setSubmitting] = useState(() => {
-    return localStorage.getItem("submitting") === "true";
+    const submitted = localStorage.getItem("submitting")
+    console.log(submitted); 
+    return submitted == "true";
   });
 
   const API_URL=import.meta.env.VITE_BACKEND_API_URL;
