@@ -134,6 +134,11 @@ export default function ExerciseList() {
     );
     const nextExercise = currentExercise + 1;
 
+    if (nextExercise >= exercises.length) {
+      submitAnswers(newAnswers);
+      return;
+    }
+
     setCurrentExercise(nextExercise);
     localStorage.setItem(
       "current_exercise",
