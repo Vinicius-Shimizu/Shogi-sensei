@@ -34,6 +34,9 @@ export default function ExerciseList() {
       if (savedList) {
         setExercises(JSON.parse(savedList));
         setLoadingList(false);
+        if(exercises.length == answers.length){
+           submitAnswers(answers);
+        }
         return;
       }
       try {
@@ -145,7 +148,9 @@ export default function ExerciseList() {
       nextExercise.toString()
     );
   }
-
+  if (submitting) {
+    return <div className="w-full min-h-screen bg-black">Corrigindo exercícios...</div>;
+  }
   if (loadingList) {
     return <div className="w-full min-h-screen bg-black">Carregando...</div>;
   }
@@ -159,9 +164,7 @@ export default function ExerciseList() {
     )
   }
 
-  if (submitting) {
-    return <div className="w-full min-h-screen bg-black">Corrigindo exercícios...</div>;
-  }
+  
 
 
   return (
