@@ -124,6 +124,10 @@ export default function ExerciseList() {
   }
 
   function handleAnswer(answer) {
+    if(currentExercise > exercises.length - 1){
+      submitAnswers(answers);
+      return;
+    }
     const exercise = exercises[currentExercise];
 
     const newAnswer = {
