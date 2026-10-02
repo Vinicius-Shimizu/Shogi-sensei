@@ -118,6 +118,10 @@ export default function ExerciseList() {
   }
 
   function handleAnswer(answer) {
+    if(currentExercise >= exercises.length - 1){
+      submitAnswers(answers);
+      return;
+    }
     const exercise = exercises[currentExercise];
 
     const newAnswer = {
@@ -133,12 +137,7 @@ export default function ExerciseList() {
       JSON.stringify(newAnswers)
     );
     const nextExercise = currentExercise + 1;
-
-    if (nextExercise >= exercises.length) {
-      submitAnswers(newAnswers);
-      return;
-    }
-
+    
     setCurrentExercise(nextExercise);
     localStorage.setItem(
       "current_exercise",
