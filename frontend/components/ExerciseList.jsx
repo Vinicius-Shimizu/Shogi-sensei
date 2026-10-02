@@ -124,7 +124,7 @@ export default function ExerciseList() {
   }
 
   function handleAnswer(answer) {
-    if(currentExercise > exercises.length - 1){
+    if(currentExercise >= exercises.length - 1){
       submitAnswers(answers);
       return;
     }
