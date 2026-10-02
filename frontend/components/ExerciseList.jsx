@@ -125,6 +125,7 @@ export default function ExerciseList() {
 
   function handleAnswer(answer) {
     if(currentExercise >= exercises.length - 1){
+      localStorage.setItem("submitting", "true");
       submitAnswers(answers);
       return;
     }
@@ -145,6 +146,7 @@ export default function ExerciseList() {
     const nextExercise = currentExercise + 1;
     
     if (nextExercise >= exercises.length) {
+      localStorage.setItem("submitting", "true");
       submitAnswers(newAnswers);
       return;
     }
