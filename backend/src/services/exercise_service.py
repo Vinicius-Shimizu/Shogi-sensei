@@ -102,6 +102,27 @@ class ExerciseService:
 
         self.session.commit()
         return exercises
+
+    def generate_promotion(self):
+        batch_processed = False
+        games = self.raw_games_repo.get_unprocessed_games()
+        if not games:
+            batch_processed = True
+            games = self.raw_games_repo.get_random(limit=300)
+        exercises = self.generator.promotion(games)
+        if exercises:
+            self.exercise_repo.bulk_insert(exercises)
+
+        if not batch_processed:
+            processed_ids = [
+                game.game_id
+                for game in games
+            ]
+
+            self.raw_games_repo.update_processed(processed_ids)
+
+        self.session.commit()
+        return exercises
         
     def get_exercise_by_id(self, exercise_id: int):
         return self.exercise_repo.get_by_id(exercise_id)

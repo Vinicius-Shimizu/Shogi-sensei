@@ -74,7 +74,6 @@ export default function ExerciseList() {
 
     if (token) {
       fetchExercises();
-      console.log(exercises);
     }
   }, [API_URL, token, navigate]);
 

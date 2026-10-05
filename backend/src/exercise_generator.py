@@ -44,7 +44,7 @@ PIECES_DICT = {
 }
 
 class ExerciseGenerator():
-    def __init__(self, verbose=False, games_period = 7):
+    def __init__(self, verbose=False):
         self.verbose = verbose
         self.csa_parser = CSA.Parser()
         self.session = requests.Session()
@@ -404,7 +404,52 @@ class ExerciseGenerator():
 
         return exercises
 
+    def promotion(self, games):
+        # def get_options()
 
+        exercises = []
+        for game in games:
+            board = cshogi.Board()
+            for move in game.moves:
+                board.push(move)
+                sfen = board.sfen()
+                if sfen.split(" ")[1] == "w": continue
+                
+                promotion_moves = []
+                possible_moves = []
+                for move in board.pseudo_legal_moves:
+                    usi = cshogi.move_to_usi(move)
+                    if "+" in usi: promotion_moves.append(usi)
+                    elif "*" not in usi: possible_moves.append(usi)
+
+                if len(promotion_moves) < 1 or len(possible_moves) < 3: continue
+
+                positions = self.get_positions_from_board(board)
+                positions_dict = {}
+                for pos, piece in positions:
+                    positions_dict[pos] = piece
+                solution = random.choice(promotion_moves)
+                piece = positions_dict[solution[0:2]]
+                
+                options = random.sample(possible_moves, 3)
+                options.append(solution)
+                random.shuffle(options)
+                if len(options) < 4: continue
+
+                exercise = {
+                    "sfen": sfen,
+                    "hands": {
+                        "sente": {},
+                        "gote": {},
+                    },
+                    "solution": f"{solution}",
+                    "options": options,
+                    "pieces_used": [piece],
+                    "type": "promotion"
+                }
+                exercises.append(exercise)
+
+        return exercises
 
 def print_board(sfen: str):
     board_part = sfen.split()[0]

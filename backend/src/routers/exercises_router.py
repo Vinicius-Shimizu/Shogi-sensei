@@ -54,6 +54,15 @@ def generate_movement2(session: Session = Depends(get_session)):
         "count": len(exercises)
     }
 
+@router.post("/promotion", status_code=status.HTTP_201_CREATED)
+def generate_promotion(session: Session = Depends(get_session)):
+    service = ExerciseService(session)
+    exercises = service.generate_promotion()
+    return {
+        "message": "Exercises generated successfully",
+        "count": len(exercises)
+    }
+
 
 @router.post("/fetch-games",status_code=status.HTTP_201_CREATED)
 def fetch_games(session: Session = Depends(get_session)):

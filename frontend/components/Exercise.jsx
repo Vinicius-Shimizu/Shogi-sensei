@@ -5,6 +5,7 @@ import CheckmateInOneOptions from "./CheckmateInOneOptions";
 import ReconOptions from "./ReconOptions";
 import MovementOptions from "./MovementOptions";
 import CheckmateBoard from "./CheckmateBoard";
+import PromotionOptions from "./PromotionOptions";
 
 export default function Exercise({
   exercise,
@@ -49,6 +50,20 @@ export default function Exercise({
     
           <MovementOptions
             possible_pieces={exercise.options}
+            onAnswer={onAnswer}
+            exerciseNumber={exerciseNumber}
+            totalExercises={totalExercises}
+          />
+        </div>
+      );
+
+    case "promotion":
+      return (
+        <div className="flex flex-col justify-center items-center">
+          <Board sfen={exercise.sfen}/>
+    
+          <PromotionOptions
+            possible_moves={exercise.options}
             onAnswer={onAnswer}
             exerciseNumber={exerciseNumber}
             totalExercises={totalExercises}

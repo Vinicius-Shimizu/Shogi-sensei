@@ -41,7 +41,7 @@ export default function CheckmateInOneOptions({
                 text-black
               `}
             >
-              {move}
+              {move.slice(0, 2) + (move.includes("*") ? "" : "->") + move.slice(2)}
             </button>
           ))}
         </div>
