@@ -17,7 +17,7 @@ class ExerciseService:
         self.user_status_repo = UserStatusRepository(session)
         self.generator = ExerciseGenerator()
 
-        self.modules = ["recon", "movement1", "movement2", "checkmate-in-one", "drop"]
+        self.modules = ["recon", "movement1", "movement2", "promotion", "drop", "checkmate-in-one"]
 
     def fetch_games(self):
         games = []
@@ -141,10 +141,7 @@ class ExerciseService:
         average_performance = {}
         for module in performance_totals:
             if performance_counts[module] > 0:
-                average_performance[module] = (
-                    performance_totals[module]
-                    / performance_counts[module]
-                )
+                average_performance[module] = performance_totals[module] / performance_counts[module]
 
         new_probs = dict(user_status.modules_probs)
         
@@ -227,9 +224,8 @@ class ExerciseService:
 
         for exercise_type in score_per_module: score_per_module[exercise_type] /= totals[exercise_type]
 
-        user_status.recent_performances = (
-            user_status.recent_performances + [score_per_module]
-        )[-10:]
+        user_status.recent_performances = user_status.recent_performances + [score_per_module]
+        
 
         self.update_modules_probs(user_id)
         self.session.commit()
@@ -266,7 +262,7 @@ class ExerciseService:
                  - As outras peças promovidas passam a se movimentar como um General de Ouro
 
                 Existem os seguintes módulos:
-                 - recon: Envolve o reconhecimento das peças. A pergunta é "Qual é a peça na posição X?", onde X se refere a posição que vem acompanhada da resposta esperada.
+                 - recon: Envolve o reconhecimento das peças. A pergunta é "Qual é a peça na posição X?". A posição X vem acompanhada pela resposta esperada. Quando explicar essa questão, ao se referir a resposta esperada, não use o formato peça:posição e explique de sucinta.
                  - movement1 e movement2: Envolvem o reconhecimento dos movimentos das peças. A pergunta é "Qual peça possui os movimentos destacados?". Os movimentos vem acompanhados pela resposta esperada.
                  - checkmate-in-one: Envolve identificar qual jogada levará ao chequemate. A pergunta é "Qual movimento leva ao chequemate?".
                  
