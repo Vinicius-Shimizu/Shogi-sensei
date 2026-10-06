@@ -21,7 +21,7 @@ export default function Exercise({
     
           <ReconOptions
             position={exercise.solution.split(":")[1]}
-            possible_moves={exercise.options}
+            possible_pieces={exercise.options}
             onAnswer={onAnswer}
             exerciseNumber={exerciseNumber}
             totalExercises={totalExercises}
