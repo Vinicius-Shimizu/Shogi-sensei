@@ -31,6 +31,16 @@ export default function ExercisePreview({ result }) {
                 </div>
             );
 
+        case "promotion":
+            return (
+                <div className="flex justify-center">
+                    <Board
+                        sfen={result.sfen}
+                        moves={result.solution.split(":")[1]}
+                    />
+                </div>
+            );
+        
         case "checkmate-in-one":
             return (
                 <div className="flex justify-center">
