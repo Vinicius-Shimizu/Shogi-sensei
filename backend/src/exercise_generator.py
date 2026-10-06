@@ -440,11 +440,8 @@ class ExerciseGenerator():
                 for pos, piece in positions:
                     positions_dict[pos] = piece
                 piece = positions_dict[solution[0:2]]
-<<<<<<< HEAD
 
-=======
                 
->>>>>>> f73c2cf8e24f90765cdff64dee2cbacbe232abae
                 exercise = {
                     "sfen": sfen,
                     "hands": {
