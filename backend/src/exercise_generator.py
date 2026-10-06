@@ -408,7 +408,11 @@ class ExerciseGenerator():
         def get_options(solution: str, possible_moves: list):
             dummy_solution = solution.strip("+")
             possible_moves = [p for p in possible_moves if p != dummy_solution]
+<<<<<<< HEAD
             options = random.sample(possible_moves, min(len(possible_moves), 3))
+=======
+            options = random.sample(possible_moves, min(len(possible_moves, 3)))
+>>>>>>> f73c2cf8e24f90765cdff64dee2cbacbe232abae
             options.append(solution)
             random.shuffle(options)
             return options
@@ -440,7 +444,11 @@ class ExerciseGenerator():
                 for pos, piece in positions:
                     positions_dict[pos] = piece
                 piece = positions_dict[solution[0:2]]
+<<<<<<< HEAD
 
+=======
+                
+>>>>>>> f73c2cf8e24f90765cdff64dee2cbacbe232abae
                 exercise = {
                     "sfen": sfen,
                     "hands": {
