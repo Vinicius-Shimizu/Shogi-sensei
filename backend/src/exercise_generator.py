@@ -405,7 +405,13 @@ class ExerciseGenerator():
         return exercises
 
     def promotion(self, games):
-        # def get_options()
+        def get_options(solution: str, possible_moves: list):
+            dummy_solution = solution.strip("+")
+            possible_moves = [p for p in possible_moves if p != dummy_solution]
+            options = random.sample(possible_moves, min(len(possible_moves, 3)))
+            options.append(solution)
+            random.shuffle(options)
+            return options
 
         exercises = []
         for game in games:
@@ -422,20 +428,19 @@ class ExerciseGenerator():
                     if "+" in usi: promotion_moves.append(usi)
                     elif "*" not in usi: possible_moves.append(usi)
 
-                if len(promotion_moves) < 1 or len(possible_moves) < 3: continue
+                if len(promotion_moves) < 1: continue
+                
+                solution = random.choice(promotion_moves)
+
+                options = get_options(solution, possible_moves)
+                if len(options) < 4: continue
 
                 positions = self.get_positions_from_board(board)
                 positions_dict = {}
                 for pos, piece in positions:
                     positions_dict[pos] = piece
-                solution = random.choice(promotion_moves)
                 piece = positions_dict[solution[0:2]]
                 
-                options = random.sample(possible_moves, 3)
-                options.append(solution)
-                random.shuffle(options)
-                if len(options) < 4: continue
-
                 exercise = {
                     "sfen": sfen,
                     "hands": {
