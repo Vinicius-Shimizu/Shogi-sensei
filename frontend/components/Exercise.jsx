@@ -6,6 +6,8 @@ import ReconOptions from "./ReconOptions";
 import MovementOptions from "./MovementOptions";
 import CheckmateBoard from "./CheckmateBoard";
 import PromotionOptions from "./PromotionOptions";
+import DropOptions from "./DropOptions";
+
 
 export default function Exercise({
   exercise,
@@ -64,6 +66,24 @@ export default function Exercise({
     
           <PromotionOptions
             possible_moves={exercise.options}
+            onAnswer={onAnswer}
+            exerciseNumber={exerciseNumber}
+            totalExercises={totalExercises}
+          />
+        </div>
+      );
+
+    case "drop":
+      return (
+        <div className="flex flex-col justify-center items-center">
+          <div className="flex-col justify-center">
+            <Hand pieces={exercise.hands.gote} side={"gote"} />
+            <CheckmateBoard sfen={exercise.sfen}/>
+            <Hand pieces={exercise.hands.sente} side={"sente"}/>
+          </div>
+    
+          <DropOptions
+            possible_drops={exercise.options}
             onAnswer={onAnswer}
             exerciseNumber={exerciseNumber}
             totalExercises={totalExercises}

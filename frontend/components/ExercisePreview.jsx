@@ -1,6 +1,7 @@
 import Hand from "./Hand";
 import Board from "./Board";
 import BoardWithMovement from "./BoardWithMovement";
+import CheckmateBoard from "./CheckmateBoard";
 
 export default function ExercisePreview({ result }) {
     switch (result.exercise_type) {
@@ -41,13 +42,24 @@ export default function ExercisePreview({ result }) {
                 </div>
             );
         
+        case "drop":
+            return (
+                <div className="flex justify-center">
+                    <div>
+                        <Hand pieces={result.hands.gote} side={"gote"} />
+                        <CheckmateBoard sfen={result.sfen} />
+                        <Hand pieces={result.hands.sente} side={"sente"} />
+                    </div>
+                </div>
+            );
+
         case "checkmate-in-one":
             return (
                 <div className="flex justify-center">
                     <div>
-                        <Hand pieces={result.hands?.gote} />
-                        <Board sfen={result.sfen} />
-                        <Hand pieces={result.hands?.sente} />
+                        <Hand pieces={result.hands.gote} side={"gote"} />
+                        <CheckmateBoard sfen={result.sfen} />
+                        <Hand pieces={result.hands.sente} side={"sente"} />
                     </div>
                 </div>
             );

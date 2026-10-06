@@ -423,7 +423,7 @@ class ExerciseGenerator():
                 
                 promotion_moves = []
                 possible_moves = []
-                for move in board.pseudo_legal_moves:
+                for move in board.legal_moves:
                     usi = cshogi.move_to_usi(move)
                     if "+" in usi: promotion_moves.append(usi)
                     elif "*" not in usi: possible_moves.append(usi)
@@ -456,6 +456,92 @@ class ExerciseGenerator():
                 exercises.append(exercise)
 
         return exercises
+
+    def drop(self, games):
+        def parse_hands(hand_string):
+            if hand_string == "-":
+                return {
+                    "sente": {},
+                    "gote": {},
+                }
+
+            result = {
+                "sente": {},
+                "gote": {},
+            }
+
+            i = 0
+
+            while i < len(hand_string):
+                count = ""
+
+                while i < len(hand_string) and hand_string[i].isdigit():
+                    count += hand_string[i]
+                    i += 1
+
+                piece = hand_string[i]
+                qty = int(count) if count else 1
+
+                target = "sente" if piece.isupper() else "gote"
+                piece = piece.upper()
+
+                result[target][piece] = result[target].get(piece, 0) + qty
+
+                i += 1
+
+            return result
+        
+        def get_illegal_drops(legal_drops: list, piece: str):
+            illegal_drops = []
+            legal_drops = set(legal_drops)
+            for square in range(81):
+                square_usi = cshogi.SQUARE_NAMES[square]
+                drop_move = f"{piece}*{square_usi}"
+
+                if drop_move not in legal_drops: illegal_drops.append(drop_move)
+            
+            return illegal_drops
+
+        def get_options(solution: str, illegal_drops: list):
+            options = random.sample(illegal_drops, min(len(illegal_drops), 3))
+            options.append(solution)
+            random.shuffle(options)
+            return options
+
+        exercises = []
+        for game in games:
+            board = cshogi.Board()
+            for move in game.moves:
+                board.push(move)
+                sfen = board.sfen()
+                if sfen.split(" ")[1] == "w": continue
+                
+                legal_drops = []
+                for move in board.legal_moves:
+                    usi = cshogi.move_to_usi(move)
+                    if "*" in usi: legal_drops.append(usi)
+                    
+                if len(legal_drops) < 1: continue
+                
+                solution = random.choice(legal_drops)
+                piece = solution[0]
+
+                illegal_drops = get_illegal_drops(legal_drops, piece)
+                options = get_options(solution, illegal_drops)
+                if len(options) < 4: continue
+
+                exercise = {
+                    "sfen": sfen,
+                    "hands": parse_hands(sfen.split(" ")[2]),
+                    "solution": f"{solution}",
+                    "options": options,
+                    "pieces_used": [piece],
+                    "type": "drop"
+                }
+                exercises.append(exercise)
+
+        return exercises
+
 
 def print_board(sfen: str):
     board_part = sfen.split()[0]

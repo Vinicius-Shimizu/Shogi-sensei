@@ -11,28 +11,21 @@ export default function ReconOptions({
   const [selectedAnswer, setSelectedAnswer] = useState(null);
 
   let PIECES_DICT = {
-      "P": "Peão",
-      "L": "Lança",
-      "N": "Cavalo",
-      "S": "General de Prata",
-      "B": "Bispo",
-      "R": "Torre",
-      "G": "General de Ouro",
-      "K": "Rei",
-      "+P": "Peão Promovido",
-      "+L": "Lança Promovida",
-      "+N": "Cavalo Promovido",
-      "+S": "General de Prata Promovido",
-      "+B": "Bispo Promovido",
-      "+R": "Torre Promovida",
+      "Peão": "P",
+      "Lança": "L",
+      "Cavalo": "N",
+      "General de Prata": "S",
+      "Bispo": "B",
+      "Torre": "R",
+      "General de Ouro": "G",
+      "Rei": "K",
+      "Peão Promovido": "+P",
+      "Lança Promovida": "+L",
+      "Cavalo Promovido": "+N",
+      "General de Prata Promovido": "+S",
+      "Bispo Promovido": "+B",
+      "Torre Promovida": "+R",
   }
-  PIECES_DICT = Object.fromEntries(
-    Object.entries(PIECES_DICT).map(([key, val]) => [val, key])
-  );
-
-  // Instant O(1) lookup
-  console.log(PIECES_DICT); // Output: "b"
-
 
   function selectAnswer(answer) {
     setSelectedAnswer(answer);

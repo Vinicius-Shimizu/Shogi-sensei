@@ -123,6 +123,29 @@ class ExerciseService:
 
         self.session.commit()
         return exercises
+
+    def generate_drop(self):
+        batch_processed = False
+        games = self.raw_games_repo.get_unprocessed_games()
+        if not games:
+            batch_processed = True
+            games = self.raw_games_repo.get_random(limit=300)
+        exercises = self.generator.drop(games)
+        if exercises:
+            self.exercise_repo.bulk_insert(exercises)
+
+        if not batch_processed:
+            processed_ids = [
+                game.game_id
+                for game in games
+            ]
+
+            self.raw_games_repo.update_processed(processed_ids)
+
+        self.session.commit()
+        return exercises
+    
+
         
     def get_exercise_by_id(self, exercise_id: int):
         return self.exercise_repo.get_by_id(exercise_id)
@@ -282,12 +305,19 @@ class ExerciseService:
                  - Torre promovida: anda como uma torre, mas também passa a poder andar uma casa para todas as diagonais
                  - As outras peças promovidas passam a se movimentar como um General de Ouro
 
+                Um movimento de drop só pode ser feito quando:
+                 - A peça colocada não consegue fazer um movimento em turnos futuros (peões e lanças na ultima linha; cavalos nas últimas 2 linhas);
+                 - A casa já está ocupada;
+                 - A peça é um peão e o posicionamento leva a um chequemate;
+                 - A peça é um peão e na coluna já há um peão aliado. 
+                
                 Existem os seguintes módulos:
                  - recon: Envolve o reconhecimento das peças. A pergunta é "Qual é a peça na posição X?". A posição X vem acompanhada pela resposta esperada. Quando explicar essa questão, ao se referir a resposta esperada, não use o formato peça:posição e explique de sucinta.
                  - movement1 e movement2: Envolvem o reconhecimento dos movimentos das peças. A pergunta é "Qual peça possui os movimentos destacados?". Os movimentos vem acompanhados pela resposta esperada.
                  - checkmate-in-one: Envolve identificar qual jogada levará ao chequemate. A pergunta é "Qual movimento leva ao chequemate?".
-                 - promotion: Envolve identificar qual movimento possibilita a peça a ser promovida. A pergunta é "Qual movimento pode resultar numa promoção?". Menciona a peça que pode ser promovida e qual peça ela pode virar. 
-                 
+                 - promotion: Envolve identificar qual movimento possibilita a peça a ser promovida. A pergunta é "Qual movimento pode resultar numa promoção?". Mencione a peça que pode ser promovida e qual peça ela pode virar. 
+                 - drop: Envolve identificar qual movimento de drop é válido. A pergunta é "Qual é a casa do tabuleiro na qual você pode corretamente posicionar a peça X da sua mão?". Ao explicar a questão, foque apenas em deixar claro o motivo pelo qual a jogada é ilegal e ignore a estratégia por trás da jogada. Lembre de mencionar a resposta esperada.
+
                 Seguem os exercicios a serem corrigidos: 
                 {json.dumps(payload, ensure_ascii=False)}
                 """
