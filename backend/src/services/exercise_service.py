@@ -286,6 +286,7 @@ class ExerciseService:
                  - recon: Envolve o reconhecimento das peças. A pergunta é "Qual é a peça na posição X?". A posição X vem acompanhada pela resposta esperada. Quando explicar essa questão, ao se referir a resposta esperada, não use o formato peça:posição e explique de sucinta.
                  - movement1 e movement2: Envolvem o reconhecimento dos movimentos das peças. A pergunta é "Qual peça possui os movimentos destacados?". Os movimentos vem acompanhados pela resposta esperada.
                  - checkmate-in-one: Envolve identificar qual jogada levará ao chequemate. A pergunta é "Qual movimento leva ao chequemate?".
+                 - promotion: Envolve identificar qual movimento possibilita a peça a ser promovida. A pergunta é "Qual movimento pode resultar numa promoção?". 
                  
                 Seguem os exercicios a serem corrigidos: 
                 {json.dumps(payload, ensure_ascii=False)}
