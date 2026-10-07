@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 from src.database.repositories.raw_games import RawGameRepository
 from src.database.repositories.exercise import ExerciseRepository
 from src.database.repositories.user_status import UserStatusRepository
+from src.database.repositories.exercise_statistics import ExerciseStatisticsRepository
 from src.exercise_generator import ExerciseGenerator
 from src.schemas.exercises import ExerciseAnswer, ExerciseResult, ExerciseListResult, ExerciseToCorrect, CorrectedExerciseList
+from src.schemas.exercise_stats import ExerciseStat
 from google import genai
 import json
 
@@ -15,6 +17,7 @@ class ExerciseService:
         self.raw_games_repo = RawGameRepository(session)
         self.exercise_repo = ExerciseRepository(session)
         self.user_status_repo = UserStatusRepository(session)
+        self.exercise_stats_repo = ExerciseStatisticsRepository(session)
         self.generator = ExerciseGenerator()
 
         self.modules = ["recon", "movement1", "movement2", "promotion", "drop", "checkmate-in-one"]
@@ -212,6 +215,7 @@ class ExerciseService:
     def submit_answers(self, user_id: int, answers: list[ExerciseAnswer]):
         results = []
         exercises_to_correct = []
+        exercises_stats = []
         for answer in answers:
             exercise = self.exercise_repo.get_by_id(answer.exercise_id)
 
@@ -239,6 +243,16 @@ class ExerciseService:
                     solution=solution,
                     is_correct=is_correct,
                     explanation="-"
+                )
+            )
+            exercises_stats.append(
+                ExerciseStat(
+                    user_id=user_id,
+                    exercise_id=exercise.exercise_id,
+                    module=exercise.type,
+                    pieces_used=exercise.pieces_used,
+                    is_correct=is_correct,
+                    response_time_ms=answer.response_time_ms
                 )
             )
 
@@ -272,9 +286,12 @@ class ExerciseService:
         
 
         self.update_modules_probs(user_id)
+        self.exercise_stats_repo.bulk_insert(exercises_stats)
         self.session.commit()
 
         score = 100*sum(result.is_correct for result in results) / len(results)
+
+
 
 
         return ExerciseListResult(

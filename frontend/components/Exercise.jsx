@@ -7,6 +7,7 @@ import MovementOptions from "./MovementOptions";
 import CheckmateBoard from "./CheckmateBoard";
 import PromotionOptions from "./PromotionOptions";
 import DropOptions from "./DropOptions";
+import { useEffect, useRef } from "react";
 
 
 export default function Exercise({

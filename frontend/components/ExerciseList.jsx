@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Exercise from "./Exercise";
 import { useNavigate } from "react-router-dom";
 
@@ -19,6 +19,8 @@ export default function ExerciseList() {
   const token = localStorage.getItem("access_token");
 
   const navigate = useNavigate();
+
+  const exerciseStartTime = useRef(null);
 
   useEffect(() => {
     if (!token) {
@@ -77,6 +79,13 @@ export default function ExerciseList() {
     }
   }, [API_URL, token, navigate]);
 
+  useEffect(() => {
+    if (exercises.length > 0) {
+      exerciseStartTime.current = performance.now();
+    }
+  }, [currentExercise, exercises]);
+
+
   async function submitAnswers(finalAnswers) {
     setSubmitting(true);
 
@@ -123,11 +132,16 @@ export default function ExerciseList() {
   function handleAnswer(answer) {
     const exercise = exercises[currentExercise];
 
+    const responseTimeMs = Math.round(
+      performance.now() - exerciseStartTime.current
+    );
+
     const newAnswer = {
       exercise_id: exercise.exercise_id,
       answer: answer,
+      response_time_ms: responseTimeMs
     };
-
+    console.log(newAnswer);
     const newAnswers = [...answers, newAnswer];
 
     setAnswers(newAnswers);

@@ -15,6 +15,7 @@ class ExerciseResponse(BaseModel):
 class ExerciseAnswer(BaseModel):
     exercise_id: int
     answer: str
+    response_time_ms: int
 
 class ExerciseListSubmission(BaseModel):
     answers: list[ExerciseAnswer]
