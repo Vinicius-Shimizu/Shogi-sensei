@@ -163,15 +163,15 @@ export default function ExerciseList() {
     );
   }
   if (submitting) {
-    return <div className="w-full min-h-screen bg-black">Corrigindo exercícios...</div>;
+    return <div className="w-full min-h-screen bg-black pt-4">Corrigindo exercícios...</div>;
   }
   if (loadingList) {
-    return <div className="w-full min-h-screen bg-black">Carregando...</div>;
+    return <div className="w-full min-h-screen bg-black pt-4">Carregando...</div>;
   }
 
   if (exercises.length === 0) {
     return (
-      <div className="w-full min-h-screen bg-black">
+      <div className="w-full min-h-screen bg-black pt-4">
         <div>Nenhum exercício encontrado.</div>
         <button onClick={() => navigate("/")} className="flex-col border-2 bg-slate-600 rounded-xl w-[30%] h-[10%] mt-8">Home</button>
       </div>

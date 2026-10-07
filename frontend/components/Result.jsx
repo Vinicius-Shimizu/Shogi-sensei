@@ -46,6 +46,7 @@ export default function Result({index, result}){
                     </p>
 
                     <button
+                        className="flex-col border-2 bg-wood rounded-xl w-[30%] h-[10%] mt-4 text-black"
                         onClick={() => setShowExplanation(false)}
                     >
                         Fechar

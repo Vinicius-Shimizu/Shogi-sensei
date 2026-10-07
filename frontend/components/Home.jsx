@@ -3,12 +3,15 @@ import LoginButton from "./LoginButton";
 import SignUpButton from "./SignUpButton";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Banner from "./Banner";
 
 export default function Home(){
     const navigate = useNavigate();
     const [authenticated, setAuthenticated] = useState(false);
-    const token = localStorage.getItem("access_token");
+
     const API_URL = import.meta.env.VITE_BACKEND_API_URL;
+    const BASE_URL = import.meta.env.BASE_URL;
+
     useEffect(() => {
         async function checkAuth() {
             const token = localStorage.getItem("access_token");
@@ -46,11 +49,21 @@ export default function Home(){
 
     if(authenticated){
         return <div className="flex flex-cols justify-center min-h-screen w-full bg-black">
-            <div></div>
             <div className="flex flex-col justify-center items-center">
-                <h1>Shogi-sensei</h1>
+                {/* <div className="flex flex-col justify-between items-center">
+                    <img
+                        src={`${BASE_URL}pieces/pawn.svg`}
+                        className="w-[5vw]"
+                    />
+                    <h1 className="whitespace-nowrap translate-y-4">Shogi-sensei</h1>
+                    <img
+                        src={`${BASE_URL}pieces/pawn.svg`}
+                        className="w-[5vw]"
+                    />
+                </div> */}
+                <Banner></Banner>
                 <BeginButton onClick={() => {console.log("Starting list"); navigate("/exercise-list");}}></BeginButton>
-                <button className="flex-col border-2 bg-slate-600 rounded-xl w-[50%] h-[10%] mt-4" onClick={() => {
+                <button className="flex flex-col justify-center border-2 bg-wood text-black rounded-xl w-[50%] h-[10%] mt-4" onClick={() => {
                     localStorage.removeItem("current_exercise");
                     localStorage.removeItem("access_token");
                     localStorage.removeItem("user_answers");
@@ -63,9 +76,19 @@ export default function Home(){
         </div>
     }
     return <div className="flex flex-cols justify-center min-h-screen w-full bg-black">
-        <div></div>
         <div className="flex flex-col justify-center items-center">
-            <h1>Shogi-sensei</h1>
+            {/* <div className="flex justify-between items-center">
+                <img
+                    src={`${BASE_URL}pieces/pawn.svg`}
+                    className="w-[5vw]"
+                />
+                <h1 className="whitespace-nowrap translate-y-4">Shogi-sensei</h1>
+                <img
+                    src={`${BASE_URL}pieces/pawn.svg`}
+                    className="w-[5vw]"
+                />
+            </div> */}
+            <Banner />
             <p>Boas vindas ao Shogi-sensei.</p>
             <p>Faça o login ou cadastre-se para começar.</p>
     

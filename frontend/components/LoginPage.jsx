@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Banner from "./Banner";
 
 export default function LoginPage(){
     const navigate = useNavigate();
@@ -45,12 +46,12 @@ export default function LoginPage(){
         }   
     }
 
-    return <div className="flex justify-center items-center min-h-screen w-full bg-black">
+    return <div className="flex flex-col justify-center items-center min-h-screen w-full bg-black">
+        <Banner />
         <form
             onSubmit={handleLogin}
             className="flex flex-col gap-4 w-80"
         >
-            <h1 className="text-2xl">Shogi-sensei</h1>
             <input 
                 type="text" 
                 placeholder="Usuário" 
@@ -75,14 +76,14 @@ export default function LoginPage(){
             <button 
                 type="submit" 
                 disabled={loading} 
-                className="border-2 rounded p-2 bg-slate-600 text-white" 
+                className="border-2 rounded-xl p-2 bg-wood text-black" 
             > 
                 {loading ? "Entrando..." : "Entrar"} 
             </button>
             <button 
                 type="button" 
                 onClick={() => navigate("/")} 
-                className="border-2 rounded p-2" 
+                className="border-2 rounded-xl p-2 bg-wood text-black" 
             > 
                 Voltar 
             </button>
