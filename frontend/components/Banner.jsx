@@ -5,7 +5,7 @@ export default function Banner(){
         <div className="flex justify-between items-center pb-2">
             <img
                 src={`${BASE_URL}pieces/pawn.svg`}
-                className="w-[5vw]"
+                className="w-[13vw] md:w-[5vw]"
             />
             <h1 className="whitespace-nowrap">Shogi-sensei</h1>
             <img

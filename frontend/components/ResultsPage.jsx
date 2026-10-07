@@ -47,8 +47,8 @@ export default function ResultsPage(){
         </div>
       </div>
       
-      <button onClick={() => navigate("/exercise-list")} className="flex flex-col justify-center items-center border-2 bg-wood text-black rounded-xl w-[80vw] md:w-[30vw] mt-8 pt-2">Começar outra lista</button>
-      <button onClick={() => navigate("/")} className="flex flex-col justify-center items-center border-2 bg-wood text-black rounded-xl w-[80vw] md:w-[30vw] mt-2 pt-2">Home</button>
+      <button onClick={() => navigate("/exercise-list")} className="flex flex-col justify-center items-center border-2 bg-wood text-black rounded-xl w-[80vw] md:w-[30vw] mt-8 py-2">Começar outra lista</button>
+      <button onClick={() => navigate("/")} className="flex flex-col justify-center items-center border-2 bg-wood text-black rounded-xl w-[80vw] md:w-[30vw] mt-2 py-2">Home</button>
       
     </div>
   );
