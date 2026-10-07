@@ -1,0 +1,155 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[brazilian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{pgfgantt}
+
+\usepackage{setspace}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\graphicspath{ {./tables} }
+
+\definecolor{pinkglamour}{HTML}{ff7675}
+\definecolor{greendarnertail}{HTML}{74b9ff}
+\definecolor{shymoment}{HTML}{a29bfe}
+\definecolor{lightgreenishblue}{HTML}{55efc4}
+\definecolor{picopink}{HTML}{fd79a8}
+
+
+\makeatletter
+
+\renewcommand{\lstlistingname}{Código}
+\renewcommand{\lstlistlistingname}{Lista de \lstlistingname s}
+
+\lstdefinestyle{mystyle}{
+    language = [Sharp]C,
+    % Colors
+    keywordstyle    = \color{violet},
+    stringstyle     = \color{red},
+    commentstyle    = \color{gray}\ttfamily\footnotesize,
+    backgroundcolor = \color{white},
+    rulesepcolor    = \color{darkgray},
+    identifierstyle = \color{black},
+    % Caracteres
+    basicstyle       = \ttfamily\footnotesize,
+    extendedchars    = true,
+    showspaces       = false,
+    showstringspaces = false,
+    % Frame Style
+    numbers         = left,
+    tabsize         = 2,
+    numberstyle     = \scriptsize,
+    rulecolor=\color{black},
+    frame           = single,
+    breaklines      = true,
+    breakautoindent = true,
+    framexleftmargin     = 2.5em,
+    aboveskip       = 10pt,
+    belowskip       = 10pt,
+    belowcaptionskip = 5pt,
+    captionpos      = b,
+    % Caracteres especiais
+    literate =
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+    {À}{{\`A}}1 {È}{{\`E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+    {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+    {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+    {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+    {ã}{{\~a}}1 {ẽ}{{\~e}}1 {ĩ}{{\~i}}1 {õ}{{\~o}}1 {ũ}{{\~u}}1
+    {Ã}{{\~A}}1 {Ẽ}{{\~E}}1 {Ĩ}{{\~I}}1 {Õ}{{\~O}}1 {Ũ}{{\~U}}1
+    {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+    {ç}{{\c c}}1 {Ç}{{\c C}}1
+}
+
+\lstset{style=mystyle}
+
+\def\ps@myheadings{
+    \let\@oddhead\@empty
+    \let\@evenhead\@empty
+    \def\@oddfoot{\hspace*{-2cm}\hfill\thepage\hspace*{-2cm}}%
+    \def\@evenfoot{\hspace*{-2cm}\thepage\hfill\hspace*{-2cm}}%
+}
+
+\newcommand{\subtitle}[1]{\gdef\@subtitle{#1}}
+
+
+\def\@maketitle{%
+    \newpage
+    \null
+    \vskip -50em%
+    \begin{center}%
+    {\Large
+            Instituto de Matemática, Estatística e Computação\\%
+                        Universidade de São Paulo\\%
+                        \par
+    }
+    \vskip 2.5em%
+    \let \footnote \thanks
+    {\LARGE \@subtitle \par}%
+    \vskip 2.5em%
+    {\LARGE \textbf{\@title} \par}%
+    \vskip 1.5em%
+    {\large
+      \lineskip .5em%
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+    \vskip 10em%
+    \end{center}%
+    \par
+    \vskip 1.5em
+    }
+
+\title{Desenvolvimento de Ferramenta de Ensino de Shogi com Feedback Adaptativo para Iniciantes}
+\subtitle{Trabalho de Conclusão de Curso}
+
+\author{Autor: Vinícius Yuiti Okuma Shimizu\\
+        Orientador: Denis Deratani Mauá}
+\date{}
+
+\hypersetup{
+    colorlinks = true,
+    allcolors = black,
+    urlcolor = blue,
+    pdftitle = {Desenvolvimento de Ferramenta de Ensino de Shogi com Feedback Adaptativo para Iniciantes - Trabalho de Conclusão de Curso},
+    pdfauthor = {Vinícius Yuiti Okuma Shimizu},
+    pdfcreator = {\LaTeX},
+}
+
+\def\Hline{%
+\noalign {\ifnum0 =`}\fi \hrule \@height 1.5pt \futurelet \reserved@a \@xhline}
+
+\makeatother
+
+\pagestyle{myheadings}
+\begin{document}
+\onehalfspace
+    \maketitle\thispagestyle{myheadings}
+    \newpage
+
+    \tableofcontents
+
+    \newpage
+    \section{Resumo}
+    \paragraph{}
+    O YaneuraOu é uma engine de Shogi \cite{yaneuraou}.
+    \section{Introdução}
+    \section{Desenvolvimento}
+    \section{Metodologia}
+    \section{Resultados}
+    \section{Discussão}
+    \section{Conclusão}
+
+
+    \cleardoublepage\thispagestyle{empty}
+    \bibliographystyle{abnt}
+    \bibliography{references}
+\end{document}

@@ -3,3 +3,14 @@
 __pycache__
 *venv
 .env
+monografia/*.bbl
+monografia/*.fdb*
+monografia/*.fls
+monografia/*.log
+monografia/*.out
+monografia/*.synctex.gz
+monografia/*.pdf
+monografia/*.toc
+monografia/*.aux
+
+
