@@ -119,7 +119,7 @@
     colorlinks = true,
     allcolors = black,
     urlcolor = blue,
-    pdftitle = {Desenvolvimento de Ferramenta de Ensino de Shogi com Feedback Adaptativo para Iniciantes - Trabalho de Conclusão de Curso},
+    pdftitle = {Desenvolvimento de ferramenta de ensino adaptativo de shogi com feedback para iniciantes - Trabalho de Conclusão de Curso},
     pdfauthor = {Vinícius Yuiti Okuma Shimizu},
     pdfcreator = {\LaTeX},
 }
@@ -137,15 +137,57 @@
 
     \tableofcontents
 
+    % \newpage
+    % \section{Resumo}
+    % \paragraph{}
+    % Este trabalho teve como objetivo desenvolver uma plataforma de ensino de Shogi voltada para iniciantes, utilizando como metodologia o aprendizado por reforço aliado a exercícios
+    % sugeridos com base no desempenho do usuário e feedback gerado por um modelo de LLM (\textit{Large Language Model}). Os exercícios foram gerados automaticamente a partir de partidas reais e
+    % cobrem os fundamentos do jogo, desde a identificação das peças até o chequemate.
     \newpage
-    \section{Resumo}
-    \paragraph{}
-    O YaneuraOu é uma engine de Shogi \cite{yaneuraou}.
     \section{Introdução}
+    \paragraph{}
+    Shogi é um jogo de estratégia japonês semelhante ao xadrez, mas que apresenta 
+    mecânicas adicionais que aumentam a dificuldade de seu aprendizado. Entre essas mecânicas,
+    destacam-se a possibilidade de reutilizar peças capturadas e a promoção de peças para versões com
+    movimentos diferentes. 
+    \paragraph{}
+    Ao longo dos anos, plataformas como o Lishogi surgiram com o intuito 
+    de facilitar o acesso ao aprendizado, oferecendo recursos como partidas online ou resolução de problemas como 
+    formas de treino. Essas plataformas, no entanto, apresentam limitações que se tornam uma barreira ao aprendizado 
+    de iniciantes. O Lishogi, por exemplo, disponibiliza exercícios simples para quem está aprendendo, 
+    mas não fornece informações sobre os motivos pelos quais uma resposta está incorreta. O mesmo vale para 
+    as análises de partidas, nas quais as jogadas recebem uma pontuação de acordo com sua qualidade, sem explicar por que
+    determinada decisão seria melhor.
+    \paragraph{}
+    Para um iniciante que deseja aprender a jogar de forma autônoma, a falta de orientação pode dificultar
+    a compreensão dos conceitos envolvidos e assim limitar o aproveitamento dos exercícios realizados. 
+    Nesse contexto, o uso de modelos de linguagem pode contribuir para suprir tal necessidade ao fornecer ao jogador explicações
+    moldadas ao seu nível de conhecimento, desempenhando um papel semelhante ao de um tutor. 
+    \paragraph{}
+    Diante desse cenário, este trabalho propõe o desenvolvimento do Shogi Sensei, uma plataforma web voltada ao ensino
+    introdutório de shogi. O projeto fornece exercícios divididos em módulos que abordam os conceitos fundamentais
+    do jogo: reconhecimento das peças, movimentação, promoção, reintrodução de peças capturadas e situações de 
+    xeque-mate.
+    Ao final de cada lista, o usuário recebe os resultados, incluindo as questões respondidas incorretamente e uma análise
+    gerada por um modelo de linguagem (LLM) que explica os motivos do erro. A seleção de exercícios de cada lista é adaptada
+    ao desempenho do jogador, aumentando a proporção de exercícios dos módulos nos quais ele apresenta maior dificuldade.
+    Para avançar para o próximo módulo, é necessário atingir uma média mínima nas listas mais recentes do módulo atual.
+    \paragraph{}
+    A avaliação do sistema foi realizada durante 2 semanas com X usuários. Durante esse período, 
+    foram registradas métricas como taxa de acerto, tempo de resposta e distribuição de exercícios por módulo para
+    acompanhar o desempenho dos usuários ao longo do experimento.
+    \paragraph{}
+    O restante deste trabalho está organizado da seguinte forma. O capítulo 2 apresenta a os conceitos e tecnologias
+    utilizadas para desenvolver este trabalho. O capítulo 3 apresenta trabalhos relacionados. O capítulo 4 descreve a implementação
+    do sistema. O capítulo 5 contém a metodologia utilizada para avaliar a plataforma desenvolvida. O capítulo 6 
+    apresenta e discute os resultados obtidos no experimento descrito no capítulo anterior. Por fim, o capítulo 7
+    apresenta as conclusões e possíveis implementações futuras. 
+    \section{Conceitos e tecnologias}
+    \paragraph{}
+    \section{Trabalhos relacionados}
     \section{Desenvolvimento}
     \section{Metodologia}
     \section{Resultados}
-    \section{Discussão}
     \section{Conclusão}
 
 
