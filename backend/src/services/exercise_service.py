@@ -180,7 +180,7 @@ class ExerciseService:
         }
 
         
-        for performance in user_status.recent_performances[-10]:
+        for performance in user_status.recent_performances[-10:]:
             for module, score in performance.items():
                 performance_totals[module] += score
                 performance_counts[module] += 1
