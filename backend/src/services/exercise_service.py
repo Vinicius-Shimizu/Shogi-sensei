@@ -200,7 +200,7 @@ class ExerciseService:
 
         if performance_counts[current_module] >= 10 and average_performance.get(current_module, 0) >= 0.7:
             current_index = self.modules.index(current_module)
-            if current_index + 1 < len(self.modules):
+            if current_index + 1 < len(self.modules) - 1:
                 next_module = self.modules[current_index + 1]
                 user_status.current_module = next_module
                 new_probs[next_module] = 0.8
