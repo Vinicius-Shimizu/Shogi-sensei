@@ -10,7 +10,7 @@ export default function Banner(){
             <h1 className="whitespace-nowrap">Shogi-sensei</h1>
             <img
                 src={`${BASE_URL}pieces/pawn.svg`}
-                className="w-[5vw]"
+                className="w-[13vw] md:w-[5vw]"
             />
         </div>
     )
