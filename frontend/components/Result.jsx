@@ -9,7 +9,7 @@ export default function Result({index, result}){
         "movement2": "Movimento 2", 
         "drop": "Drop", 
         "promotion": "Promoção", 
-        "checkmate-in-one": "Chequemate"
+        "checkmate-in-one": "Xeque-mate"
     };
 
     const resultColor = result.is_correct ? "bg-green-500 text-black" : "bg-red-600 text-black";
