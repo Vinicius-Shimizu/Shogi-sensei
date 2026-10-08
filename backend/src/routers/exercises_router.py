@@ -64,7 +64,7 @@ def generate_promotion(session: Session = Depends(get_session)):
     }
 
 @router.post("/drop", status_code=status.HTTP_201_CREATED)
-def generate_promotion(session: Session = Depends(get_session)):
+def generate_drop(session: Session = Depends(get_session)):
     service = ExerciseService(session)
     exercises = service.generate_drop()
     return {
