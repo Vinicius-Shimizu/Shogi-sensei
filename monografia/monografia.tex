@@ -21,6 +21,10 @@
 \definecolor{lightgreenishblue}{HTML}{55efc4}
 \definecolor{picopink}{HTML}{fd79a8}
 
+\usepackage{booktabs}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Serif CJK JP}
 
 \makeatletter
 
@@ -177,13 +181,79 @@
     foram registradas métricas como taxa de acerto, tempo de resposta e distribuição de exercícios por módulo para
     acompanhar o desempenho dos usuários ao longo do experimento.
     \paragraph{}
-    O restante deste trabalho está organizado da seguinte forma. O capítulo 2 apresenta a os conceitos e tecnologias
-    utilizadas para desenvolver este trabalho. O capítulo 3 apresenta trabalhos relacionados. O capítulo 4 descreve a implementação
+    O restante deste trabalho está organizado da seguinte forma. O capítulo 2 apresenta os conceitos e tecnologias
+    utilizados para desenvolver este trabalho. O capítulo 3 apresenta trabalhos relacionados. O capítulo 4 descreve a implementação
     do sistema. O capítulo 5 contém a metodologia utilizada para avaliar a plataforma desenvolvida. O capítulo 6 
     apresenta e discute os resultados obtidos no experimento descrito no capítulo anterior. Por fim, o capítulo 7
     apresenta as conclusões e possíveis implementações futuras. 
     \section{Conceitos e tecnologias}
+    \subsection[Shogi]{Shogi}
+    O shogi é um jogo de tabuleiro disputado em um tabuleiro com 9 linhas e 9 colunas. O jogo utiliza 8 tipos de peças, das quais 6 podem assumir formas promovidas (que possuem movimentações diferentes das versões padrão), totalizando 14 tipos de peças. A notação ocidental das peças e seus respectivos símbolos japoneses são apresentados na Tabela~\ref{tab:shogi_pieces}.
     \paragraph{}
+    A notação ocidental utilizada em publicações de língua inglesa foi desenvolvida por George Hodges e Glyndon Townhill em 1976 \textbf{[COLOCAR REFERENCIA]}, com base em elementos da notação algébrica do xadrez. 
+    \paragraph{Convenções:}
+    \begin{table}[H]
+        \centering
+        \caption{Correspondência entre as notações japonesa e ocidental das peças de shogi}
+        \label{tab:shogi_pieces}
+        \begin{tabular}{c c c}
+            \toprule
+            \textbf{Símbolo} & \textbf{Notação ocidental} & \textbf{Peça} \\
+            \midrule
+            歩 & P & Peão \\
+            香 & L  & Lança \\
+            桂 & N  & Cavalo \\
+            銀 & S  & General de Prata \\
+            金 & G  & General de Ouro \\
+            角 & B  & Bispo \\
+            飛 & R  & Torre \\
+            玉 & K  & Rei \\
+            と & +P  & Peão Promovido \\
+            成香 & +L  & Lança Promovida \\
+            成桂 & +N  & Cavalo Promovido \\
+            成銀 & +S  & General de Prata Promovido \\
+            馬 & +B  & Bispo Promovido \\
+            龍 ou 竜 & +R  & Torre Promovida \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    \begin{itemize}
+        \item \textbf{Jogadores}: os jogadores são definidos como preto (sente), quem faz o primeiro movimento, ou branco (gote).
+        \item \textbf{Casas}: as colunas são numeradas de 1 a 9, da direita para a esquerda, e as linhas são identificadas com letras de a a i, de cima para baixo, considerando o ponto de vista do sente.
+        \item \textbf{Posição}: uma casa é identificada pela combinação do número da coluna com a letra da linha. Por exemplo, 5a corresponde à casa localizada na coluna 5 e na primeira linha.
+        \item \textbf{Movimentos}\textbf{[INCLUIR REFERENCIA PARA REGRAS]}: o sistema adota uma variação da convenção de George, com adaptações para facilitar a compreensão por iniciantes. Os movimentos de cada peça se encontram na Tabela~\ref{tab:pieces_movements}.
+            \begin{itemize}
+                \item \textbf{Deslocamento}: [Peça][Origem]->[Destino]. Por exemplo, \textbf{P9g->9f} se refere ao movimento de um peão da casa \textbf{9g} para a casa \textbf{9f}. Na notação de referência, o deslocamento não possui o símbolo "->".
+                \item \textbf{Captura}: quando aplicável, o movimento ocupa a casa da peça adversária capturada, que é removida do tabuleiro e passa a pertencer à mão jogador que realizou a captura.
+                \item \textit{\textbf{Drop}}: [Peça]*[Posição]. Refere-se à recolocação no tabuleiro de uma peça capturada anteriormente. Por exemplo, \textbf{P*9e} representa a colocação de um peão na casa \textbf{9e}.
+                \item \textbf{Promoção}: [Peça][Origem]->[Destino]+. O símbolo "+" representa que a peça foi promovida ao final do movimento. Por exemplo, \textbf{P9d->9c+} representa o movimento do peão da casa \textbf{9d} para a casa \textbf{9c}, seguido de sua promoção. A promoção pode ocorrer quando o movimento começa, termina ou acontece inteiramente dentro da zona de promoção, que corresponde às três fileiras mais distantes do jogador. Em determinadas situações ela é obrigatória: por exemplo, um peão ou uma lança que alcança a última fileira, ou um cavalo que alcança uma das duas últimas fileiras, pois não possuem mais movimentos possíveis a partir dessas posições. 
+            \end{itemize}
+    \end{itemize}
+    \begin{table}[H]
+        \centering
+        \caption{Movimentos das peças}
+        \label{tab:pieces_movements}
+        \begin{tabular}{c p{9cm}}
+            \toprule
+            \textbf{Peça} & \textbf{Movimento}\\
+            \midrule
+            Peão & Uma casa para a frente. \\
+            Lança & Qualquer número de casas para a frente. \\
+            Cavalo & Salta para uma das duas casas duas fileiras à frente e uma coluna para um dos lados. \\
+            General de prata & Uma casa na diagonal ou uma casa para a frente. \\
+            General de ouro & Uma casa para a frente, para trás ou para os lados, ou uma casa na diagonal para a frente. \\
+            Bispo & Qualquer número de casas na diagonal. \\
+            Torre & Qualquer número de casas na horizontal ou vertical. \\
+            Rei & Uma casa em qualquer direção. \\
+            Peão promovido & Como um general de ouro. \\
+            Lança promovida & Como um general de ouro. \\
+            Cavalo promovido & Como um general de ouro. \\
+            General de prata promovido & Como um general de ouro. \\
+            Bispo promovido & Como um bispo ou uma casa na horizontal ou vertical. \\
+            Torre promovida & Como uma torre ou uma casa na diagonal. \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
     \section{Trabalhos relacionados}
     \section{Desenvolvimento}
     \section{Metodologia}
