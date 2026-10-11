@@ -30,15 +30,27 @@ export default function PromotionOptions({
               disabled={answered}
               onClick={() => selectAnswer(move)}
               className={` 
-                px-3 py-2 
-                border border-black 
-                rounded-lg 
-                font-mono 
-                transition 
-                ${selectedAnswer === null ? "bg-wood" : `${ selectedAnswer === move ? "bg-blue-300" : "bg-wood-500" }`}
-                disabled:cursor-default
+                px-2 py-2
+                border border-black
+                rounded
+                font-mono
+                text-sm sm:text-base
+                whitespace-normal
+                break-words
+                min-w-0
                 w-full
+                h-full
+                min-h-16
+                text-center
                 text-black
+                transition
+                ${selectedAnswer === null
+                  ? "bg-wood"
+                  : selectedAnswer === piece
+                    ? "bg-blue-300"
+                    : "bg-wood-500"
+                }
+                disabled:cursor-default
               `}
             >
               {move.slice(0, 2) + "->" + move.slice(2)  + (move.includes("+") ? "" : "+")}
