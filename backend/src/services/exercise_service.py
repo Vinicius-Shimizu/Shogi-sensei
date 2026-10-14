@@ -161,7 +161,7 @@ class ExerciseService:
 
         if not user_status:
             return None
-        return self.exercise_repo.get_exercises_list(user_status.modules_probs)
+        return self.exercise_repo.get_exercises_list(user_status.modules_probs[-1])
 
 
     def update_modules_probs(self, user_id: int):
@@ -172,11 +172,11 @@ class ExerciseService:
         current_module = user_status.current_module
         performance_totals = {
             module: 0.0 
-            for module in user_status.modules_probs
+            for module in user_status.modules_probs[-1]
         }
         performance_counts = {
             module:0
-            for module in user_status.modules_probs
+            for module in user_status.modules_probs[-1]
         }
 
         
@@ -190,11 +190,11 @@ class ExerciseService:
             if performance_counts[module] > 0:
                 average_performance[module] = performance_totals[module] / performance_counts[module]
 
-        new_probs = dict(user_status.modules_probs)
+        new_probs = dict(user_status.modules_probs[-1])
         
         user_status.module_progress = average_performance.get(current_module, 0)
         for module, score in average_performance.items():
-            if user_status.modules_probs[module] == 0: continue
+            if user_status.modules_probs[-1][module] == 0: continue
             if score < 0.7: new_probs[module] *= 1.2
             else: new_probs[module] *= 0.75
 
@@ -209,8 +209,8 @@ class ExerciseService:
         total = sum(new_probs.values())
         for module in new_probs:
             new_probs[module] /= total
-
-        user_status.modules_probs = new_probs
+        
+        user_status.modules_probs = [*user_status.modules_probs, new_probs]
 
     def submit_answers(self, user_id: int, answers: list[ExerciseAnswer]):
         results = []

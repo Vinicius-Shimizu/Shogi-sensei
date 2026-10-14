@@ -20,7 +20,7 @@ class UserStatusResponse(BaseModel):
     user_id: int
     current_module: str
     module_progress: float
-    modules_probs: dict
+    modules_probs: list
     recent_performances: list
     updated_at: datetime
 
