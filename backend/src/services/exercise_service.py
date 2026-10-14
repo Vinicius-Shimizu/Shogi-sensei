@@ -79,7 +79,7 @@ class ExerciseService:
         return exercises
 
     def generate_movement1(self):
-        exercises = self.generator.movement()
+        exercises = self.generator.movement1()
         if exercises:
             self.exercise_repo.bulk_insert(exercises)
         self.session.commit()
