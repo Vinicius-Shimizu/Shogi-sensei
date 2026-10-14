@@ -13,7 +13,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 
-\graphicspath{ {./tables} }
+\graphicspath{ {./images} }
 
 \definecolor{pinkglamour}{HTML}{ff7675}
 \definecolor{greendarnertail}{HTML}{74b9ff}
@@ -188,9 +188,10 @@
     apresenta as conclusões e possíveis implementações futuras. 
     \section{Conceitos e tecnologias}
     \subsection[Shogi]{Shogi}
+    \paragraph{}
     O shogi é um jogo de tabuleiro disputado em um tabuleiro com 9 linhas e 9 colunas. O jogo utiliza 8 tipos de peças, das quais 6 podem assumir formas promovidas (que possuem movimentações diferentes das versões padrão), totalizando 14 tipos de peças. A notação ocidental das peças e seus respectivos símbolos japoneses são apresentados na Tabela~\ref{tab:shogi_pieces}.
     \paragraph{}
-    A notação ocidental utilizada em publicações de língua inglesa foi desenvolvida por George Hodges e Glyndon Townhill em 1976 \textbf{[COLOCAR REFERENCIA]}, com base em elementos da notação algébrica do xadrez. 
+    A notação ocidental utilizada em publicações de língua inglesa foi desenvolvida por George Hodges e Glyndon Townhill em 1976 \textsuperscript{\cite{hodges-notation}}, com base em elementos da notação algébrica do xadrez. 
     \paragraph{Convenções:}
     \begin{table}[H]
         \centering
@@ -218,15 +219,15 @@
         \end{tabular}
     \end{table}
     \begin{itemize}
-        \item \textbf{Jogadores}: os jogadores são definidos como preto (sente), quem faz o primeiro movimento, ou branco (gote).
+        \item \textbf{Jogadores}: os jogadores são definidos como preto (\textit{sente}), quem faz o primeiro movimento, ou branco (\textit{gote}).
         \item \textbf{Casas}: as colunas são numeradas de 1 a 9, da direita para a esquerda, e as linhas são identificadas com letras de a a i, de cima para baixo, considerando o ponto de vista do sente.
         \item \textbf{Posição}: uma casa é identificada pela combinação do número da coluna com a letra da linha. Por exemplo, 5a corresponde à casa localizada na coluna 5 e na primeira linha.
-        \item \textbf{Movimentos}\textbf{[INCLUIR REFERENCIA PARA REGRAS]}: o sistema adota uma variação da convenção de George, com adaptações para facilitar a compreensão por iniciantes. Os movimentos de cada peça se encontram na Tabela~\ref{tab:pieces_movements}.
+        \item \textbf{Movimentos}\textsuperscript{\cite{shogi-rules}}: o sistema adota uma variação da convenção de George, com adaptações para facilitar a compreensão por iniciantes. Os movimentos de cada peça se encontram na Tabela~\ref{tab:pieces_movements}.
             \begin{itemize}
-                \item \textbf{Deslocamento}: [Peça][Origem]->[Destino]. Por exemplo, \textbf{P9g->9f} se refere ao movimento de um peão da casa \textbf{9g} para a casa \textbf{9f}. Na notação de referência, o deslocamento não possui o símbolo "->".
+                \item \textbf{Deslocamento}: [Origem]->[Destino]. Por exemplo, \textbf{9g->9f} se refere ao movimento da casa \textbf{9g} para a casa \textbf{9f}. Na notação de referência, o deslocamento não possui o símbolo "->".
                 \item \textbf{Captura}: quando aplicável, o movimento ocupa a casa da peça adversária capturada, que é removida do tabuleiro e passa a pertencer à mão jogador que realizou a captura.
                 \item \textit{\textbf{Drop}}: [Peça]*[Posição]. Refere-se à recolocação no tabuleiro de uma peça capturada anteriormente. Por exemplo, \textbf{P*9e} representa a colocação de um peão na casa \textbf{9e}.
-                \item \textbf{Promoção}: [Peça][Origem]->[Destino]+. O símbolo "+" representa que a peça foi promovida ao final do movimento. Por exemplo, \textbf{P9d->9c+} representa o movimento do peão da casa \textbf{9d} para a casa \textbf{9c}, seguido de sua promoção. A promoção pode ocorrer quando o movimento começa, termina ou acontece inteiramente dentro da zona de promoção, que corresponde às três fileiras mais distantes do jogador. Em determinadas situações ela é obrigatória: por exemplo, um peão ou uma lança que alcança a última fileira, ou um cavalo que alcança uma das duas últimas fileiras, pois não possuem mais movimentos possíveis a partir dessas posições. 
+                \item \textbf{Promoção}: [Origem]->[Destino]+. O símbolo "+" representa que a peça foi promovida ao final do movimento. Por exemplo, \textbf{9d->9c+} representa o movimento da casa \textbf{9d} para a casa \textbf{9c}, seguido de sua promoção. A promoção pode ocorrer quando o movimento começa, termina ou acontece inteiramente dentro da zona de promoção, que corresponde às três fileiras mais distantes do jogador. Em determinadas situações ela é obrigatória: por exemplo, um peão ou uma lança que alcança a última fileira, ou um cavalo que alcança uma das duas últimas fileiras, pois não possuem mais movimentos possíveis a partir dessas posições. 
             \end{itemize}
     \end{itemize}
     \begin{table}[H]
@@ -254,6 +255,32 @@
             \bottomrule
         \end{tabular}
     \end{table}
+    \subsection{Representações de posições e partidas}
+    \paragraph{}
+    No shogi, a \textit{Shogi Forsyth–Edwards Notation} (SFEN)\textsuperscript{\cite{USI}} é utilizada para representar textualmente uma posição no jogo. Essa representação é composta por quatro campos separados por espaços:
+    \begin{itemize}
+        \item Tabuleiro: disposição das peças nas casas;
+        \item Turno: jogador que deve realizar o próximo movimento, b para o \textit{sente} e w para o \textit{gote};
+        \item Peças nas mãos: peças capturadas que podem ser reutilizadas por quem fez a captura;
+        \item Número do movimento: contador do movimento atual.
+    \end{itemize}
+    Considere a seguinte representação SFEN correspondente à posição inicial do tabuleiro: 
+
+    \begin{center}
+    \small
+    \texttt{lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1}
+    \end{center}
+    Como ilustrado na Figura~\ref{fig:posicao_inicial}, o primeiro campo descreve o tabuleiro, cujas linhas são separadas pelo caractere "/" e estão ordenadas de cima para baixo. As peças seguem a notação da Tabela~\ref{tab:shogi_pieces}. As letras minúsculas representam as peças do \textit{gote} e as maiúsculas representam as peças do \textit{sente}. Casas vazias são representadas por números que indicam a quantidade de casas consecutivas desocupadas.
+
+    O segundo campo indica que o \textit{sente} deve fazer o próximo movimento, uma vez que ele é o jogador que começa o jogo. O símbolo - no terceiro campo indica que nenhum deles possui peças capturadas disponíveis para reutilização. Por fim, o quarto campo indica que a próxima jogada será a primeira do jogo.
+        
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{images/board.png}
+        \caption{Posição inicial do tabuleiro}
+        \label{fig:posicao_inicial}
+    \end{figure}
+    
     \section{Trabalhos relacionados}
     \section{Desenvolvimento}
     \section{Metodologia}
