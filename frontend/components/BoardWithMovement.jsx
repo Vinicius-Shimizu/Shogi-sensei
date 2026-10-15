@@ -46,7 +46,7 @@ function Piece({ piece, isTarget }) {
     return (<img
         src={image}
         alt={piece}
-        className={`w-[85%] h-[85%] ${isSentePiece(piece) ? "rotate-180" : ""}`}
+        className={`w-[100%] h-[100%] ${isSentePiece(piece) ? "rotate-180" : ""}`}
     />)
 }
 
@@ -98,7 +98,7 @@ export default function BoardWithMovement({ sfen, moves}) {
   return (
     <div className="flex justify-center border-4 border-stone-600 mt-4 rounded-xl overflow-hidden">
       <div 
-        className="grid grid-cols-11 grid-rows-11 aspect-square w-[80vw] md:w-[30vw]"   
+        className="grid grid-cols-11 grid-rows-11 aspect-square w-[80vw] md:w-[40vw]"   
         style={{
           backgroundImage: `url(${BASE_URL}board.png)`,
           backgroundSize: "cover",
