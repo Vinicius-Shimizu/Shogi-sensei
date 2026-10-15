@@ -14,6 +14,7 @@ export default function ExerciseList() {
   });
   const [loadingList, setLoadingList] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const API_URL=import.meta.env.VITE_BACKEND_API_URL;
   const token = localStorage.getItem("access_token");
@@ -88,7 +89,8 @@ export default function ExerciseList() {
 
   async function submitAnswers(finalAnswers) {
     setSubmitting(true);
-
+    setSubmitError(false);
+    
     try {
       const response = await fetch(
         `${API_URL}/exercises/submit`,
@@ -99,7 +101,7 @@ export default function ExerciseList() {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            answers: finalAnswers,
+            answers: finalAnswers.slice(0, 10),
           }),
         }
       );
@@ -111,7 +113,10 @@ export default function ExerciseList() {
       }
 
       if (!response.ok) {
-        throw new Error("Erro ao enviar respostas");
+        const errorData = await response.json().catch(() => null);
+        console.error("Erro ao enviar a lista:", errorData);
+        setSubmitError(true);
+        return;
       }
 
       const data = await response.json();
@@ -124,6 +129,7 @@ export default function ExerciseList() {
       });
     } catch (error) {
       console.error("Erro ao enviar respostas:", error);
+      setSubmitError(true);
     } finally {
       setSubmitting(false);
     }
@@ -162,6 +168,7 @@ export default function ExerciseList() {
       nextExercise.toString()
     );
   }
+  
   if (submitting) {
     return <div className="w-full min-h-screen bg-black pt-4">Corrigindo exercícios...</div>;
   }
@@ -178,8 +185,47 @@ export default function ExerciseList() {
     )
   }
 
-  
+  if (submitError) {
+    function resetExerciseList() {
+      localStorage.removeItem("exercise_list");
+      localStorage.removeItem("current_exercise");
+      localStorage.removeItem("user_answers");
 
+      setExercises([]);
+      setAnswers([]);
+      setCurrentExercise(0);
+      setSubmitError(false);
+
+      navigate("/exercise-list");
+    }
+
+    return (
+      <div className="w-full min-h-screen bg-black text-white
+                      flex flex-col justify-center items-center pt-4">
+        <p className="text-center px-4">
+          Erro ao enviar a lista. Você pode tentar novamente
+          ou começar outra lista.
+        </p>
+
+        <button
+          onClick={() => submitAnswers(answers)}
+          className="border-2 bg-slate-600 rounded-xl
+                    w-[80vw] md:w-[30vw] mt-8 py-2"
+        >
+          Tentar novamente
+        </button>
+
+        <button
+          onClick={resetExerciseList}
+          className="flex flex-col justify-center items-center
+                    border-2 bg-wood text-black rounded-xl
+                    w-[80vw] md:w-[30vw] mt-4 py-2"
+        >
+          Começar outra lista
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={`w-full min-h-screen bg-black justify-center items-center`}>
