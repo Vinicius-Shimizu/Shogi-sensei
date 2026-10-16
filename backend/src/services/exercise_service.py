@@ -329,7 +329,7 @@ class ExerciseService:
                  - A peça é um peão e na coluna já há um peão aliado. 
                 
                 Existem os seguintes módulos:
-                 - recon: Envolve o reconhecimento das peças. A pergunta é "Qual é a peça na posição X?". A posição X vem acompanhada pela resposta esperada. Quando explicar essa questão, ao se referir a resposta esperada, não use o formato peça:posição e explique de sucinta.
+                 - recon: Envolve o reconhecimento das peças. A pergunta é "Qual é a peça na posição X?". A posição X vem acompanhada pela resposta esperada. Quando explicar essa questão, ao se referir a resposta esperada, não use o formato peça:posição e explique de sucinta. Mencione as posições das peças na solução e na resposta dada pelo usuário.
                  - movement1 e movement2: Envolvem o reconhecimento dos movimentos das peças. A pergunta é "Qual peça possui os movimentos destacados?". Os movimentos vem acompanhados pela resposta esperada.
                  - checkmate-in-one: Envolve identificar qual jogada levará ao chequemate. A pergunta é "Qual movimento leva ao chequemate?".
                  - promotion: Envolve identificar qual movimento possibilita a peça a ser promovida. A pergunta é "Qual movimento pode resultar numa promoção?". Mencione a peça que pode ser promovida e qual peça ela pode virar. 
