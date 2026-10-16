@@ -27,8 +27,7 @@ export default function PromotionOptions({
           {possible_moves.map((move) => (
             <button
               key={move}
-              disabled={answered}
-              onClick={() => selectAnswer(move)}
+              onClick={() => setSelectedAnswer(move)}
               className={` 
                 px-2 py-2
                 border border-black
@@ -44,11 +43,9 @@ export default function PromotionOptions({
                 text-center
                 text-black
                 transition
-                ${selectedAnswer === null
-                  ? "bg-wood"
-                  : selectedAnswer === piece
+                ${selectedAnswer === move
                     ? "bg-blue-300"
-                    : "bg-wood-500"
+                    : "bg-wood"
                 }
                 disabled:cursor-default
               `}
@@ -58,23 +55,22 @@ export default function PromotionOptions({
           ))}
         </div>
         <div className="flex justify-center">
-        {answered && (
-          <button
-            onClick={handleNext}
-            className="
-              mt-2
-              px-3 py-1
-              border border-black
-              rounded-lg
-              bg-wood
-              text-black
-              w-full
-              whitespace-nowrap
-            "
-          >
-            {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
-          </button>
-        )}
+        
+        <button
+          onClick={handleNext}
+          className="
+            mt-2
+            px-3 py-1
+            border border-black
+            rounded-lg
+            bg-wood
+            text-black
+            w-full
+            whitespace-nowrap
+          "
+        >
+          {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
+        </button>
         </div>
       </div>
     </div>

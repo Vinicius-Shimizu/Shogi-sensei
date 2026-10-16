@@ -6,13 +6,7 @@ export default function CheckmateInOneOptions({
   exerciseNumber,
   totalExercises
 }) {
-  const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-
-  function selectAnswer(answer) {
-    setSelectedAnswer(answer);
-    setAnswered(true);
-  }
 
   function handleNext() {
     onAnswer(selectedAnswer);
@@ -27,8 +21,7 @@ export default function CheckmateInOneOptions({
           {possible_moves.map((move) => (
             <button
               key={move}
-              disabled={answered}
-              onClick={() => selectAnswer(move)}
+              onClick={() => setSelectedAnswer(move)}
               className={` 
                 px-2 py-2
                 border border-black

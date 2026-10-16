@@ -88,7 +88,7 @@ export default function CheckmateBoard({ sfen }) {
   return (
     <div className="flex justify-center border-4 border-stone-600 mt-4 rounded-xl overflow-hidden">
       <div 
-        className="grid grid-cols-11 grid-rows-11 aspect-square w-[80vw] md:w-[40vw]"   
+        className="grid grid-cols-11 grid-rows-11 aspect-square w-[80vw] md:w-[45vw]"   
         style={{
           backgroundImage: `url(${BASE_URL}board.png)`,
           backgroundSize: "cover",

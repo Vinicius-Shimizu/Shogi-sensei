@@ -7,7 +7,6 @@ export default function ReconOptions({
   exerciseNumber,
   totalExercises
 }) {
-  const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
 
   let PIECES_DICT = {
@@ -27,12 +26,8 @@ export default function ReconOptions({
       "Torre Promovida": "+R",
   }
 
-  function selectAnswer(answer) {
-    setSelectedAnswer(answer);
-    setAnswered(true);
-  }
-
   function handleNext() {
+    if (selectedAnswer === null) return;
     onAnswer(selectedAnswer);
   }
   
@@ -46,8 +41,7 @@ export default function ReconOptions({
           {possible_pieces.map((piece) => (
             <button
               key={piece}
-              disabled={answered}
-              onClick={() => selectAnswer(piece)}
+              onClick={() => setSelectedAnswer(piece)}
               className={` 
                 px-2 py-2
                 border border-black
@@ -63,13 +57,10 @@ export default function ReconOptions({
                 text-center
                 text-black
                 transition
-                ${selectedAnswer === null
-                  ? "bg-wood"
-                  : selectedAnswer === piece
+                ${selectedAnswer === piece
                     ? "bg-blue-300"
-                    : "bg-wood-500"
+                    : "bg-wood"
                 }
-                disabled:cursor-default
               `}
             >
               {piece + "(" + PIECES_DICT[piece] + ")"} 
@@ -77,23 +68,22 @@ export default function ReconOptions({
           ))}
         </div>
         <div className="flex justify-center">
-          {answered && (
-            <button
-              onClick={handleNext}
-              className="
-                mt-2
-                px-3 py-1
-                border border-black
-                rounded-lg
-                bg-wood
-                text-black
-                w-full
-                whitespace-nowrap
-              "
-            >
-              {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
-            </button>
-          )}
+          <button
+            onClick={handleNext}
+            className="
+              mt-2
+              px-3 py-1
+              border border-black
+              rounded-lg
+              bg-wood
+              text-black
+              w-full
+              whitespace-nowrap
+            "
+          >
+            {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
+          </button>
+          
         </div>
       </div>
     </div>

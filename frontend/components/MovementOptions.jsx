@@ -6,13 +6,7 @@ export default function MovementOptions({
   exerciseNumber,
   totalExercises
 }) {
-  const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-
-  function selectAnswer(answer) {
-    setSelectedAnswer(answer);
-    setAnswered(true);
-  }
 
   function handleNext() {
     onAnswer(selectedAnswer);
@@ -28,8 +22,7 @@ export default function MovementOptions({
           {possible_pieces.map((piece) => (
             <button
               key={piece}
-              disabled={answered}
-              onClick={() => selectAnswer(piece)}
+              onClick={() => setSelectedAnswer(piece)}
               className={` 
                 px-2 py-2
                 border border-black
@@ -45,11 +38,9 @@ export default function MovementOptions({
                 text-center
                 text-black
                 transition
-                ${selectedAnswer === null
-                  ? "bg-wood"
-                  : selectedAnswer === piece
+                ${selectedAnswer === piece
                     ? "bg-blue-300"
-                    : "bg-wood-500"
+                    : "bg-wood"
                 }
                 disabled:cursor-default
               `}
@@ -59,23 +50,21 @@ export default function MovementOptions({
           ))}
         </div>
         <div className="flex justify-center">
-          {answered && (
-            <button
-              onClick={handleNext}
-              className="
-                mt-2
-                px-3 py-1
-                border border-black
-                rounded-lg
-                bg-wood
-                text-black
-                w-full
-                whitespace-nowrap
-              "
-            >
-              {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
-            </button>
-          )}
+          <button
+            onClick={handleNext}
+            className="
+              mt-2
+              px-3 py-1
+              border border-black
+              rounded-lg
+              bg-wood
+              text-black
+              w-full
+              whitespace-nowrap
+            "
+          >
+            {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
+          </button>
         </div>
       </div>
     </div>

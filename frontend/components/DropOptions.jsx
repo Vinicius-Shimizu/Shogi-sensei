@@ -6,7 +6,6 @@ export default function DropOptions({
   exerciseNumber,
   totalExercises
 }) {
-  const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
 
   let PIECES_DICT = {
@@ -25,11 +24,6 @@ export default function DropOptions({
       "+R": "a Torre Promovida",
   }
 
-  function selectAnswer(answer) {
-    setSelectedAnswer(answer);
-    setAnswered(true);
-  }
-
   function handleNext() {
     onAnswer(selectedAnswer);
   }
@@ -43,8 +37,7 @@ export default function DropOptions({
           {possible_drops.map((drop) => (
             <button
               key={drop}
-              disabled={answered}
-              onClick={() => selectAnswer(drop)}
+              onClick={() => setSelectedAnswer(drop)}
               className={` 
                 px-2 py-2
                 border border-black
@@ -60,11 +53,9 @@ export default function DropOptions({
                 text-center
                 text-black
                 transition
-                ${selectedAnswer === null
-                  ? "bg-wood"
-                  : selectedAnswer === piece
+                ${selectedAnswer === piece
                     ? "bg-blue-300"
-                    : "bg-wood-500"
+                    : "bg-wood"
                 }
                 disabled:cursor-default
               `}
@@ -74,7 +65,6 @@ export default function DropOptions({
           ))}
         </div>
         <div className="flex justify-center">
-        {answered && (
           <button
             onClick={handleNext}
             className="
@@ -90,7 +80,6 @@ export default function DropOptions({
           >
             {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
           </button>
-        )}
         </div>
       </div>
     </div>
