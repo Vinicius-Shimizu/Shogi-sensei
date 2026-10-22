@@ -3,6 +3,8 @@ import ExercisePreview from "./ExercisePreview";
 
 export default function Result({index, result}){
     const [showExplanation, setShowExplanation] = useState(false);
+    const [showQuestion, setShowQuestion] = useState(false);
+
     const exercise_types = {
         "recon": "Reconhecimento", 
         "movement1": "Movimento 1", 
@@ -28,7 +30,9 @@ export default function Result({index, result}){
                 </button>
             )}
             {result.is_correct && (
-                <p>-</p>
+                <button onClick={() => setShowQuestion(true)} className="underline mr-4">
+                    Ver questão
+                </button>
             )}
         </div>
 
@@ -54,6 +58,26 @@ export default function Result({index, result}){
                 </div>
             </div>
         )}
+
+        {showQuestion && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+                <div className="bg-gray-800 p-6 rounded-lg w-[80vw] md:w-[30vw] max-h-[80vh] md:max-h-[80vh] overflow-y-auto">
+                    <h3 className="text-xl font-bold mb-4">
+                        Questão
+                    </h3>
+
+                    <ExercisePreview result={result} />
+
+                    <button
+                        className="flex-col border-2 bg-wood rounded-xl w-[30%] h-[10%] mt-4 text-black"
+                        onClick={() => setShowQuestion(false)}
+                    >
+                        Fechar
+                    </button>
+                </div>
+            </div>
+        )}
+
     </>
     );
 }

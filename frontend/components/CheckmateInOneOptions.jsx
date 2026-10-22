@@ -37,11 +37,9 @@ export default function CheckmateInOneOptions({
                 text-center
                 text-black
                 transition
-                ${selectedAnswer === null
-                  ? "bg-wood"
-                  : selectedAnswer === piece
+                ${selectedAnswer === move
                     ? "bg-blue-300"
-                    : "bg-wood-500"
+                    : "bg-wood"
                 }
                 disabled:cursor-default
               `}
@@ -51,7 +49,6 @@ export default function CheckmateInOneOptions({
           ))}
         </div>
         <div className="flex justify-center">
-        {answered && (
           <button
             onClick={handleNext}
             className="
@@ -67,7 +64,6 @@ export default function CheckmateInOneOptions({
           >
             {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
           </button>
-        )}
         </div>
       </div>
     </div>
