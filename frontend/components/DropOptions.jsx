@@ -53,7 +53,7 @@ export default function DropOptions({
                 text-center
                 text-black
                 transition
-                ${selectedAnswer === piece
+                ${selectedAnswer === drop
                     ? "bg-blue-300"
                     : "bg-wood"
                 }
