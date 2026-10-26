@@ -303,7 +303,7 @@ class ExerciseGenerator():
             sfen = board.sfen().split(" ")
             positions = sfen[0].split("/")
 
-            column = int(square_usi[0]) - 1
+            column = 9 - int(square_usi[0])
             row = ord(square_usi[1]) - 97
 
             expanded = []
