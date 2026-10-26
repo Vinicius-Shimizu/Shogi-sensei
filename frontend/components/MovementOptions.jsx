@@ -50,7 +50,7 @@ export default function MovementOptions({
           ))}
         </div>
         <div className="flex justify-center">
-          <button
+          {selectedAnswer && (<button
             onClick={handleNext}
             className="
               mt-2
@@ -64,7 +64,7 @@ export default function MovementOptions({
             "
           >
             {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
-          </button>
+          </button>)}
         </div>
       </div>
     </div>

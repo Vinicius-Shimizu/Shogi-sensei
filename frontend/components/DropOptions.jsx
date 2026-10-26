@@ -65,7 +65,7 @@ export default function DropOptions({
           ))}
         </div>
         <div className="flex justify-center">
-          <button
+          {selectedAnswer && (<button
             onClick={handleNext}
             className="
               mt-2
@@ -79,7 +79,7 @@ export default function DropOptions({
             "
           >
             {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
-          </button>
+          </button>)}
         </div>
       </div>
     </div>

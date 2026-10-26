@@ -68,7 +68,7 @@ export default function ReconOptions({
           ))}
         </div>
         <div className="flex justify-center">
-          <button
+          {selectedAnswer && (<button
             onClick={handleNext}
             className="
               mt-2
@@ -82,7 +82,7 @@ export default function ReconOptions({
             "
           >
             {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
-          </button>
+          </button>)}
           
         </div>
       </div>

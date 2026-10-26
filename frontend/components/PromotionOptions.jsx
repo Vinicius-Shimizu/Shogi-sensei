@@ -55,22 +55,21 @@ export default function PromotionOptions({
           ))}
         </div>
         <div className="flex justify-center">
-        
-        <button
-          onClick={handleNext}
-          className="
-            mt-2
-            px-3 py-1
-            border border-black
-            rounded-lg
-            bg-wood
-            text-black
-            w-full
-            whitespace-nowrap
-          "
-        >
-          {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
-        </button>
+          {selectedAnswer && (<button
+            onClick={handleNext}
+            className="
+              mt-2
+              px-3 py-1
+              border border-black
+              rounded-lg
+              bg-wood
+              text-black
+              w-full
+              whitespace-nowrap
+            "
+          >
+            {isLastExercise ? "Finalizar lista" : "Próximo exercício"}
+          </button>)}
         </div>
       </div>
     </div>
