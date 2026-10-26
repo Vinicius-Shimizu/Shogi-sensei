@@ -63,7 +63,7 @@ export default function ExercisePreview({ result }) {
                 "+B": "o Bispo Promovido",
                 "+R": "a Torre Promovida",
             };
-            const piece = PIECES_DICT[exercise.solution.split("*")[0]];
+            const piece = PIECES_DICT[result.solution.split("*")[0]];
             return (
                 <div className="flex flex-col justify-center">
                     <p className="text-center"> Qual é a casa do tabuleiro na qual você pode corretamente posicionar {piece} da sua mão?</p>
