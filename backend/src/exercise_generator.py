@@ -405,10 +405,14 @@ class ExerciseGenerator():
         return exercises
 
     def promotion(self, games):
-        def get_options(solution: str, possible_moves: list):
-            dummy_solution = solution.strip("+")
-            possible_moves = [p for p in possible_moves if p != dummy_solution]
-            options = random.sample(possible_moves, min(len(possible_moves), 3))
+        def get_options(solution: str, possible_moves: set):
+            options = possible_moves.copy()
+            for move in possible_moves:
+                if "+" in move:
+                    options.discard(move)
+                    options.discard(move.strip("+"))
+            options = list(options)
+            options = random.sample(options, min(len(options), 3))
             options.append(solution)
             random.shuffle(options)
             return options
@@ -422,14 +426,14 @@ class ExerciseGenerator():
                 if sfen.split(" ")[1] == "w": continue
                 
                 promotion_moves = []
-                possible_moves = []
+                possible_moves = set()
                 for move in board.legal_moves:
                     usi = cshogi.move_to_usi(move)
                     if "+" in usi: promotion_moves.append(usi)
-                    elif "*" not in usi: possible_moves.append(usi)
+                    if "*" not in usi: possible_moves.add(usi)
 
                 if len(promotion_moves) < 1: continue
-                
+              
                 solution = random.choice(promotion_moves)
 
                 options = get_options(solution, possible_moves)
