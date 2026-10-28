@@ -32,7 +32,7 @@ export default function DropOptions({
   return (
     <div className="flex justify-center">
       <div className="flex flex-col gap-2 items-center justify-center mt-4 w-[60vw] md:w-[30vw]">
-        <p className="text-center">{exerciseNumber + 1}/{totalExercises} Qual é a casa do tabuleiro na qual você pode corretamente posicionar {piece} da sua mão?</p>
+        <p className="text-center">{exerciseNumber + 1}/{totalExercises} Você capturou algumas peças do oponente. Qual é a casa do tabuleiro na qual você pode corretamente posicionar {piece} da sua mão?</p>
         <div className="grid grid-cols-2 gap-2">
           {possible_drops.map((drop) => (
             <button
