@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Annotated
 
@@ -6,7 +6,7 @@ from src.database.session import get_session
 from src.services.exercise_service import ExerciseService
 from src.schemas.exercises import ExerciseResponse, ExerciseListResult, ExerciseListSubmission
 from src.schemas.user import UserResponse
-from src.auth.dependencies import get_current_user
+from src.auth.dependencies import get_current_user, verify_admin
 
 router = APIRouter(
     prefix="/exercises",
@@ -133,6 +133,21 @@ def get_exercise_list(
 
     return exercises
 
+@router.get("/statistics")
+def get_exercises_stats(    
+    limit: int = Query(default=100, ge=1, le=500),
+    offset: int = Query(default=0, ge=0),
+    session: Session = Depends(get_session),
+    _: bool = Depends(verify_admin)
+):
+    service = ExerciseService(session)
+    stats = service.get_exercises_stats(limit, offset)
+    if not stats:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Exercise not found"
+        )
+    return stats    
 
 @router.get("/{exercise_id}", response_model=ExerciseResponse)
 def get_exercise_by_id(exercise_id: int, session: Session = Depends(get_session)):
@@ -147,3 +162,4 @@ def get_exercise_by_id(exercise_id: int, session: Session = Depends(get_session)
         )
 
     return exercise
+

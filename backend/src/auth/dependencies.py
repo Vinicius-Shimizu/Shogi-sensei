@@ -2,15 +2,14 @@ from sqlalchemy.orm import Session
 from src.database.session import get_session
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, HTTPBasic, HTTPBasicCredentials
 import jwt
 from jwt.exceptions import InvalidTokenError
-from src.services.auth_service import AuthenticationService
 from src.services.user_service import UserService
 from src.auth.config import SECRET_KEY, JWT_ALGORITHM
 from src.schemas.token import TokenData
-
-
+import secrets
+import os
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/auth/login"
@@ -39,3 +38,30 @@ def get_current_user(
     if user is None:
         raise credentials_exception
     return user
+
+security = HTTPBasic()
+
+def verify_admin(
+    credentials: HTTPBasicCredentials = Depends(security)
+):
+    admin_username = os.getenv("ADMIN_USERNAME")
+    admin_password = os.getenv("ADMIN_PASSWORD")
+
+    is_username_correct = secrets.compare_digest(
+        credentials.username.encode("utf-8"),
+        admin_username.encode("utf-8")
+    )
+
+    is_password_correct = secrets.compare_digest(
+        credentials.password.encode("utf-8"),
+        admin_password.encode("utf-8")
+    )
+
+    if not (is_username_correct and is_password_correct):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid administrator credentials",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+
+    return True

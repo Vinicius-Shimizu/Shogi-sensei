@@ -350,3 +350,6 @@ class ExerciseService:
 
         corrections = CorrectedExerciseList.model_validate_json(interaction.output_text)
         return corrections
+
+    def get_exercises_stats(self, limit: int, offset: int):
+        return self.exercise_stats_repo.get_all_paginated(limit, offset)

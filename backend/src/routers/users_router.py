@@ -7,7 +7,7 @@ from src.schemas.user import UserCreate, UserResponse, UserStatusResponse
 from src.services.user_service import UserService
 from src.database.repositories.user import UserRepository
 from src.database.repositories.user_status import UserStatusRepository
-from src.auth.dependencies import get_current_user
+from src.auth.dependencies import get_current_user, verify_admin
 
 
 router = APIRouter(
@@ -52,7 +52,8 @@ async def read_users_me(
 )
 def get_user(
     user_id: int,
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    _: bool = Depends(verify_admin)
 ):
     user_repo = UserRepository(session)
 
@@ -72,7 +73,8 @@ def get_user(
 )
 def get_user_status(
     user_id: int,
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    _: bool = Depends(verify_admin)
 ):
     user_repo = UserRepository(session)
     status_repo = UserStatusRepository(session)
