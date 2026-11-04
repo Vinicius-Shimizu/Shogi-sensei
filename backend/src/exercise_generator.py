@@ -238,8 +238,6 @@ class ExerciseGenerator():
                     }
 
                     exercises.append(exercise)
-                    print(exercise)
-                    return exercises
 
         return exercises
 
