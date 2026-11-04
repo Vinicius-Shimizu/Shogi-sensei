@@ -161,6 +161,23 @@ class ExerciseGenerator():
             piece = board.piece(origin)
             return PIECES_TYPES[cshogi.piece_to_piece_type(piece) - 1]
 
+
+        def is_checkmate(board: cshogi.Board, move: str):
+            test_board = board.copy()
+            move = test_board.move_from_usi(move)
+            test_board.push(move)
+            return test_board.is_check() and not any(test_board.legal_moves)
+
+        def get_options(candidates: list, solution: str, board: cshogi.Board):
+            options = []
+            print(f"CANDIDATES: {candidates}")
+            for candidate in candidates:
+                if not is_checkmate(board, candidate): options.append(candidate)
+            options = options[:3]
+            options.append(solution)
+            random.shuffle(options)
+            return options
+
         exercises = []
         if not games:
             return exercises
@@ -170,55 +187,59 @@ class ExerciseGenerator():
 
             for _, move in enumerate(game.moves):
                 mate_move = board.mate_move_in_1ply()
-                if mate_move:
-                    test_board = board.copy()
-                    test_board.push(mate_move)
-                    if not test_board.is_check(): 
-                        board.push(move)
-                        continue
+                if not mate_move:
+                    board.push(move)
+                    continue
+                
+                test_board = board.copy()
+                test_board.push(mate_move)
+                if not test_board.is_check(): 
+                    board.push(move)
+                    continue
 
-                    sfen = board.sfen()
-                    if sfen.split(" ")[1] == "w": 
-                        board.push(move)
-                        continue
-
-                    if sfen not in seen_positions:
-                        seen_positions.add(sfen)
-                        solution = cshogi.move_to_usi(mate_move)
-                        try:
-                            print("sending sfen: ", sfen, " with solution: ", solution)
-                            response = self.session.get(
-                                "http://engine:8080/checkmate_in_one_answers",
-                                params={
-                                    "sfen": sfen,
-                                    "solution": solution,
-                                    "n": 4,
-                                    "depth": 1
-                                },
-                                timeout=120
-                            )
-                            
-                            response.raise_for_status()
-                            options = response.json()
-                            print(options)
-                        except requests.RequestException as e:
-                            print(f"Failed to generate alternatives: {e}")
-                            continue
+                sfen = board.sfen()
+                if sfen.split(" ")[1] == "w": 
+                    board.push(move)
+                    continue
+                
+                if sfen not in seen_positions:
+                    seen_positions.add(sfen)
+                    solution = cshogi.move_to_usi(mate_move)
+                    try:
+                        print("sending sfen: ", sfen, " with solution: ", solution)
+                        response = self.session.get(
+                            "http://engine:8080/checkmate_in_one_answers",
+                            params={
+                                "sfen": sfen,
+                                "solution": solution,
+                                "n": 4,
+                                "depth": 1
+                            },
+                            timeout=120
+                        )
                         
-                        if len(options) < 4: continue
+                        response.raise_for_status()
+                        candidates = response.json()
+                    except requests.RequestException as e:
+                        print(f"Failed to generate alternatives: {e}")
+                        continue
+                    
+                    options = get_options(candidates, solution, board)
 
-                        exercise = {
-                            "sfen": sfen,
-                            "hands": parse_hands(sfen.split(" ")[2]),
-                            "solution": solution,
-                            "options": options,
-                            "pieces_used": [get_piece_used(board, mate_move)],
-                            "type": "checkmate-in-one"
-                        }
+                    if len(options) < 4: continue
 
-                        exercises.append(exercise)
+                    exercise = {
+                        "sfen": sfen,
+                        "hands": parse_hands(sfen.split(" ")[2]),
+                        "solution": solution,
+                        "options": options,
+                        "pieces_used": [get_piece_used(board, mate_move)],
+                        "type": "checkmate-in-one"
+                    }
 
-                board.push(move)
+                    exercises.append(exercise)
+                    print(exercise)
+                    return exercises
 
         return exercises
 

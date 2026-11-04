@@ -108,13 +108,8 @@ class Engine():
             move for move in candidates
             if move != solution
         ]
+        return candidates
 
-        options = candidates[:n - 1]
-        options.append(solution)
-
-        random.shuffle(options)
-
-        return options
 
     def get_alternatives(self, sfen: str, solution: str, n: int, depth: int):
         with self.lock:

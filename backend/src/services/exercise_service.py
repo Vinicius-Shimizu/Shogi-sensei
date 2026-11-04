@@ -38,11 +38,9 @@ class ExerciseService:
 
     def generate_checkmate_in_one(self):
         games = self.raw_games_repo.get_unprocessed_games()
-
         if not games:
             return []
         exercises = self.generator.checkmate_in_one(games)
-
         if exercises:
             self.exercise_repo.bulk_insert(exercises)
 
@@ -327,12 +325,16 @@ class ExerciseService:
                  - A casa já está ocupada;
                  - A peça é um peão e o posicionamento leva a um chequemate;
                  - A peça é um peão e na coluna já há um peão aliado. 
+
+                A promoção pode ocorrer quando a origem ou destino do movimento está dentro da zona de promoção, que corresponde às três fileiras mais distantes do jogador. 
+                Em determinadas situações ela é obrigatória: por exemplo, um peão ou uma lança que alcança a última fileira, ou um cavalo que alcança uma das duas últimas 
+                fileiras, pois não possuem movimentos legais a partir dessas posições.
                 
                 Existem os seguintes módulos:
                  - recon: Envolve o reconhecimento das peças. A pergunta é "Qual é a peça na posição X?". A posição X vem acompanhada pela resposta esperada. Quando explicar essa questão, ao se referir a resposta esperada, não use o formato peça:posição. Por exemplo: caso o solução seja Rei:2c, a explicação deve ser algo como "Você escolheu peça X, mas a peça na posição 2c é o Rei.". Se certifique de mencionar as posições das peças na solução e na resposta dada pelo usuário. Aém disso, foque na diferença visual entre os kanjis nas peças.
                  - movement1 e movement2: Envolvem o reconhecimento dos movimentos das peças. A pergunta é "Qual peça possui os movimentos destacados?". Os movimentos vem acompanhados pela resposta esperada.
-                 - checkmate-in-one: Envolve identificar qual jogada levará ao chequemate. A pergunta é "Qual movimento leva ao chequemate?".
-                 - promotion: Envolve identificar qual movimento possibilita a peça a ser promovida. A pergunta é "Qual movimento pode resultar numa promoção?". Mencione a peça que pode ser promovida e qual peça ela pode virar. 
+                 - checkmate-in-one: Envolve identificar qual jogada levará ao chequemate. A pergunta é "Qual movimento leva ao chequemate?". Explique detalhadamente porque a escolha do usuário está errada e porque a solução é a resposta esperada.
+                 - promotion: Envolve identificar qual movimento possibilita a peça a ser promovida. A pergunta é "Qual movimento pode resultar numa promoção?". Mencione a peça que pode ser promovida e qual peça ela pode virar. Explique as regras da promoção.
                  - drop: Envolve identificar qual movimento de drop é válido. A pergunta é "Qual é a casa do tabuleiro na qual você pode corretamente posicionar a peça X da sua mão?". Ao explicar a questão, foque apenas em deixar claro o motivo pelo qual a jogada é ilegal e ignore a estratégia por trás da jogada. Lembre de mencionar a resposta esperada.
 
                 Seguem os exercicios a serem corrigidos: 
