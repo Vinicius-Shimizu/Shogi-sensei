@@ -173,8 +173,11 @@ class ExerciseGenerator():
             print(f"CANDIDATES: {candidates}")
             for candidate in candidates:
                 if not is_checkmate(board, candidate): options.append(candidate)
+            options = list(set(options))
             options = options[:3]
-            options.append(solution)
+            if solution not in options:
+                options.append(solution)
+
             random.shuffle(options)
             return options
 
