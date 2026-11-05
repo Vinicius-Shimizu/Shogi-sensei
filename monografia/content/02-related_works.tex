@@ -1,0 +1,64 @@
+%!TeX root=../main.tex
+
+\chapter{Trabalhos relacionados}
+\label{cap:trabalhos-relacionados}
+
+\section{Sistema de apoio ao aprendizado de shogi}
+Ito (2018)\textsuperscript{\cite{future-position}} propôs um método de apoio ao aprendizado de shogi para jogadores iniciantes, 
+denominado \textit{Posição Futura}. O autor observou que a apresentação explícita de movimentos recomendados por programas de shogi 
+pode levar os jogadores a dependerem excessivamente das sugestões do computador, prejudicando o desenvolvimento de uma habilidade 
+importante em jogos de estratégia: antecipar possíveis jogadas para tomar decisões. Para investigar como diferentes níveis de suporte 
+afetam o aprendizado, ele desenvolveu um sistema que apresenta posições futuras do tabuleiro, geradas por meio de partidas entre programas 
+de inteligência artificial (IA), considerando diferentes distâncias (jogadas à frente) em relação à posição atual. Dessa forma, o jogador 
+recebe informações que podem auxiliar na compreensão do desenvolvimento da partida sem que uma jogada específica seja indicada diretamente.
+
+O autor avaliou a proposta por meio de um experimento que comparou diferentes níveis de assistência durante a prática de shogi, incluindo 
+uma condição sem assistência. Os resultados indicaram uma tendência de melhora nos testes após a utilização das dicas, embora o número 
+reduzido de participantes não tenha permitido identificar diferenças estatisticamente significativas entre os níveis de assistência. O estudo 
+sugere, portanto, que a apresentação de informações sobre o jogo pode constituir uma abordagem promissora para apoiar o aprendizado de shogi, 
+embora sejam necessárias investigações adicionais. 
+
+\section{Sistema tutor inteligente para jogos estratégicos}
+No trabalho de Zhang \textit{et al}. (2025)\textsuperscript{\cite{AI-gomoku-tutor}}, os autores observaram que a abordagem padrão utilizada 
+por tutores humanos de jogos estratégicos, como Go, Gomoku e Shogi, foi expor jogadores iniciantes a diversas partidas e ao final analisar as 
+jogadas realizadas. Dessa forma, investigaram a possibilidade de desenvolver um sistema tutor inteligente que permite que os jogadores 
+aprendam a partir da revisão dos jogos, comparando essa estratégia com outros dois métodos de suporte: a apresentação de dicas ao longo da 
+partida e o fornecimento de feedback imediato após cada jogada. 
+
+Nesse contexto, foi proposto um sistema que permite ao usuário jogar Gomoku contra uma IA treinada no jogo e fornece a ele as abordagens de 
+ensino mencionadas anteriormente. Para avaliar o sistema, foram conduzidos dois estudos-piloto nos quais os participantes foram distribuídos 
+aleatoriamente entre as três condições de aprendizagem. No primeiro estudo, após interagirem com o sistema durante 20 minutos, os 
+participantes jogaram cinco partidas de teste. Os resultados indicaram que aqueles que receberam feedback imediato apresentaram melhor 
+aprendizagem do que aqueles que receberam feedback tardio. No segundo estudo, foi adotado um formato de pré-teste e pós-teste: os 
+participantes responderam inicialmente a 20 questões sobre estratégias de Gomoku, utilizaram o sistema durante 35 minutos e, em seguida, 
+responderam às mesmas questões em ordem diferente, com os tabuleiros rotacionados ou espelhados. Os resultados preliminares indicaram que 
+os participantes de todas as condições obtiveram desempenho significativamente superior no pós-teste em relação ao pré-teste.
+
+\section{Sistema de ensino de xadrez com grafo de conhecimento}
+No trabalho de Zhang \textit{et al.} (2024)\textsuperscript{\cite{EKChess}}, os autores identificaram três desafios enfrentados pelas ferramentas de ensino de xadrez: a atenção limitada dedicada ao ensino de finais de partida; a escassez de sistemas de ensino de xadrez baseados em grafos de conhecimento, estruturas que representam fatos por meio de entidades, relações e descrições semânticas; e a ausência de critérios padronizados para avaliar os resultados de aprendizagem dos participantes em processos de ensino de xadrez que utilizam inteligência artificial. 
+
+Para abordar essas questões, os autores desenvolveram o sistema chamado \textit{EK-Chess}, que permite aos usuários jogar xadrez e receber feedback em tempo real. O sistema utiliza um grafo de conhecimento de finais de partida, construído a partir do conhecimento de especialistas,  no qual as posições são representadas por meio da notação Forsyth-Edwards (FEN) e os movimentos pela notação algébrica longa \textit{Long Algebraic Notation} (LAN). Esses elementos são organizados como nós de um grafo direcionado, que serve de base para fornecer informações sobre movimentos e explicações relacionadas a cenários específicos do jogo.
+
+Para avaliar o sistema, os autores conduziram um experimento com 20 crianças entre 6 e 10 anos de idade, que conheciam os movimentos das peças e as regras do xadrez, mas ainda não dominavam estratégias mais avançadas, sendo consideradas no nível iniciante. Os participantes foram divididos em dois grupos, um que estudou usando o \textit{EK-Chess} e outro usando livros tradicionais. Após aprenderem a utilizar os respectivos recursos de ensino, os participantes de ambos os grupos responderam a um teste antes e outro depois do período de estudo. As questões apresentavam diferentes níveis de dificuldade, definidos de acordo com o conhecimento necessário para chegar à resposta correta.
+
+Os resultados indicaram que os participantes que utilizaram o EK-Chess obtiveram melhor desempenho no pós-teste, especialmente nas questões de dificuldade intermediária. No grupo que utilizou livros, também foi observado um desempenho melhor nessas questões, mas sem uma melhora estatisticamente significativa no resultado geral, conforme relatado pelos autores. Os resultados, portanto, sugerem que o EK-Chess pode contribuir para o aprendizado de estratégias de xadrez.
+
+Os autores argumentam que uma das principais diferenças entre os métodos de ensino está na presença de um mecanismo de registro do progresso no sistema, que permite aos usuários identificar as etapas já concluídas e aquelas que ainda precisam ser realizadas. Segundo os autores, esse mecanismo pode reduzir a carga cognitiva associada ao acompanhamento do próprio aprendizado, contribuindo para a eficácia do processo de ensino. Além disso, discutem a possibilidade de utilizar os dados registrados durante o aprendizado em conjunto com sistemas de recomendação, permitindo modelar as preferências e o domínio do conteúdo por cada usuário para oferecer recomendações de estudo personalizadas e, potencialmente, melhorar os resultados de aprendizagem.
+
+Por fim, os autores exploram a possibilidade de utilizar o grafo de conhecimento desenvolvido para fornecer informações a modelos de linguagem de grande escala (\textit{Large Language Models} — LLMs), visando aprimorar seu desempenho em tarefas relacionadas ao xadrez.
+
+\section{Korbit}
+Kochmar \textit{et al.} (2020)\textsuperscript{\cite{korbit-article}} investigaram o uso de técnicas automatizadas para selecionar feedback em sistemas tutores inteligentes, considerando as características das orientações disponíveis e os dados relacionados ao desempenho e às interações anteriores dos estudantes. Os autores buscaram avaliar se a personalização desse processo poderia contribuir para melhorar os resultados de aprendizagem.
+
+Para avaliar essa abordagem, os autores realizaram um experimento com 183 estudantes de \textit{Machine Learning} (ML) que precisaram utilizar uma plataforma de ensino online chamada \textit{Korbit}\textsuperscript{\cite{korbit-site}} (um sistema tutor inteligente baseado em diálogo que emprega técnicas ML, processamento de linguagem natural (PLN) e aprendizado por reforço para oferecer uma experiência de aprendizagem interativa e personalizada) durante um mês.
+
+Os autores investigaram três tipos de feedback automático: dicas e explicações geradas por meio de técnicas de processamento de linguagem natural (PLN); explicações extraídas de artigos da Wikipédia sobre aprendizado de máquina; e dicas para problemas matemáticos, incluindo equações incompletas e orientações para corrigir equações incorretas. Para selecionar as dicas personalizadas, foram avaliados três modelos: \textit{baseline}, que considera características linguísticas das dicas, como seu tamanho e a sobreposição de palavras-chave com a pergunta; \textit{shallow personalization}, que utiliza características relacionadas ao desempenho do estudante, como a quantidade de questões tentadas e a proporção de respostas corretas e incorretas; e \textit{deep personalization}, que também considera características linguísticas de até quatro interações anteriores entre o estudante e o sistema.
+
+O ganho de aprendizagem foi avaliado pela proporção de questões inicialmente respondidas incorretamente que passaram a ser respondidas corretamente após o recebimento de uma dica ou explicação. Os autores analisaram essa métrica considerando todos os estudantes e, separadamente, aqueles que receberam feedback antes da segunda tentativa. Os resultados indicaram que o modelo \textit{deep personalization} apresentou o maior ganho de aprendizagem, enquanto o \textit{baseline} apresentou o menor, na análise que considerou todos os estudantes. Na análise restrita aos estudantes que receberam feedback antes da segunda tentativa, a diferença entre o modelo \textit{deep personalization} e o \textit{baseline} foi estatisticamente significativa. Esses resultados sugerem que considerar informações sobre o desempenho e as interações anteriores dos estudantes pode contribuir para a eficácia do feedback em sistemas tutores inteligentes.  
+
+\section{Comparação com o Shogi-sensei}
+Embora os trabalhos apresentados proponham abordagens distintas, eles compartilham o objetivo de utilizar recursos computacionais para apoiar o processo de aprendizagem. Nesse contexto, o Shogi-sensei também busca auxiliar jogadores iniciantes, mas concentra-se no ensino de fundamentos específicos do shogi por meio de listas de exercícios. Diferentemente do sistema de Ito, que auxilia o jogador a compreender possíveis desenvolvimentos de uma partida, o Shogi-sensei organiza o aprendizado em exercícios direcionados a habilidades específicas. Em relação ao tutor de gomoku, que permite aprender por meio de partidas contra uma inteligência artificial, o Shogi-sensei prioriza a resolução de exercícios individuais, sem exigir que o usuário participe de uma partida completa.
+
+Também existem diferenças nos mecanismos de suporte ao aprendizado. O EK-Chess utiliza um grafo de conhecimento construído a partir do conhecimento de especialistas para fornecer informações sobre movimentos e explicações relacionadas a posições específicas do xadrez. Já o Korbit investiga métodos de seleção automatizada de feedback que consideram características linguísticas das orientações, informações sobre o desempenho dos estudantes e dados de interações anteriores. O Shogi-sensei, por sua vez, apresenta explicações apenas no final das listas de exercícios e registra informações como acertos e tempo de resposta, utilizando o desempenho dos usuários para orientar a recomendação de exercícios de determinados módulos de aprendizagem.
+
+Por fim, os trabalhos também diferem quanto às estratégias de avaliação. Os estudos apresentados empregaram experimentos com diferentes condições de aprendizagem, testes anteriores e posteriores às atividades ou métricas relacionadas à resolução de exercícios após o recebimento de feedback. Neste trabalho, a avaliação considera métricas como a taxa de acerto e o tempo de resposta dos usuários durante a resolução dos exercícios. Embora essas abordagens permitam investigar aspectos distintos do aprendizado, as diferenças entre os públicos, os conteúdos e os métodos experimentais não permitem comparar diretamente seus resultados. Dessa forma, os trabalhos relacionados fornecem referências para a concepção e a avaliação de sistemas de ensino, enquanto o Shogi-sensei se diferencia por reunir exercícios direcionados aos fundamentos do shogi, recomendados com base no desempenho do usuário em cada habilidade específica.

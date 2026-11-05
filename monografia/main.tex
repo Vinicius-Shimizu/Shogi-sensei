@@ -1,0 +1,126 @@
+% Arquivo LaTeX de exemplo de dissertação/tese a ser apresentada à CPG do IME-USP
+%
+% Criação: Jesús P. Mena-Chalco
+% Revisão: Fabio Kon e Paulo Feofiloff
+% Adaptação para UTF8, biblatex e outras melhorias: Nelson Lago
+%
+% Except where otherwise indicated, these files are distributed under
+% the MIT Licence. The example text, which includes the tutorial and
+% examples as well as the explanatory comments in the source, are
+% available under the Creative Commons Attribution International
+% Licence, v4.0 (CC-BY 4.0) - https://creativecommons.org/licenses/by/4.0/
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PREÂMBULO LaTeX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[a4paper,12pt,twoside,english,brazilian]{book}
+
+\usepackage{imegoodies}
+\usepackage[thesis]{imelooks}
+\graphicspath{{figures/},{logos/},{images/}}
+\babeltags{br = brazilian, en = english}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% METADADOS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\addbibresource{main.bib}
+\nocite{*}
+
+\babelhyphenation{documentclass latexmk soft-ware clsguide}
+
+\title{Desenvolvimento de ferramenta de ensino adaptativo de shogi com feedback para iniciantes}
+\translatedtitle{Development of Shogi Teaching Tool With Adaptative Feedback For Beginners}
+
+\author{Vinícius Yuiti Okuma Shimizu}
+
+\orientador{Dr. Denis Deratani Mauá}
+
+\tipotese{
+  tcc,
+  programa={Ciência da Computação},
+}
+
+\defesa{
+  local={São Paulo},
+  data={2026-11-30},
+}
+
+\direitos{CC-BY}
+
+\fichacatalografica{
+% \noindent Para gerar a ficha catalográfica, acesse \url{https://fc.ime.usp.br},
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONTEÚDO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% CAPA E PÁGINAS INICIAIS %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frontmatter
+
+\pagestyle{plain}
+
+\onehalfspacing % Espaçamento 1,5 na capa e páginas iniciais
+
+\maketitle
+
+%%%%%%%%%%%%%%%% DEDICATÓRIA, AGRADECIMENTOS, RESUMO/ABSTRACT %%%%%%%%%%%%%%%%%%
+\begin{dedicatoria}
+
+\end{dedicatoria}
+
+\pagenumbering{roman}
+
+\chapter*{Agradecimentos}
+\epigrafe{Do. Or do not. There is no try.}{Mestre Yoda}
+
+Texto texto texto texto texto texto texto texto texto texto texto texto texto
+texto texto texto texto texto texto texto texto texto texto texto texto texto
+texto texto texto texto texto texto texto texto texto texto texto texto texto
+texto texto texto texto. Texto opcional.
+
+\input{content/abstract}
+
+\tableofcontents
+
+% Referências indiretas para o índice remissivo
+% \index{Inglês|see{Língua estrangeira}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CAPÍTULOS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mainmatter
+
+\pagestyle{mainmatter}
+
+\singlespacing
+
+\pagestyle{unnumberedchapter}
+\input{content/00-introduction}
+\input{content/01-fundamental_concepts}
+\input{content/02-related_works}
+\input{content/03-development}
+\input{content/04-methodology}
+\input{content/05-results}
+\input{content/06-conclusion}
+
+\pagestyle{mainmatter}
+
+%%%%%%%%%%%%%%% SEÇÕES FINAIS (BIBLIOGRAFIA E ÍNDICE REMISSIVO) %%%%%%%%%%%%%%%%
+\backmatter
+
+\pagestyle{backmatter}
+
+% Espaço adicional no sumário antes das referências / índice remissivo
+\addtocontents{toc}{\vspace{2\baselineskip plus .5\baselineskip minus .5\baselineskip}}
+
+\printbibliography[
+  title=\refname\label{sec:bib},
+  heading=bibintoc,
+]
+
+\printindex
+
+\end{document}
