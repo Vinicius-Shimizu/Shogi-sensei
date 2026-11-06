@@ -2,8 +2,9 @@
 
 \chapter{Desenvolvimento}
 \label{cap:desenvolvimento}
-
-    O sistema do Shogi-sensei pode ser dividido em quatro blocos principais: o banco de dados, a \textit{engine} do YaneuraOu, o servidor e por fim a interface. A relação entre esses componentes é apresentada na Figura~\ref{fig:system_overview}. Cada bloco foi desenvolvido em um \textit{docker container} diferente, com o intuito de permitir que o projeto possa ser executado em qualquer máquina.
+    O sistema do Shogi-sensei pode ser dividido em quatro blocos principais: o banco de dados, a \textit{engine} do YaneuraOu, o servidor e por fim a interface. 
+    A relação entre esses componentes é apresentada na Figura~\ref{fig:system_overview}. Cada bloco foi desenvolvido em um \textit{docker container} diferente, 
+    com o intuito de permitir que o projeto possa ser executado em qualquer máquina.
 
     \begin{figure}[H]
         \centering
@@ -73,14 +74,16 @@
     Para o desenvolvimento do servidor, utilizou-se a biblioteca \textit{FastAPI}, responsável pela criação e pelo gerenciamento dos endpoints da API consumida pela interface do sistema. Esse componente ficou responsável pelas seguintes funcionalidades:
     
     \begin{itemize}
+    \item Gerenciar a comunicação com o banco de dados.
+    \item Realizar o cadastro e a autenticação dos usuários;
     \item Gerar os exercícios automaticamente;
     \item Organizar os exercícios em listas;
     \item Corrigir os exercícios e gerar a explicação;
-    \item Realizar o cadastro e a autenticação dos usuários;
     \item Atualizar e consultar as estatísticas de desempenho dos usuários;
-    \item Gerenciar a comunicação com o banco de dados.
     \end{itemize}
-
+    
+    Em ambiente de produção, o servidor foi hospedado em um celular antigo, com o objetivo de reduzir o risco de interrupções causadas por eventuais quedas de energia durante os experimentos, uma vez que o dispositivo pode ser conectado a uma bateria externa para garantir sua autonomia durante esses períodos. Para disponibilizar o servidor para conexões externas, utilizou-se o aplicativo \textit{Termux}, que fornece um ambiente Linux no dispositivo. Em seguida, foram instalados o \textit{PostgreSQL} e as dependências necessárias para executar o projeto. Por fim, utilizou-se o serviço \textit{Tailscale Funnel} para disponibilizar o servidor por meio de uma URL pública e estável. Embora essa solução tenha permitido a comunicação entre a interface e o servidor, as limitações de hardware do dispositivo afetaram o desempenho da aplicação, resultando em tempos de resposta mais elevados.
+    
     \subsection{Arquitetura}
     O servidor utiliza uma arquitetura em camadas, com o objetivo de separar as responsabilidades dos componentes do sistema, facilitando sua manutenção e isolando a implementação de cada funcionalidade. Dessa forma, o código foi organizado em três camadas:
     \begin{itemize}
@@ -100,7 +103,10 @@
     
     Além dessas camadas, foram utilizados esquemas do Pydantic para estruturar e validar os dados recebidos e retornados pelos endpoints, garantindo um formato padronizado para a comunicação entre o cliente e o servidor.
 
+    \subsection{Autenticação}
+    O \textit{FastAPI} também oferece recursos para implementar mecanismos de segurança em uma aplicação. Nesse sentido, o sistema desenvolvido utiliza o padrão OAuth2 para gerenciar a autenticação dos usuários, garantindo que cada um tenha acesso apenas aos próprios dados. Para isso, são utilizados tokens JWT (\textit{JSON Web Token}), que permitem validar as requisições subsequentes sem a necessidade de realizar um novo login a cada acesso. Por fim, as senhas cadastradas são armazenadas na forma de hashes, gerados e verificados por meio da biblioteca \textit{pwdlib}.
 
+    
     \subsection{Geração automática de exercícios}
     Para padronizar a apresentação dos exercícios e simplificar a sua implementação na interface, todas as questões consideram que é a vez do jogador \textit{sente} de jogar.
     Cada questão apresenta quatro alternativas, das quais apenas uma é a correta, e pertence a um dos seguintes módulos:
@@ -134,3 +140,77 @@
         \item \textbf{Xeque-mate}: Verifica-se se determinado movimento resulta em xeque-mate. Caso isso ocorra, o movimento identificado e o estado do tabuleiro são enviados para a \textit{engine}, responsável pela geração das alternativas. Seu uso nesse processo permite selecionar movimentos candidatos com base na posição, tornando as alternativas mais plausíveis e, consequentemente, aumentando a dificuldade do exercício. Isso evita que movimentos claramente distantes da região onde se encontra o rei adversário evidenciem facilmente a resposta correta. Por exemplo, suponha que a solução seja mover um general de ouro da casa 4d para a casa 5c. Caso as alternativas incluam movimentos de peões para casas distantes do rei adversário, como as linhas g ou h, torna-se mais fácil identificar a solução. No entanto, é possível que dentre os movimentos escolhidos pelo YaneuraOu, exista mais de um xeque-mate. Dessa forma, esses movimentos são também excluídos.
         
     \end{itemize}
+
+    \subsection{Listas de exercício}    
+     As listas geradas pelo sistema contêm 10 questões. Inicialmente, apenas exercícios do módulo Reconhecimento estão disponíveis. A seleção das questões segue uma distribuição de probabilidades entre os módulos desbloqueados, que é atualizada de acordo com o desempenho do usuário.
+
+
+    Quando uma lista é submetida para correção, as questões respondidas incorretamente são enviadas em uma única requisição a um LLM, responsável por gerar explicações sobre os motivos pelos quais as respostas fornecidas estão incorretas. Foram testados três modelos diferentes, utilizando o mesmo prompt (Figura~\ref{fig:prompt}) e os planos gratuitos. Considerou-se satisfatória uma resposta quando ela explicava corretamente os conceitos necessários para compreender o erro cometido. Embora o \textit{Gemini 3.6-flash} tenha gerado respostas satisfatórias, seu limite de apenas 20 requisições diárias restringiria a correção a 20 listas por dia. Considerando a quantidade de usuários prevista para o experimento, esse limite foi considerado insuficiente. Em seguida, testou-se o \textit{Gemma 4 26B}, que permite até 14.400 requisições diárias, mas apresentou um tempo de resposta elevado. Por fim, optou-se pelo \textit{Gemini 3.5-flash-lite}, que apresentou respostas satisfatórias e oferece um limite de 500 requisições diárias.
+
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{images/prompt.png}
+        \caption{Prompt para o LLM gerar a explicação}
+        \label{fig:prompt}
+    \end{figure}
+    
+    Após a geração das explicações, o desempenho do usuário é calculado e então a distribuição de probabilidades dos módulos é atualizada de acordo com os seguinte processo:
+    
+    \begin{enumerate}
+        \item Calcula-se a taxa de acerto do usuário em cada módulo;
+        \item Caso a taxa de acerto seja inferior a 70\%, a probabilidade de seleção do módulo é multiplicada por 1,2. Caso contrário, é multiplicada por 0,75;
+        \item Caso o usuário tenha realizado pelo menos 10 listas do módulo atual e obtido uma taxa de acerto média de, no mínimo, 70\%, o módulo seguinte é desbloqueado e recebe uma probabilidade de 80\% de ser selecionado;
+        \item Por fim, as probabilidades são normalizadas, garantindo que a soma da distribuição seja igual a 100\%.
+    \end{enumerate}
+
+    \subsection{Interface}
+    A estrutura da interface foi desenvolvida utilizando o \textit{React}, que permite organizar o sistema em componentes reutilizáveis e facilita a implementação de um layout responsivo. Além disso, o \textit{Tailwind CSS} foi utilizado para simplificar a estilização dos componentes.
+    
+    Foram desenvolvidas cinco telas principais: inicial, cadastro, login, exercícios e resultados. A tela inicial permite acessar as funcionalidades disponíveis, enquanto as telas de cadastro e login são responsáveis pela autenticação dos usuários. A interface se adapta às dimensões da tela do dispositivo, permitindo a utilização do sistema tanto em computadores quanto em dispositivos móveis.
+    
+    Na tela de exercícios, o usuário pode resolver as questões de cada lista selecionando a alternativa que julgar correta. Após o envio da lista, a tela de resultados apresenta o desempenho obtido e as explicações geradas para as questões respondidas incorretamente.
+
+    \begin{figure}[H]
+        \centering
+
+        \begin{subfigure}{0.4\textwidth}
+            \includegraphics[width=\linewidth]{images/recon_board.png}
+            \caption{Reconhecimento}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}{0.4\textwidth}
+            \includegraphics[width=\linewidth]{images/move1_board.png}
+            \caption{Movimento 1}
+        \end{subfigure}
+        \hfill
+
+        \vspace{0.3cm}
+        
+        \begin{subfigure}{0.4\textwidth}
+            \includegraphics[width=\linewidth]{images/move2_board.png}
+            \caption{Movimento 2}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}{0.4\textwidth}
+            \includegraphics[width=\linewidth]{images/promo_board.png}
+            \caption{Promoção}
+        \end{subfigure}
+        \hfill
+
+        \vspace{0.3cm}
+        
+        \begin{subfigure}{0.4\textwidth}
+            \includegraphics[width=\linewidth]{images/drop_board.png}
+            \caption{Drop}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}{0.4\textwidth}
+            \includegraphics[width=\linewidth]{images/checkmate_board.png }
+            \caption{Xeque-mate}
+        \end{subfigure}
+        \hfill
+
+        \caption{Exemplos das interfaces dos exercícios}
+        \label{fig:interfaces}
+    \end{figure}
