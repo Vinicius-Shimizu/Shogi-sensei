@@ -25,22 +25,21 @@ nas posições utilizadas para a geração dos exercícios.
 \input{tables/piece_accuracy.tex}
 \end{table}
 
-Os gráficos do Apêndice~\ref{ap:modules_performances} apresentam a taxa de acerto de cada participante por módulo. Entretanto, como uma mesma lista pode conter 
-exercícios de diferentes módulos, a quantidade de questões de cada tipo pode variar consideravelmente. Dessa forma, essa métrica deve ser interpretada com cautela, 
-pois, quanto menor a quantidade de exercícios de determinado módulo, maior pode ser o impacto de uma única resposta incorreta sobre a taxa de acerto.
+Os gráficos do Apêndice~\ref{ap:avg_response_time} apresentam o tempo médio de resposta de cada participante por lista e módulo. De maneira geral, observa-se uma tendência de 
+redução desse tempo ao longo das listas, o que pode indicar maior familiaridade dos participantes com os exercícios e os conceitos abordados. 
 
-Os gráficos do Apêndice~\ref{ap:avg_response_time}, por sua vez, apresentam o tempo médio de resposta de cada participante por lista e módulo. De maneira geral, observa-se uma tendência de 
-redução desse tempo ao longo das listas, o que pode indicar maior familiaridade dos participantes com os exercícios e os conceitos abordados. Entretanto, essa redução, 
-isoladamente, não permite concluir que houve retenção do conteúdo.
+Os gráficos do Apêndice~\ref{ap:modules_performances}, por sua vez, apresentam a taxa de acerto de cada participante por módulo. Porém, como uma mesma lista pode conter 
+exercícios de diferentes módulos, a quantidade de questões de cada tipo pode variar consideravelmente. Dessa forma, essa métrica não reflete necessariamente
+um baixo desempenho por parte do usuário, uma vez que, quanto menor a quantidade de exercícios de determinado módulo, maior pode ser o impacto de uma única resposta incorreta 
+sobre a taxa de acerto.
 
-Por fim, os gráficos do Apêndice~\ref{ap:modules_probs}, permitem observar a evolução da distribuição de probabilidades atribuídas a cada módulo ao longo das listas 
-respondidas. Como o mecanismo adaptativo reduz a probabilidade de seleção dos módulos nos quais o participante apresenta taxa de acerto igual ou superior a 70\%, 
-enquanto aumenta a dos módulos com desempenho inferior a esse limite, a redução das probabilidades pode indicar um desempenho satisfatório nos respectivos conteúdos.
+Assim, a análise do desempenho ao longo do experimento também considera a variação da distribuição de probabilidades atribuídas a cada módulo ao longo das listas 
+respondidas. Como descrito na Seção~\ref{sec:exercise_list}, quando o usuário apresenta um desempenho consistentemente satisfatório em determinado módulo, a probabilidade 
+de seleção do módulo seguinte, inicialmente igual a zero, recebe um aumento enquanto a dos outros módulos diminui.
 
-Um comportamento que merece destaque são as quedas acentuadas e repentinas observadas em alguns módulos. Essas alterações ocorrem justamente quando um novo módulo é 
-desbloqueado, recebendo inicialmente 80\% de probabilidade de seleção. Como consequência, a normalização da distribuição provoca uma redução proporcional nas probabilidades 
-dos módulos já disponíveis. Dessa forma, essas quedas refletem principalmente a introdução de novos conteúdos na distribuição adaptativa.
-
+Esse comportamento é refletido nos gráficos do Apêndice~\ref{ap:modules_probs}, nos quais é possível observar quedas acentuadas e repentinas em alguns módulos, acompanhadas 
+pelo crescimento da probabilidade de outros. De maneira geral, observa-se que existe uma curva decrescente, mais evidente nos módulos iniciais, o que reforça os indícios de 
+progresso dos participantes na aprendizagem dos conceitos apresentados. 
 
 \section{Questionário}
 \subsection{Interface}
@@ -126,7 +125,7 @@ uma questão por eliminação ou tentativa, o usuário pode deixar de compreende
 
 
 \subsection{Sugestões de melhorias}
-
+\label{sec:improvements}
 Entre os principais pontos de melhoria identificados pelos participantes, destacaram-se a inclusão de um módulo introdutório para apresentar os conceitos e as regras gerais 
 do shogi antes do início das atividades e a distribuição dos exercícios entre as diferentes peças, especialmente as promovidas, já discutida na Seção~\ref{sec:users_performances}. 
 Também foram sugeridas melhorias na visualização das peças e de seus movimentos no tabuleiro, de modo a facilitar a identificação das alternativas e reduzir a dependência da 
