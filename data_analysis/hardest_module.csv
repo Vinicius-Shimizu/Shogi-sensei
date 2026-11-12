@@ -1,0 +1,7 @@
+Módulo,Quantidade de participantes,Motivos
+Reconhecimento,2,\begin{itemize}\item dificuldade em decorar as peças\item Explicações repetitivas e pouco úteis\end{itemize}
+Movimento 1,0,—
+Movimento 2,1,"\begin{itemize}\item Dificuldade em diferenciar peças com movimentos semelhantes, principalmente as promovidas\end{itemize}"
+Promoção,2,\begin{itemize}\item Dificuldade em verificar todas alternativas apenas com a notação utilizada\item Explicações da IA insuficientes para compreender o conceito trabalhado\end{itemize}
+Drop,1,\begin{itemize}\item Explicações da IA insuficientes para compreender o conceito trabalhado\end{itemize}
+Xeque-mate,4,\begin{itemize}\item Maior dificuldade em analisar as alternativas e aplicar o raciocínio lógico\end{itemize}
