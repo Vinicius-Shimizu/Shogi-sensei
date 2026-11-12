@@ -291,7 +291,7 @@ class ExerciseGenerator():
 
     def movement1(self):
         def get_options(piece: str):
-            if piece in ("+B", "+R") or not piece.startswith("+"):
+            if piece != "G" and (piece in ("+B", "+R") or not piece.startswith("+")):
                 options = [PIECES_DICT[p] for p in [p for p in PIECES_TYPES if p != piece]]
             else: 
                 options = [PIECES_DICT[p] for p in [p for p in PIECES_TYPES if p not in ("+P", "+L", "+N", "+S", "G")]]
