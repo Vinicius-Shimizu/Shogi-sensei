@@ -6,7 +6,7 @@
 \section[Shogi]{Shogi}
     O shogi é um jogo de tabuleiro disputado em um tabuleiro com 9 linhas e 9 colunas. O jogo utiliza 8 tipos de peças, das quais 6 podem assumir formas promovidas (que possuem movimentações diferentes das versões padrão), totalizando 14 tipos de peças. A notação ocidental das peças e seus respectivos símbolos japoneses são apresentados na Tabela~\ref{tab:shogi_pieces}.
 
-    A notação ocidental utilizada em publicações de língua inglesa foi desenvolvida por George Hodges (1976) \textsuperscript{\cite{hodges-notation}}, com base em elementos da notação algébrica do xadrez. 
+    A notação ocidental utilizada em publicações de língua inglesa foi desenvolvida por \cite{hodges-notation}, com base em elementos da notação algébrica do xadrez. 
 \section{Convenções de shogi}
 \begin{table}[H]
 	\centering
@@ -95,14 +95,33 @@ Considere a seguinte representação SFEN correspondente à posição inicial do
 \small
 \texttt{lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1}
 \end{center}
-Como ilustrado na Figura~\ref{fig:posicao_inicial}, o primeiro campo descreve o tabuleiro, cujas linhas são separadas pelo caractere "/" e estão ordenadas de cima para baixo. As peças seguem a notação da Tabela~\ref{tab:shogi_pieces}. As letras minúsculas representam as peças do \textit{gote} e as maiúsculas representam as peças do \textit{sente}. Casas vazias são representadas por números que indicam a quantidade de casas consecutivas desocupadas.
+Como ilustrado na Figura~\ref{fig:posicao_inicial}, o primeiro campo descreve o tabuleiro, 
+cujas linhas são separadas pelo caractere "/" e estão ordenadas de cima para baixo. As peças 
+seguem a notação da Tabela~\ref{tab:shogi_pieces}. As letras minúsculas representam as peças 
+do \textit{gote} e as maiúsculas representam as peças do \textit{sente}. Casas vazias são 
+representadas por números que indicam a quantidade de casas consecutivas desocupadas.
 
-O segundo campo indica que o \textit{sente} deve fazer o próximo movimento, uma vez que ele é o jogador que começa o jogo. O símbolo - no terceiro campo indica que nenhum deles possui peças capturadas disponíveis para reutilização. Por fim, o quarto campo indica que a próxima jogada será a primeira do jogo.
+O segundo campo indica que o \textit{sente} deve fazer o próximo movimento, uma vez que 
+ele é o jogador que começa o jogo. O símbolo - no terceiro campo indica que nenhum deles 
+possui peças capturadas disponíveis para reutilização. Por fim, o quarto campo indica que 
+a próxima jogada será a primeira do jogo.
 	
 \section{Universal Shogi Interface}
 \label{sec:USI}
-No contexto do shogi computacional, os chamados motores, ou \textit{engines}, são programas capazes de analisar posições e buscar movimentos possíveis, utilizando algoritmos de busca e funções de avaliação para estimar a qualidade de diferentes jogadas. Esses motores podem ser integrados a interfaces gráficas, permitindo o desenvolvimento de aplicações de análise de partidas, como o Lishogi, que utiliza o YaneuraOu\textsuperscript{\cite{yaneuraou}}.
+No contexto do shogi computacional, os chamados motores, ou \textit{engines}, são programas 
+capazes de analisar posições e buscar movimentos possíveis, utilizando algoritmos de busca 
+e funções de avaliação para estimar a qualidade de diferentes jogadas. Esses motores podem 
+ser integrados a interfaces gráficas, permitindo o desenvolvimento de aplicações de análise 
+de partidas, como o Lishogi, que utiliza o YaneuraOu\textsuperscript{\cite{yaneuraou}}.
 
-A comunicação entre motores e interfaces pode ser realizada por meio do protocolo \textit{Universal Shogi Interface} (USI), baseado no protocolo equivalente utilizado no xadrez \textit{Universal Chess Interface} (UCI). Ao padronizar comandos e respostas, o USI elimina a necessidade de implementar os mecanismos de análise dentro das próprias aplicações.
+A comunicação entre motores e interfaces pode ser realizada por meio do protocolo 
+\textit{Universal Shogi Interface} (USI), baseado no protocolo equivalente utilizado 
+no xadrez \textit{Universal Chess Interface} (UCI). Ao padronizar comandos e respostas, 
+o USI elimina a necessidade de implementar os mecanismos de análise dentro das próprias aplicações.
 
-Esse protocolo define operações para inicializar o motor, configurar suas opções, fornecer posições do tabuleiro pro meio da representação \textit{SFEN} e solicitar a busca por movimentos. Essa comunicação ocorre através da entrada e da saída padrão do processo do motor. Durante uma busca, o programa pode retornar informações sobre a análise realizada, como a profundidade alcançada que indica quantos meios-lances (movimentos individuais de um jogador) foram explorados na busca, a avaliação da posição e os movimentos candidatos considerados. 
+Esse protocolo define operações para inicializar o motor, configurar suas opções, fornecer 
+posições do tabuleiro por meio da representação SFEN e solicitar a busca por movimentos. 
+Essa comunicação ocorre através da entrada e da saída padrão do processo do motor. Durante 
+uma busca, o programa pode retornar informações sobre a análise realizada, como a profundidade 
+alcançada que indica quantos meios-lances (movimentos individuais de um jogador) foram explorados 
+na busca, a avaliação da posição e os movimentos candidatos considerados. 

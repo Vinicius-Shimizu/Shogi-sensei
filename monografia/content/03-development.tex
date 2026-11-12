@@ -25,7 +25,7 @@
     O sistema utiliza o \textit{PostgreSQL} para armazenar informações dos usuários e dos exercícios. A escolha desse sistema foi motivada pela experiência prévia do autor com a ferramenta e pela facilidade de integração com Python por meio de bibliotecas como \textit{SQLAlchemy}, utilizada para definir modelos e realizar operações sobre os dados; \textit{psycopg}, responsável pela comunicação com o banco de dados; e \textit{Alembic}, empregado para gerenciar alterações no esquema do banco por meio de migrações. As tabelas são apresentadas na Figura~\ref{fig:db_tables} e são descritas abaixo:
 
     \begin{itemize}
-        \item \textbf{raw\_games}: armazena os dados brutos de partidas extraídas da plataforma WDoor\textsuperscript{\cite{wdoor}}, que disponibiliza partidas no formato CSA, apresentado na seção~\ref{sec:server}.
+        \item \textbf{raw\_games}: armazena os dados brutos de partidas extraídas da plataforma wdoor\textsuperscript{\cite{wdoor}}, que disponibiliza partidas no formato CSA, apresentado na seção~\ref{sec:server}.
         \item \textbf{users}: armazena os dados de cadastro dos usuários do sistema, incluindo o hash da senha, em vez da senha original.
         \item \textbf{user\_status}: contém informações referentes ao progresso do usuário. 
         \begin{itemize}
