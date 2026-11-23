@@ -182,16 +182,13 @@ def plot_users_response_time():
     df["response_time_seconds"] = df["response_time_ms"] / 1000
     df["created_at"] = pd.to_datetime(df["created_at"])
 
-    # Ordena cronologicamente por participante
     df = df.sort_values(["user_id", "created_at", "id"])
 
-    # Identifica as listas com base no created_at
     df["list_number"] = (
         df.groupby("user_id")["created_at"]
         .transform(lambda x: pd.factorize(x)[0] + 1)
     )
 
-    # Calcula a média por participante, lista e módulo
     grouped = (
         df.groupby(["user_id", "list_number", "module"])
         ["response_time_seconds"]
@@ -268,7 +265,6 @@ def plot_piece_accuracy():
         df["is_correct"].astype(str).str.lower() == "true"
     )
 
-    # Calcula a taxa de acerto
     accuracy = df.pivot_table(
         index="Peça",
         columns="module",
@@ -276,7 +272,6 @@ def plot_piece_accuracy():
         aggfunc="mean"
     )
 
-    # Calcula a quantidade de questões
     counts = df.pivot_table(
         index="Peça",
         columns="module",
@@ -284,15 +279,12 @@ def plot_piece_accuracy():
         aggfunc="count"
     )
 
-    # Garante a presença de todos os módulos
     accuracy = accuracy.reindex(columns=modules.keys())
     counts = counts.reindex(columns=modules.keys())
 
-    # Calcula os valores totais por peça
     accuracy["total"] = df.groupby("Peça")["is_correct"].mean()
     counts["total"] = df.groupby("Peça")["is_correct"].count()
 
-    # Combina porcentagem e quantidade
     table = accuracy.copy()
 
     for col in table.columns:
@@ -346,6 +338,55 @@ def plot_piece_accuracy():
         encoding="utf-8"
     ) as f:
         f.write(latex_table)
+
+def plot_average_use_time():
+    df = pd.read_csv(CWD / "users_answers.csv")
+
+    df["response_time_seconds"] = df["response_time_ms"] / 1000
+    df["created_at"] = pd.to_datetime(df["created_at"])
+
+    df["date"] = df["created_at"].dt.date
+
+    daily_times = (
+        df.groupby(["user_id", "date"])["response_time_seconds"]
+        .sum()
+        .reset_index()
+    )
+
+    user_times = (
+        daily_times.groupby("user_id")["response_time_seconds"]
+        .mean()
+        .reset_index()
+    )
+
+    user_ids = sorted(user_times["user_id"].unique())
+
+    user_indices = {
+        user_id: index
+        for index, user_id in enumerate(user_ids, start=1)
+    }
+
+    fig, ax = plt.subplots(figsize=(15, 6))
+
+    ax.bar(
+        [user_indices[user_id] for user_id in user_times["user_id"]],
+        user_times["response_time_seconds"] / 60
+    )
+
+    ax.set_xticks(range(1, len(user_ids) + 1))
+    ax.set_xticklabels(
+        [f"Participante {i}" for i in range(1, len(user_ids) + 1)]
+    )
+
+    ax.set_ylabel("Tempo médio diário de uso (minutos)")
+    ax.set_xlabel("Participantes")
+    ax.set_title("Tempo médio diário de uso do sistema por participante")
+
+    ax.grid(axis="y", alpha=0.3)
+
+    plt.tight_layout()
+    plt.savefig(CWD / "results/average_use_time.png")
+    plt.close(fig)
 
 # Questionaire analysis
 
@@ -408,7 +449,6 @@ def plot_hardest_module():
         "Motivos": reasons.fillna("—").values
     })
 
-    # Módulos sem respostas
     table.loc[
         table["Quantidade de participantes"] == 0,
         "Motivos"
@@ -484,7 +524,8 @@ def main():
     # plot_performances_by_module()
     # plot_modules_probs_by_user()
     # plot_users_response_time()
-    plot_piece_accuracy()
+    # plot_piece_accuracy()
+    plot_average_use_time()
     # plot_interface_eval()
     # plot_hardest_module()
     # plot_explanation_clarity_eval()

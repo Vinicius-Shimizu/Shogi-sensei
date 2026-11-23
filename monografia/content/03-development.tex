@@ -164,13 +164,21 @@
         \item Caso o usuário tenha realizado pelo menos 10 listas do módulo atual e obtido uma taxa de acerto média de, no mínimo, 70\%, o módulo seguinte é desbloqueado e recebe uma probabilidade de 80\% de ser selecionado;
         \item Por fim, as probabilidades são normalizadas, garantindo que a soma da distribuição seja igual a 100\%.
     \end{enumerate}
+\newpage
+    \raggedbottom
 
     \subsection{Interface}
-    A estrutura da interface foi desenvolvida utilizando o \textit{React}, que permite organizar o sistema em componentes reutilizáveis e facilita a implementação de um layout responsivo. Além disso, o \textit{Tailwind CSS} foi utilizado para simplificar a estilização dos componentes.
+    \begingroup
+    \setlength{\parskip}{0pt}
+    A estrutura da interface foi desenvolvida utilizando o \textit{React}, que permite organizar o sistema em componentes reutilizáveis e facilita a implementação de um layout 
+    responsivo. Além disso, o \textit{Tailwind CSS} foi utilizado para simplificar a estilização dos componentes.
     
-    Foram desenvolvidas cinco telas principais: inicial, cadastro, login, exercícios e resultados. A tela inicial permite acessar as funcionalidades disponíveis, enquanto as telas de cadastro e login são responsáveis pela autenticação dos usuários. A interface se adapta às dimensões da tela do dispositivo, permitindo a utilização do sistema tanto em computadores quanto em dispositivos móveis.
+    Foram desenvolvidas cinco telas principais: inicial, cadastro, login, exercícios e resultados. A tela inicial permite acessar as funcionalidades disponíveis, enquanto as 
+    telas de cadastro e login são responsáveis pela autenticação dos usuários. A interface se adapta às dimensões da tela do dispositivo, permitindo a utilização do sistema 
+    tanto em computadores quanto em dispositivos móveis.
     
-    Na tela de exercícios, o usuário pode resolver as questões de cada lista selecionando a alternativa que julgar correta. Após o envio da lista, a tela de resultados apresenta o desempenho obtido e as explicações geradas para as questões respondidas incorretamente.
+    Na tela de exercícios, o usuário pode resolver as questões de cada lista selecionando a alternativa que julgar correta. Após o envio da lista, a tela de resultados 
+    apresenta o desempenho obtido e as explicações geradas para as questões respondidas incorretamente.
 
     \begin{figure}[H]
         \centering
@@ -215,3 +223,4 @@
         \caption{Exemplos das interfaces dos exercícios}
         \label{fig:interfaces}
     \end{figure}
+\endgroup
