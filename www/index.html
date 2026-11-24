@@ -68,6 +68,16 @@
 			event.preventDefault();
 			markdownContent.innerHTML = "<h2>Work in Progress</h2><p>This section is not available yet.</p>";
 		}
+
+		function openMonografia(event) {
+			event.preventDefault();
+
+			window.open(
+				"monografia.pdf",
+				"_blank",
+				"noopener,noreferrer"
+			);
+		}
 		
 		function openRepositorio(event) {
 			event.preventDefault();
@@ -76,7 +86,7 @@
 
 		resumoLink.addEventListener("click", loadResumo);
 		propostaLink.addEventListener("click", loadProposta);
-		monografiaLink.addEventListener("click", loadWorkInProgress);
+		monografiaLink.addEventListener("click", openMonografia);
 		repositorioLink.addEventListener("click", openRepositorio);
 		loadMarkdown("intro.md", "Could not load Intro content right now.");
 	</script>
